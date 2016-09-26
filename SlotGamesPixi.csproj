@@ -30,6 +30,7 @@
     <Content Include="scripts\jquery-3.1.0.slim.min.js" />
     <Content Include="scripts\pixi.min.js" />
     <Content Include="scripts\stats.min.js" />
+    <Content Include="scripts\viewporter.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +50,7 @@
     <TypeScriptCompile Include="scripts\typings\soundjs\soundjs.d.ts" />
     <TypeScriptCompile Include="scripts\typings\stats.d.ts" />
     <TypeScriptCompile Include="scripts\typings\tweenjs\tweenjs.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\viewporter.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
