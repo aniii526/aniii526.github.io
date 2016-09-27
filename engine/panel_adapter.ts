@@ -1,4 +1,4 @@
-﻿class PanelAdapter extends createjs.EventDispatcher {
+﻿class PanelAdapter extends PIXI.utils.EventEmitter {
 
     public panel: IPanel;
     private indexlines: Array<number> = [1, 3, 5, 7, 9];
@@ -51,9 +51,9 @@
         //this.panel.addEventListener(PanelEvent.PANEL_EVENT, (e: PanelEvent) => { this.onPanelEvent(e); });
         this.panel.on(PanelEvent.PANEL_EVENT, (e: PanelEvent) => { this.onPanelEvent(e); });
 
-        /*mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.blockMode(value) });
+        mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.blockMode(value) });
         mainSlot.bindSetter(this.modelSlot, "modeLine", (value: number) => { this.updateBetLine(value) });
-        mainSlot.bindSetter(this.modelSlot, "typeBet", (value: number) => { this.updateBetLine(value) });*/
+        mainSlot.bindSetter(this.modelSlot, "typeBet", (value: number) => { this.updateBetLine(value) });
     }
 
     public setBlockTypeBtn(mode: string, m: ModePanelShow): void {
@@ -99,13 +99,6 @@
         switch (e.eventBtn) {
             case PanelEvent.FULL_SCREEN:
                 toggleFullScreen();
-                /*var stage: Stage = (panelMc as DisplayObject).stage;
-                if (stage) {
-                    if (stage.displayState != StageDisplayState.NORMAL)
-                        stage.displayState = StageDisplayState.NORMAL;
-                    else
-                        stage.displayState = StageDisplayState.FULL_SCREEN;
-                }*/
                 break;
             case PanelEvent.HELP:
                 this.showhelp();

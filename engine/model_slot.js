@@ -16,16 +16,12 @@ var ModelSlot = (function () {
         this.summInput = 0;
     }
     ModelSlot.prototype.init = function () {
-        //TO DO
-        /*this.stateSlotManager = mainSlot.slot.getStateSlotManager();
+        this.stateSlotManager = mainSlot.slot.getStateSlotManager();
         this.settingRoll = mainSlot.slot.getSettingRoll();
         mainSlot.slot.showScene(mainSlot.slot.getMainScene());
-
         this.stateSlotManager.setCurrentModeSlot(ModelSlot.MODE_READY);
-
         if (this.lastAction && this.lastAction.Action)
             this.stateSlotManager.setModeOnActionID(this.lastAction);
-        */
         mainSlot.panel.initPanel();
     };
     Object.defineProperty(ModelSlot.prototype, "amountBet", {

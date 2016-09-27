@@ -22,11 +22,12 @@ var PanelSlotWeb = (function (_super) {
             };
             return map;
         }();
+        PanelSlotWeb.nameResoursPanel = '/panel/web_panel.json';
         this.init();
     }
     // метод создан для переопределения в случае с мобильной панелью
     PanelSlotWeb.prototype.init = function () {
-        this.loader = PIXI.loader.add('/panel/web_panel.json');
+        this.loader = PIXI.loader.add(PanelSlotWeb.nameResoursPanel);
         this.loader.on("complete", this.completeLoad, this);
         this.loader.load();
     };
@@ -56,8 +57,12 @@ var PanelSlotWeb = (function (_super) {
         // не знаю, необходимо ли сейчас и работает вообще, но пусть пока будет
         this.fon.cacheAsBitmap = true;
         this.addChild(this.fon);
+        this.containerGame = new PIXI.Sprite();
+        this.containerGame.position.x = 69;
+        this.containerGame.position.y = 23;
+        this.addChild(this.containerGame);
         //Ручка
-        this.handler = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("handle00", 30));
+        this.handler = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, "handle00", 30));
         this.handler.loop = false;
         this.handler.interactive = true;
         //.animationSpeed = 2;
@@ -106,9 +111,6 @@ var PanelSlotWeb = (function (_super) {
         this.comboBtns.on(ComboBtns.EXCHANGE_SELECT, function (e) { _this.onSelectLine(e); });
         this.comboBtns.selectBtnOnData(1, false);
     };
-    PanelSlotWeb.prototype.animHand = function () {
-        this.anim_hand_btn.gotoAndPlay(2);
-    };
     PanelSlotWeb.prototype.getNameEventByBtn = function (nameBtn) {
         return this.dictBtnType[nameBtn];
     };
@@ -136,9 +138,7 @@ var PanelSlotWeb = (function (_super) {
         this.onActionBtn("start_btn");
     };
     PanelSlotWeb.prototype.getContainer = function () {
-        //return this.mc["contgame"];
-        //TO DO
-        return this.mc;
+        return this.containerGame;
     };
     PanelSlotWeb.prototype.setModeComboBet = function (nom) {
         this.comboBtns.selectBtnOnData(nom, false);
@@ -181,9 +181,11 @@ var PanelSlotMob = (function (_super) {
     }
     // метод создан для переопределения в случае с мобильной панелью
     PanelSlotMob.prototype.init = function () {
-        this.loader = PIXI.loader.add("/panel/mob_panel.json");
+        PanelSlotWeb.nameResoursPanel = '/panel/mob_panel.json';
+        _super.prototype.init.call(this);
+        /*this.loader = PIXI.loader.add("/panel/mob_panel.json");
         this.loader.on("complete", this.completeLoad, this);
-        this.loader.load();
+        this.loader.load();*/
     };
     PanelSlotMob.prototype.completeLoad = function () {
         this.nameBtns = [
@@ -210,9 +212,12 @@ var PanelSlotMob = (function (_super) {
         // не знаю, необходимо ли сейчас и работает вообще, но пусть пока будет
         this.fon.cacheAsBitmap = true;
         this.addChild(this.fon);
+        this.containerGame = new PIXI.Sprite();
+        this.containerGame.position.x = 189;
+        this.containerGame.position.y = 8;
+        this.addChild(this.containerGame);
         //Кнопки все кроме линий
         var btns = this.createBtnsOnName(this.nameBtns, true);
-        btns;
         //Кнопки линий
         this.setComboBtns(this.linesBtn);
         // если на экране нихера не видно, значит я закомментил тебя)
@@ -257,12 +262,12 @@ var BtnMute = (function (_super) {
         var _this = this;
         _super.call(this);
         this.isMute = false;
-        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("fon_mute_btn00", 2));
+        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, "fon_mute_btn00", 2));
         this.fon.interactive = true;
         this.fon.on("mousedown", function (e) { _this.onBtn(); });
         this.fon.on("touchstart", function (e) { _this.onBtn(); });
         this.addChild(this.fon);
-        this.icon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("icon_mute_btn00", 2));
+        this.icon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, "icon_mute_btn00", 2));
         this.icon.interactive = false;
         this.icon.position.x = 11;
         this.icon.position.y = 5;
@@ -296,7 +301,7 @@ var BtnPanel = (function (_super) {
         this.style = style;
         this.text = text;
         this.substrate = substrate;
-        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(skinName, 4));
+        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, skinName, 4));
         this.fon.interactive = true;
         this.fon.on("mousedown", function (e) { _this.onUpBtn(e); });
         this.fon.on("touchstart", function (e) { _this.onUpBtn(e); });

@@ -32,7 +32,7 @@ var SlotEnity = (function (_super) {
         return null;
     };
     return SlotEnity;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var SceneSlot = (function (_super) {
     __extends(SceneSlot, _super);
@@ -47,7 +47,7 @@ var SceneSlot = (function (_super) {
     SceneSlot.prototype.initDisplay = function () {
     };
     return SceneSlot;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var BScene = (function (_super) {
     __extends(BScene, _super);
@@ -106,7 +106,8 @@ var MainScene = (function (_super) {
     MainScene.prototype.addRoll = function (px, py) {
         var _this = this;
         this.addChild(this.rolls = new Rolls(this.modelSlot.settingRoll));
-        this.rolls.addEventListener(Rolls.COMPLETE_ROLLS, function () { _this.onCompleteRolls(); });
+        //this.rolls.addEventListener(Rolls.COMPLETE_ROLLS, () => { this.onCompleteRolls(); });
+        this.rolls.on(Rolls.COMPLETE_ROLLS, function () { _this.onCompleteRolls(); });
         this.rolls.x = px;
         this.rolls.y = py;
     };
@@ -114,11 +115,14 @@ var MainScene = (function (_super) {
         if (this.callbackCompleteRoll != null)
             this.callbackCompleteRoll();
     };
+    //TODO
+    //буду решать что тут сделать, пусть пока так LineClass с типом any
     MainScene.prototype.addWinLine = function (px, py, LineClass) {
         var _this = this;
         this.lines = new LinesWin(LineClass);
         this.addChild(this.lines);
-        this.lines.addEventListener(LinesWin.END_BLINK, function () { _this.onCompleteShowLine(); });
+        //this.lines.addEventListener(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
+        this.lines.on(LinesWin.END_BLINK, function () { _this.onCompleteShowLine(); });
         this.lines.x = px;
         this.lines.y = py;
     };
@@ -158,30 +162,32 @@ var MainScene = (function (_super) {
     };
     return MainScene;
 }(SceneSlot));
+//TO DO надо править сильно этот класс, в нем уже создавать объект мувиклип и переключать его, а не сам контейнер.
 var HelpScene = (function (_super) {
     __extends(HelpScene, _super);
     function HelpScene(mc) {
         _super.call(this, mc);
-        mc.stop();
+        //mc.stop();
         // this.hideHelp();
     }
     HelpScene.prototype.bindProperties = function () {
     };
     HelpScene.prototype.selectBtn = function (nom) {
-        if (nom == 0) {
+        //TO DO читай выше
+        /*if (nom == 0) {
             if (this.mc.currentFrame == 0) {
-                this.mc.gotoAndStop(this.mc.timeline.duration - 1);
+                this.mc.gotoAndStop(this.mc.totalFrames - 1);
             }
             else {
                 this.mc.gotoAndStop(this.mc.currentFrame - 1);
             }
         }
         else {
-            if (this.mc.currentFrame == this.mc.timeline.duration - 1)
+            if (this.mc.currentFrame == this.mc.totalFrames - 1)
                 this.mc.gotoAndStop(0);
             else
                 this.mc.gotoAndStop(this.mc.currentFrame + 1);
-        }
+        }*/
     };
     HelpScene.prototype.showhelp = function () {
         this.addChild(this.mc);
@@ -419,7 +425,9 @@ var Card = (function (_super) {
         this.setCard(ar[1], ar[0]);
     };
     Card.prototype.getCard = function (suit) {
-        return new createjs.MovieClip();
+        //TO DO текстуры карт надо запихнуть, а то будут проблемы
+        //return new PIXI.extras.MovieClip();
+        return new PIXI.extras.MovieClip(null);
     };
     Card.prototype.getRandomCard = function (startValue) {
         if (startValue === void 0) { startValue = 0; }
@@ -431,7 +439,7 @@ var Card = (function (_super) {
         return "" + this.value + "_" + this.suit;
     };
     return Card;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var CardDefault = (function (_super) {
     __extends(CardDefault, _super);
@@ -464,7 +472,7 @@ var Rolls = (function (_super) {
         this.rollVO = rollVO;
         for (var i = 0; i < rollVO.count_roll; i++) {
             var r = new Roll(i, rollVO);
-            r.addEventListener(Roll.COMPLETE_ROLL, function () { _this.onComplete(); });
+            r.on(Roll.COMPLETE_ROLL, function () { _this.onComplete(); });
             r.x = rollVO.step_x * i;
             this.arRoll.push(r);
             this.addChild(r);
@@ -488,23 +496,25 @@ var Rolls = (function (_super) {
         soundManager.stopSound(SoundManager.SOUND_ROUTESTART);
         this.counter++;
         if (this.counter == this.rollVO.count_roll) {
-            this.dispatchEvent(Rolls.COMPLETE_ROLLS);
+            //this.dispatchEvent(Rolls.COMPLETE_ROLLS);
+            this.emit(Rolls.COMPLETE_ROLLS);
         }
     };
     Rolls.COMPLETE_ROLLS = "complete_rolls";
     return Rolls;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var Roll = (function (_super) {
     __extends(Roll, _super);
     function Roll(nomRoll, rollVO) {
         _super.call(this);
-        this.container = new createjs.MovieClip();
+        this.container = new PIXI.Sprite();
         this.cacheIcons = new Object();
         this.nomRoll = nomRoll;
         this.rollVO = rollVO;
-        var shape = new createjs.Shape(new createjs.Graphics().beginFill("red").drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row));
-        this.container.mask = shape;
+        //TO DO
+        //var shape = new createjs.Shape(new createjs.Graphics().beginFill("red").drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row));
+        //this.container.mask = shape;
         this.addChild(this.container);
     }
     Object.defineProperty(Roll.prototype, "isHasCombination", {
@@ -527,14 +537,14 @@ var Roll = (function (_super) {
         }
     };
     Roll.prototype.showWinBonus = function (idItem) {
-        for (var i = 0; i < this.container.numChildren; i++) {
+        for (var i = 0; i < this.container.children.length; i++) {
             var ic = this.container.getChildAt(i);
             if (ic.nom == idItem)
                 ic.showAnimationWin();
         }
     };
     Roll.prototype.clear = function () {
-        while (this.container.numChildren > 0) {
+        while (this.container.children.length > 0) {
             var ic = this.container.getChildAt(0);
             if (!this.cacheIcons[ic.nom])
                 this.cacheIcons[ic.nom] = new Array();
@@ -573,7 +583,8 @@ var Roll = (function (_super) {
         soundManager.playSound(SoundManager.SOUND_ROUTESTOP, false);
     };
     Roll.prototype.completeRoll = function () {
-        this.dispatchEvent(Roll.COMPLETE_ROLL);
+        //this.dispatchEvent(Roll.COMPLETE_ROLL);
+        this.emit(Roll.COMPLETE_ROLL);
     };
     Roll.prototype.setContentIcons = function (ar) {
         this.clear();
@@ -587,7 +598,7 @@ var Roll = (function (_super) {
     Roll.ICON_ROUTE = 20;
     Roll.TIME_ON_ICON = 15;
     return Roll;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var IconRoll = (function (_super) {
     __extends(IconRoll, _super);
@@ -596,17 +607,21 @@ var IconRoll = (function (_super) {
         this.isAnimate = false;
         this.nom = nom;
         this.ic = this.getIcon(nom);
-        this.addChild(this.ic);
+        //TO DO тут не правильно возвращается значение иконки которая будет вращатся, так как её еще нет в природе.
+        // пока, просто не буду помещать на экран её.
+        //this.addChild(this.ic);
     }
     IconRoll.prototype.restart = function () {
         if (this.animMc && this.isAnimate)
             this.removeChild(this.animMc);
         this.isAnimate = false;
     };
+    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
     IconRoll.prototype.getIcon = function (nom) {
         //throw new Error("Не задана иконка");
-        var s = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
-        //var icBD: BitmapData = new s();
+        //TODO вернуть работоспособность этого метода
+        //var s: PIXI.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
+        var s = new PIXI.DisplayObject();
         return s;
     };
     IconRoll.prototype.showAnimationWin = function () {
@@ -615,16 +630,19 @@ var IconRoll = (function (_super) {
         this.isAnimate = true;
         this.addChild(this.animMc);
     };
+    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
     IconRoll.prototype.getAnimMc = function () {
         // throw new Error("Не задана иконка анимации");
         var s = new lib["icon" + this.nom + "_an"];
         return s;
     };
     return IconRoll;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var LinesWin = (function (_super) {
     __extends(LinesWin, _super);
+    //TODO
+    //буду решать что тут сделать, пусть пока так LineClass с типом any
     function LinesWin(LineClass) {
         _super.call(this);
         this.lines = new Array(9);
@@ -646,14 +664,16 @@ var LinesWin = (function (_super) {
             this.viewLines[this.step].showLine(this.isAnimate);
         }
         else {
-            this.dispatchEvent(LinesWin.END_BLINK);
+            //this.dispatchEvent(LinesWin.END_BLINK)
+            this.emit(LinesWin.END_BLINK);
         }
     };
     LinesWin.prototype.getline = function (ind) {
         var _this = this;
         if (!this.lines[ind - 1]) {
             this.lines[ind - 1] = new LinesEnity(this.classLine, ind);
-            this.lines[ind - 1].addEventListener(LinesWin.END_BLINK, function () { _this.onEndBlink(); });
+            //this.lines[ind - 1].addEventListener(LinesWin.END_BLINK, () => { this.onEndBlink(); });
+            this.lines[ind - 1].on(LinesWin.END_BLINK, function () { _this.onEndBlink(); });
         }
         return this.lines[ind - 1];
     };
@@ -671,18 +691,21 @@ var LinesWin = (function (_super) {
     };
     LinesWin.END_BLINK = "end_blinc";
     return LinesWin;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var LinesEnity = (function (_super) {
     __extends(LinesEnity, _super);
+    //TODO
+    //буду решать что тут сделать, пусть пока так LineClass с типом any
     function LinesEnity(classLine, index) {
         _super.call(this);
         this.countBlinc = 0;
         this.index = index;
-        this.line = new classLine();
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
         this.addChild(this.line);
-        this.line.gotoAndStop(this.getFrame(index) - 1);
-        this.line.cache(0, 0, 600, 300);
+        this.line.gotoAndStop(this.getFrame(index));
+        //TODO убрал этот кэш, посмотрим нужен ли он вообще
+        //this.line.cache(0, 0, 600, 300);
     }
     LinesEnity.prototype.showLine = function (isAnimate) {
         this.countBlinc = isAnimate ? LinesEnity.BLINK_COUNT : 1;
@@ -699,7 +722,8 @@ var LinesEnity = (function (_super) {
                 .call(function () { _this.hideBlinkLines(); });
         }
         else {
-            this.dispatchEvent(LinesWin.END_BLINK);
+            //this.dispatchEvent(LinesWin.END_BLINK)
+            this.emit(LinesWin.END_BLINK);
         }
     };
     LinesEnity.prototype.hideBlinkLines = function () {
@@ -714,7 +738,7 @@ var LinesEnity = (function (_super) {
     LinesEnity.BLINK_INTERVAL = 0.25;
     LinesEnity.BLINK_COUNT = 10;
     return LinesEnity;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 //-------------------------------------------------------------------------------------------
 var AnimationItemVO = (function () {
     function AnimationItemVO(data) {
@@ -750,15 +774,19 @@ var AnimationItem = (function (_super) {
         this.mc = mc;
         this.nameAn = nameAn;
         //this.addChild(mc);
-        this.addEventListener("added", function () { _this.onAddToStage(); });
-        this.addEventListener("removed ", function () { _this.onRemoveFromStage(); });
+        //TODO надо посмотреть что тут за логика и как мне её перенести на pixi
+        // потому что я просто переписал тут addEventListener на on, а в данном случае это не правильно
+        //this.addEventListener("added", () => { this.onAddToStage() });
+        //this.addEventListener("removed ", () => { this.onRemoveFromStage() });
+        this.on("added", function () { _this.onAddToStage(); });
+        this.on("removed ", function () { _this.onRemoveFromStage(); });
         this.addChild(mc);
         this.mc.stop();
         this.rand = Math.random();
     }
     AnimationItem.prototype.onAddToStage = function () {
         var _this = this;
-        this.addFrameScript(this.mc.timeline.duration - 1, function () { _this.completeAnim(); });
+        this.addFrameScript(this.mc.totalFrames - 1, function () { _this.completeAnim(); });
         this.mc.gotoAndPlay(1);
         if (this.info.startAnim != null) {
             this.info.startAnim(this.nameAn, this.mc);
@@ -790,26 +818,26 @@ var AnimationItem = (function (_super) {
             if (this.info.completeStop)
                 this.mc.stop();
         }
-        this.dispatchEvent(EVENT_COMPLETE);
+        this.emit(EVENT_COMPLETE);
     };
     AnimationItem.prototype.nextAnimation = function () {
-        this.dispatchEvent(AnimationItem.NEXT_ANIMATION);
+        this.emit(AnimationItem.NEXT_ANIMATION);
     };
     AnimationItem.prototype.addFrameScript = function (fr, frameCallback) {
         var _this = this;
         this.objFrameCallback[fr] = frameCallback;
-        if (!this.mc.hasEventListener("tick"))
-            this.mc.addEventListener("tick", function () { _this.onTick(); });
+        if (!this.mc.listeners("tick"))
+            //this.mc.addEventListener("tick", () => { this.onTick() });
+            this.mc.on("tick", function () { _this.onTick(); });
     };
     AnimationItem.prototype.onTick = function () {
         if (this.objFrameCallback[this.mc.currentFrame] != null) {
             this.objFrameCallback[this.mc.currentFrame]();
-            this.mc.removeAllEventListeners("tick");
         }
     };
     AnimationItem.NEXT_ANIMATION = "next_animation";
     return AnimationItem;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 var AnimationVO = (function () {
     function AnimationVO() {
         this.nextAnim = -1;
@@ -837,7 +865,7 @@ var AnimEnity = (function (_super) {
         this.animsCach = new Object();
         this.isPlayAnimation = false;
         this.cashMc = new Object();
-        this.addChild(this.container = new createjs.MovieClip());
+        this.addChild(this.container = new PIXI.Sprite());
         this.rand = Math.random();
     }
     AnimEnity.prototype.createMc = function (nameMc) {
@@ -875,9 +903,11 @@ var AnimEnity = (function (_super) {
             an.setModeAnimation(this.curAnims.anims[i]);
             this.container.addChild(an);
             if (an.info.dispatchComplete)
-                an.addEventListener(EVENT_COMPLETE, function (e) { _this.onCompleteAnimation(e); });
+                //an.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+                an.on(EVENT_COMPLETE, function (e) { _this.onCompleteAnimation(e); });
             if (an.info.completeFrame)
-                an.addEventListener(AnimationItem.NEXT_ANIMATION, function (e) { _this.onCompleteAnimation(e); });
+                //an.addEventListener(AnimationItem.NEXT_ANIMATION, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+                an.on(AnimationItem.NEXT_ANIMATION, function (e) { _this.onCompleteAnimation(e); });
             anArs.push(an);
         }
         if (this.curAnims.eventComplete == AnimationVO.COMPLETE_TIME) {
@@ -892,14 +922,16 @@ var AnimEnity = (function (_super) {
             else
                 nameCompleteAnimation = this.curAnims.nameCompleteAnimation;
             var anCompl = this.getAnimByName(nameCompleteAnimation);
-            anCompl.addEventListener(EVENT_COMPLETE, function (e) { _this.onCompleteAnimation(e); });
+            //anCompl.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+            anCompl.on(EVENT_COMPLETE, function (e) { _this.onCompleteAnimation(e); });
         }
     };
     AnimEnity.prototype.onCompleteAnimation = function (e) {
         if (e != null) {
-            e.currentTarget.removeAllEventListeners(e.type);
+            //TODO проблема в том, что в pixi нет такого метода, необходимо продумать что там не так
+            //(e.currentTarget as AnimationItem).removeAllEventListeners(e.type);
             if (e.currentTarget.info.dispatchComplete != null) {
-                this.dispatchEvent(e);
+                this.emit(EVENT_COMPLETE, e);
                 this.isPlayAnimation = false;
             }
         }
@@ -913,7 +945,7 @@ var AnimEnity = (function (_super) {
     AnimEnity.prototype.reset = function () {
         //if (timeoutID)
         //    clearTimeout(timeoutID);
-        while (this.container.numChildren) {
+        while (this.container.children.length) {
             this.container.removeChildAt(0);
         }
     };
@@ -942,17 +974,19 @@ var AnimEnity = (function (_super) {
         return ar;
     };
     return AnimEnity;
-}(createjs.MovieClip));
+}(PIXI.Sprite));
 var PanelInfo = (function (_super) {
     __extends(PanelInfo, _super);
     function PanelInfo(mc) {
         _super.call(this);
         this.dictMethod = new Object();
         this.mc = mc;
-        for (var i = 0; i < mc.numChildren; i++) {
-            mc.getChildAt(i).visible = false;
+        //TODO вернуть обратно, как соберу эту панель самостоятельно
+        /*for (var i: number = 0; i < mc.children.length; i++) {
+            (mc.getChildAt(i) as PIXI.DisplayObject).visible = false;
         }
-        this.mc["msg_txt"].text = '';
+
+        this.mc["msg_txt"].text = '';*/
     }
     PanelInfo.prototype.setMode = function (mode, value) {
         if (value === void 0) { value = ""; }
@@ -987,7 +1021,7 @@ var PanelInfoMain = (function (_super) {
     PanelInfoMain.prototype.showNextAnimation = function () {
         this.curView.gotoAndStop(this.counter);
         this.counter++;
-        if (this.counter > this.curView.timeline.duration)
+        if (this.counter > this.curView.totalFrames)
             this.counter = 1;
     };
     PanelInfoMain.prototype.showWin = function (value) {

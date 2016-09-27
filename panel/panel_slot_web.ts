@@ -6,10 +6,9 @@
     protected dictBtn: Object = new Object();
     protected comboBtns: ComboBtns;
     protected mute_btn: BtnMute;
-    protected anim_hand_btn: createjs.MovieClip;
 
     //под вопросом
-    protected mc: PIXI.extras.MovieClip;
+    protected containerGame: PIXI.Sprite;
     protected loader: PIXI.loaders.Loader;
 
     protected fon: PIXI.Sprite;
@@ -30,15 +29,19 @@
         return map;
     } ();
 
+    public static nameResoursPanel: string;
+
     constructor() {
         super();
+
+        PanelSlotWeb.nameResoursPanel = '/panel/web_panel.json';
 
         this.init();
     }
 
     // метод создан для переопределения в случае с мобильной панелью
     public init(): void {
-        this.loader = PIXI.loader.add('/panel/web_panel.json');
+        this.loader = PIXI.loader.add(PanelSlotWeb.nameResoursPanel);
         this.loader.on("complete", this.completeLoad, this);
         this.loader.load();
     }
@@ -73,8 +76,13 @@
         this.fon.cacheAsBitmap = true;
         this.addChild(this.fon);
 
+        this.containerGame = new PIXI.Sprite();
+        this.containerGame.position.x = 69;
+        this.containerGame.position.y = 23;
+        this.addChild(this.containerGame);
+
         //Ручка
-        this.handler = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("handle00", 30));
+        this.handler = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel,"handle00", 30));
         this.handler.loop = false;
         this.handler.interactive = true;
         //.animationSpeed = 2;
@@ -130,10 +138,6 @@
         this.comboBtns.selectBtnOnData(1, false);
     }
 
-    protected animHand(): void {
-        this.anim_hand_btn.gotoAndPlay(2);
-    }
-
     protected getNameEventByBtn(nameBtn: string): string {
         return this.dictBtnType[nameBtn];
     }
@@ -167,9 +171,7 @@
     }
 
     public getContainer(): PIXI.Sprite {
-        //return this.mc["contgame"];
-        //TO DO
-        return this.mc;
+        return this.containerGame;
     }
 
     public setModeComboBet(nom: number): void {
@@ -211,12 +213,14 @@
 }
 
 class PanelSlotMob extends PanelSlotWeb {
-
     // метод создан для переопределения в случае с мобильной панелью
     public init(): void {
-        this.loader = PIXI.loader.add("/panel/mob_panel.json");
+        PanelSlotWeb.nameResoursPanel = '/panel/mob_panel.json';
+
+        super.init();
+        /*this.loader = PIXI.loader.add("/panel/mob_panel.json");
         this.loader.on("complete", this.completeLoad, this);
-        this.loader.load();
+        this.loader.load();*/
     }
 
     protected completeLoad() {
@@ -248,10 +252,13 @@ class PanelSlotMob extends PanelSlotWeb {
         this.fon.cacheAsBitmap = true;
         this.addChild(this.fon);
 
+        this.containerGame = new PIXI.Sprite();
+        this.containerGame.position.x = 189;
+        this.containerGame.position.y = 8;
+        this.addChild(this.containerGame);
+
         //Кнопки все кроме линий
         var btns: BtnPanel[] = this.createBtnsOnName(this.nameBtns, true);
-
-        btns
 
         //Кнопки линий
         this.setComboBtns(this.linesBtn);
@@ -312,13 +319,13 @@ class BtnMute extends PIXI.Sprite {
     constructor() {
         super();
 
-        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("fon_mute_btn00", 2));
+        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel,"fon_mute_btn00", 2));
         this.fon.interactive = true;
         this.fon.on("mousedown", (e: PIXI.interaction.InteractionEvent) => { this.onBtn() });
         this.fon.on("touchstart", (e: PIXI.interaction.InteractionEvent) => { this.onBtn() });
         this.addChild(this.fon);
 
-        this.icon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("icon_mute_btn00", 2));
+        this.icon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel,"icon_mute_btn00", 2));
         this.icon.interactive = false;
         this.icon.position.x = 11;
         this.icon.position.y = 5;
@@ -375,7 +382,7 @@ class BtnPanel extends PIXI.Sprite {
         this.text = text;
         this.substrate = substrate;
 
-        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(skinName, 4));
+        this.fon = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel,skinName, 4));
         this.fon.interactive = true;
         this.fon.on("mousedown", (e: PIXI.interaction.InteractionEvent) => { this.onUpBtn(e) });
         this.fon.on("touchstart", (e: PIXI.interaction.InteractionEvent) => { this.onUpBtn(e) });

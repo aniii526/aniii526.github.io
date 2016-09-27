@@ -1,4 +1,4 @@
-﻿class SlotEnity extends createjs.MovieClip {
+﻿class SlotEnity extends PIXI.Sprite {
 
     private currentScene: IScene;
     protected mainScene: IMainScene;
@@ -42,11 +42,11 @@
 
 //-------------------------------------------------------------------------------------------
 
-class SceneSlot extends createjs.MovieClip {
-    protected mc: createjs.MovieClip;
+class SceneSlot extends PIXI.Sprite {
+    protected mc: PIXI.Sprite;
     protected modelSlot: ModelSlot;
 
-    constructor(mc: createjs.MovieClip) {
+    constructor(mc: PIXI.Sprite) {
         super();
         this.mc = mc;
         this.addChild(mc);
@@ -74,7 +74,7 @@ class BScene extends SceneSlot {
     protected isBlockSelectedBtn: Boolean = true;
 
 
-    constructor(mc: createjs.MovieClip) {
+    constructor(mc: PIXI.Sprite) {
         super(mc);
 
         this.tmm = new TextMoneyMove(mc["win_txt"]);
@@ -108,7 +108,7 @@ class BScene extends SceneSlot {
         this.reBlockBtn();
     }
 
-    protected completeBonus(arText: Array<createjs.Text>, time: number = 1000): void {
+    protected completeBonus(arText: Array<PIXI.Text>, time: number = 1000): void {
         this.timeoutComplete = time;
         if (arText)
             createjs.Tween.get(this).wait(300).call(() => { this.tmm.startMove(arText); });
@@ -132,13 +132,14 @@ class MainScene extends SceneSlot {
     protected callbackCompleteRoll: Function;
     protected callbackCompleteLines: Function;
 
-    constructor(mc: createjs.MovieClip) {
+    constructor(mc: PIXI.Sprite) {
         super(mc);
     }
 
     protected addRoll(px: number, py: number): void {
         this.addChild(this.rolls = new Rolls(this.modelSlot.settingRoll));
-        this.rolls.addEventListener(Rolls.COMPLETE_ROLLS, () => { this.onCompleteRolls(); });
+        //this.rolls.addEventListener(Rolls.COMPLETE_ROLLS, () => { this.onCompleteRolls(); });
+        this.rolls.on(Rolls.COMPLETE_ROLLS, () => { this.onCompleteRolls(); });
         this.rolls.x = px;
         this.rolls.y = py;
     }
@@ -146,11 +147,13 @@ class MainScene extends SceneSlot {
         if (this.callbackCompleteRoll != null)
             this.callbackCompleteRoll();
     }
-
-    protected addWinLine(px: number, py: number, LineClass: new () => createjs.MovieClip): void {
+    //TODO
+    //буду решать что тут сделать, пусть пока так LineClass с типом any
+    protected addWinLine(px: number, py: number, LineClass: any): void {
         this.lines = new LinesWin(LineClass)
         this.addChild(this.lines);
-        this.lines.addEventListener(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
+        //this.lines.addEventListener(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
+        this.lines.on(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
         this.lines.x = px;
         this.lines.y = py;
     }
@@ -197,10 +200,11 @@ class MainScene extends SceneSlot {
 
 }
 
+//TO DO надо править сильно этот класс, в нем уже создавать объект мувиклип и переключать его, а не сам контейнер.
 class HelpScene extends SceneSlot {
-    constructor(mc: createjs.MovieClip) {
+    constructor(mc: PIXI.Sprite) {
         super(mc);
-        mc.stop();
+        //mc.stop();
         // this.hideHelp();
     }
 
@@ -209,20 +213,21 @@ class HelpScene extends SceneSlot {
     }
 
     public selectBtn(nom: number): void {
-        if (nom == 0) {
+        //TO DO читай выше
+        /*if (nom == 0) {
             if (this.mc.currentFrame == 0) {
-                this.mc.gotoAndStop(this.mc.timeline.duration - 1);
+                this.mc.gotoAndStop(this.mc.totalFrames - 1);
             }
             else {
                 this.mc.gotoAndStop(this.mc.currentFrame - 1);
             }
         }
         else {
-            if (this.mc.currentFrame == this.mc.timeline.duration - 1)
+            if (this.mc.currentFrame == this.mc.totalFrames - 1)
                 this.mc.gotoAndStop(0);
             else
                 this.mc.gotoAndStop(this.mc.currentFrame + 1);
-        }
+        }*/
     }
 
     public showhelp(): void {
@@ -239,7 +244,7 @@ class GambleScene extends SceneSlot {
     protected cards: Array<Card> = new Array<Card>();
     protected selectNom: number;
     protected resultcards: string;
-    protected pick_mc: createjs.MovieClip;
+    protected pick_mc: PIXI.extras.MovieClip;
 
     protected createCards(cardClass: new () => Card): void {
         this.mc.addChild(this.dealer = new cardClass());
@@ -390,21 +395,21 @@ class SuperbonusScene extends BScene { }
 //-------------------------------------------------------------------------------------------
 
 class TextMoneyMove extends createjs.EventDispatcher {
-    private targetTF: createjs.Text;
-    private arTF: Array<createjs.Text>;
-    private sourceTF: createjs.Text;
+    private targetTF: PIXI.Text;
+    private arTF: Array<PIXI.Text>;
+    private sourceTF: PIXI.Text;
 
     private intervalID: number;
     private moneyOnStep: number;
     private resultSum: number;
     private tween: createjs.Tween;
 
-    constructor(tf: createjs.Text) {
+    constructor(tf: PIXI.Text) {
         super();
         this.targetTF = tf;
     }
 
-    public startMove(ar: Array<createjs.Text>): void {
+    public startMove(ar: Array<PIXI.Text>): void {
         this.arTF = ar;
         soundManager.playSound(SoundManager.SOUND_MONEY_MOVE, true, 100);
         this.nextMove();
@@ -459,8 +464,8 @@ class TextMoneyMove extends createjs.EventDispatcher {
 
 //-------------------------------------------------------------------------------------------
 
-class Card extends createjs.MovieClip {
-    private mc: createjs.MovieClip;
+class Card extends PIXI.Sprite {
+    private mc: PIXI.extras.MovieClip;
     private suits: Array<string>;
     public suit: string;
     public value: string;
@@ -493,8 +498,10 @@ class Card extends createjs.MovieClip {
         this.setCard(ar[1], ar[0]);
     }
 
-    protected getCard(suit: string): createjs.MovieClip {
-        return new createjs.MovieClip();
+    protected getCard(suit: string): PIXI.extras.MovieClip {
+        //TO DO текстуры карт надо запихнуть, а то будут проблемы
+        //return new PIXI.extras.MovieClip();
+        return new PIXI.extras.MovieClip(null);
     }
 
     public getRandomCard(startValue: number = 0): string {
@@ -512,7 +519,7 @@ class Card extends createjs.MovieClip {
 
 class CardDefault extends Card {
 
-    protected getCard(suit: string): createjs.MovieClip {
+    protected getCard(suit: string): PIXI.extras.MovieClip {
         switch (suit) {
             case "S":
                 return new lib.spades_card();
@@ -531,7 +538,7 @@ class CardDefault extends Card {
 
 //-------------------------------------------------------------------------------------------
 
-class Rolls extends createjs.MovieClip {
+class Rolls extends PIXI.Sprite {
     public static COMPLETE_ROLLS: string = "complete_rolls";
 
     private arRoll: Array<Roll> = new Array<Roll>();
@@ -544,7 +551,7 @@ class Rolls extends createjs.MovieClip {
 
         for (var i: number = 0; i < rollVO.count_roll; i++) {
             var r: Roll = new Roll(i, rollVO);
-            r.addEventListener(Roll.COMPLETE_ROLL, () => { this.onComplete(); });
+            r.on(Roll.COMPLETE_ROLL, () => { this.onComplete(); });
             r.x = rollVO.step_x * i;
             this.arRoll.push(r);
             this.addChild(r);
@@ -570,20 +577,21 @@ class Rolls extends createjs.MovieClip {
         soundManager.stopSound(SoundManager.SOUND_ROUTESTART);
         this.counter++;
         if (this.counter == this.rollVO.count_roll) {
-            this.dispatchEvent(Rolls.COMPLETE_ROLLS);
+            //this.dispatchEvent(Rolls.COMPLETE_ROLLS);
+            this.emit(Rolls.COMPLETE_ROLLS);
         }
     }
 }
 
 //-------------------------------------------------------------------------------------------
 
-class Roll extends createjs.MovieClip {
+class Roll extends PIXI.Sprite {
     public static COMPLETE_ROLL: string = "complete_roll";
     private static ICON_ROUTE: number = 20;
     private static TIME_ON_ICON: number = 15;
 
     private rollVO: RollVO;
-    private container: createjs.MovieClip = new createjs.MovieClip();
+    private container: PIXI.Sprite = new PIXI.Sprite();
     private currentComb: Array<number>;
     private targetComb: Array<number>;
     private nomRoll: number;
@@ -593,8 +601,10 @@ class Roll extends createjs.MovieClip {
         super();
         this.nomRoll = nomRoll;
         this.rollVO = rollVO;
-        var shape = new createjs.Shape(new createjs.Graphics().beginFill("red").drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row));
-        this.container.mask = shape;
+
+        //TO DO
+        //var shape = new createjs.Shape(new createjs.Graphics().beginFill("red").drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row));
+        //this.container.mask = shape;
         this.addChild(this.container);
 
     }
@@ -618,7 +628,7 @@ class Roll extends createjs.MovieClip {
     }
 
     public showWinBonus(idItem: number): void {
-        for (var i: number = 0; i < this.container.numChildren; i++) {
+        for (var i: number = 0; i < this.container.children.length; i++) {
             var ic: IconRoll = this.container.getChildAt(i) as IconRoll;
             if (ic.nom == idItem)
                 ic.showAnimationWin();
@@ -626,7 +636,7 @@ class Roll extends createjs.MovieClip {
     }
 
     private clear(): void {
-        while (this.container.numChildren > 0) {
+        while (this.container.children.length > 0) {
             var ic: IconRoll = this.container.getChildAt(0) as IconRoll;
             if (!this.cacheIcons[ic.nom])
                 this.cacheIcons[ic.nom] = new Array<IconRoll>();
@@ -674,7 +684,8 @@ class Roll extends createjs.MovieClip {
 
 
     private completeRoll(): void {
-        this.dispatchEvent(Roll.COMPLETE_ROLL);
+        //this.dispatchEvent(Roll.COMPLETE_ROLL);
+        this.emit(Roll.COMPLETE_ROLL);
     }
 
     private setContentIcons(ar: Array<number>): void {
@@ -690,17 +701,19 @@ class Roll extends createjs.MovieClip {
 
 //-------------------------------------------------------------------------------------------
 
-class IconRoll extends createjs.MovieClip {
-    private ic: createjs.DisplayObject;
+class IconRoll extends PIXI.Sprite {
+    private ic: PIXI.DisplayObject;
     public nom: number;
-    protected animMc: createjs.MovieClip;
+    protected animMc: PIXI.extras.MovieClip;
     private isAnimate: boolean = false;
 
     constructor(nom: number) {
         super();
         this.nom = nom;
         this.ic = this.getIcon(nom);
-        this.addChild(this.ic);
+        //TO DO тут не правильно возвращается значение иконки которая будет вращатся, так как её еще нет в природе.
+        // пока, просто не буду помещать на экран её.
+        //this.addChild(this.ic);
     }
 
     public restart(): void {
@@ -709,10 +722,13 @@ class IconRoll extends createjs.MovieClip {
         this.isAnimate = false;
     }
 
-    protected getIcon(nom: number): createjs.DisplayObject {
+    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
+    protected getIcon(nom: number): PIXI.DisplayObject {
         //throw new Error("Не задана иконка");
-        var s: createjs.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
-        //var icBD: BitmapData = new s();
+
+        //TODO вернуть работоспособность этого метода
+        //var s: PIXI.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
+        var s: PIXI.DisplayObject = new PIXI.DisplayObject(); 
         return s;
     }
 
@@ -723,26 +739,29 @@ class IconRoll extends createjs.MovieClip {
         this.addChild(this.animMc);
     }
 
-    protected getAnimMc(): createjs.MovieClip {
+    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
+    protected getAnimMc(): PIXI.extras.MovieClip {
         // throw new Error("Не задана иконка анимации");
-        var s: createjs.MovieClip = new lib["icon" + this.nom + "_an"];
+        var s: PIXI.extras.MovieClip = new lib["icon" + this.nom + "_an"];
         return s;
     }
 }
 
 //-------------------------------------------------------------------------------------------
 
-class LinesWin extends createjs.MovieClip {
+class LinesWin extends PIXI.Sprite {
     public static END_BLINK: string = "end_blinc";
 
-    private classLine: new () => createjs.MovieClip;
+    private classLine: any;
     private viewLines: Array<LinesEnity>;
     private lines: Array<LinesEnity> = new Array<LinesEnity>(9);
     private isAnimate: boolean;
     private step: number = 0;
-    private g: createjs.MovieClip;
+    private g: PIXI.extras.MovieClip;
 
-    constructor(LineClass: new () => createjs.MovieClip) {
+    //TODO
+    //буду решать что тут сделать, пусть пока так LineClass с типом any
+    constructor(LineClass: any) {
         super();
         this.classLine = LineClass;
     }
@@ -764,14 +783,16 @@ class LinesWin extends createjs.MovieClip {
             this.viewLines[this.step].showLine(this.isAnimate);
         }
         else {
-            this.dispatchEvent(LinesWin.END_BLINK)
+            //this.dispatchEvent(LinesWin.END_BLINK)
+            this.emit(LinesWin.END_BLINK)
         }
     }
 
     private getline(ind: number): LinesEnity {
         if (!this.lines[ind - 1]) {
             this.lines[ind - 1] = new LinesEnity(this.classLine, ind);
-            this.lines[ind - 1].addEventListener(LinesWin.END_BLINK, () => { this.onEndBlink(); });
+            //this.lines[ind - 1].addEventListener(LinesWin.END_BLINK, () => { this.onEndBlink(); });
+            this.lines[ind - 1].on(LinesWin.END_BLINK, () => { this.onEndBlink(); });
 
         }
         return this.lines[ind - 1];
@@ -794,22 +815,25 @@ class LinesWin extends createjs.MovieClip {
 
 //-------------------------------------------------------------------------------------------
 
-class LinesEnity extends createjs.MovieClip {
+class LinesEnity extends PIXI.Sprite {
     private static BLINK_INTERVAL: number = 0.25;
     private static BLINK_COUNT: number = 10;
 
     private countBlinc: number = 0;
     private index: number;
-    private line: createjs.MovieClip;
+    private line: PIXI.extras.MovieClip;
 
-    constructor(classLine: new () => createjs.MovieClip, index: number) {
+    //TODO
+    //буду решать что тут сделать, пусть пока так LineClass с типом any
+    constructor(classLine: any, index: number) {
         super();
         this.index = index;
 
-        this.line = new classLine()
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
         this.addChild(this.line);
-        this.line.gotoAndStop(this.getFrame(index) - 1);
-        this.line.cache(0, 0, 600, 300);
+        this.line.gotoAndStop(this.getFrame(index));
+        //TODO убрал этот кэш, посмотрим нужен ли он вообще
+        //this.line.cache(0, 0, 600, 300);
     }
 
     public showLine(isAnimate: boolean): void {
@@ -827,7 +851,8 @@ class LinesEnity extends createjs.MovieClip {
             createjs.Tween.get(this, { override: true }).to({ alpha: 0 }, 1000 * t)
                 .call(() => { this.hideBlinkLines(); });
         } else {
-            this.dispatchEvent(LinesWin.END_BLINK)
+            //this.dispatchEvent(LinesWin.END_BLINK)
+            this.emit(LinesWin.END_BLINK);
         }
     }
 
@@ -873,23 +898,28 @@ class AnimationItemVO {
     }
 }
 
-class AnimationItem extends createjs.MovieClip {
+class AnimationItem extends PIXI.Sprite {
     public static NEXT_ANIMATION: string = "next_animation";
-    private mc: createjs.MovieClip;
+    private mc: PIXI.extras.MovieClip;
     public info: AnimationItemVO;
     private timeoutId: number;
     public nameAn: string;
     private objFrameCallback: Object = new Object();
     private rand: number;
 
-    constructor(mc: createjs.MovieClip, nameAn: string) {
+    constructor(mc: PIXI.extras.MovieClip, nameAn: string) {
         super();
         this.mc = mc;
         this.nameAn = nameAn;
         //this.addChild(mc);
 
-        this.addEventListener("added", () => { this.onAddToStage() });
-        this.addEventListener("removed ", () => { this.onRemoveFromStage() });
+        //TODO надо посмотреть что тут за логика и как мне её перенести на pixi
+        // потому что я просто переписал тут addEventListener на on, а в данном случае это не правильно
+        //this.addEventListener("added", () => { this.onAddToStage() });
+        //this.addEventListener("removed ", () => { this.onRemoveFromStage() });
+
+        this.on("added", () => { this.onAddToStage() });
+        this.on("removed ", () => { this.onRemoveFromStage() });
 
         this.addChild(mc);
         this.mc.stop();
@@ -898,7 +928,7 @@ class AnimationItem extends createjs.MovieClip {
     }
 
     private onAddToStage(): void {
-        this.addFrameScript(this.mc.timeline.duration - 1, () => { this.completeAnim() });
+        this.addFrameScript(this.mc.totalFrames - 1, () => { this.completeAnim() });
 
         this.mc.gotoAndPlay(1);
         if (this.info.startAnim != null) {
@@ -933,22 +963,24 @@ class AnimationItem extends createjs.MovieClip {
                 this.mc.stop();
         }
 
-        this.dispatchEvent(EVENT_COMPLETE);
+        this.emit(EVENT_COMPLETE);
     }
 
     private nextAnimation(): void {
-        this.dispatchEvent(AnimationItem.NEXT_ANIMATION);
+        this.emit(AnimationItem.NEXT_ANIMATION);
     }
     private addFrameScript(fr: number, frameCallback: Function) {
         this.objFrameCallback[fr] = frameCallback;
-        if (!this.mc.hasEventListener("tick"))
-            this.mc.addEventListener("tick", () => { this.onTick() });
+        if (!this.mc.listeners("tick"))
+            //this.mc.addEventListener("tick", () => { this.onTick() });
+            this.mc.on("tick", () => { this.onTick() });
 
     }
     private onTick(): void {
         if (this.objFrameCallback[this.mc.currentFrame] != null) {
             this.objFrameCallback[this.mc.currentFrame]();
-            this.mc.removeAllEventListeners("tick");
+            //TODO дело в том, что в pixi нет такой функции и придется придумывать, как это обойти
+            //this.mc.removeAllEventListeners("tick");
         }
     }
 
@@ -980,10 +1012,10 @@ class AnimationVO {
     }
 }
 
-class AnimEnity extends createjs.MovieClip {
+class AnimEnity extends PIXI.Sprite {
     private anims: Array<AnimationItem>;
     private animsCach: Object = new Object();
-    protected container: createjs.MovieClip;
+    protected container: PIXI.Sprite;
     private currentNom: number;
     private animInfo: Array<AnimationVO>;
     private curAnims: AnimationVO
@@ -994,22 +1026,22 @@ class AnimEnity extends createjs.MovieClip {
 
     constructor() {
         super();
-        this.addChild(this.container = new createjs.MovieClip());
+        this.addChild(this.container = new PIXI.Sprite());
         this.rand = Math.random();
     }
 
-    protected createMc(nameMc: string): createjs.MovieClip {
+    protected createMc(nameMc: string): PIXI.extras.MovieClip {
         return null;
     }
 
-    protected getMC(nameMc: string): createjs.MovieClip {
+    protected getMC(nameMc: string): PIXI.extras.MovieClip {
         if (this.cashMc[nameMc] == null) {
             this.cashMc[nameMc] = this.createMc(nameMc)
         }
         return this.cashMc[nameMc];
     }
 
-    protected setAnimsOnNames(ar: Array<string>, mc: createjs.MovieClip): void {
+    protected setAnimsOnNames(ar: Array<string>, mc: PIXI.extras.MovieClip): void {
         this.anims = new Array<AnimationItem>()
         for (var i: number = 0; i < ar.length; i++) {
             var str: string = ar[i];
@@ -1037,9 +1069,11 @@ class AnimEnity extends createjs.MovieClip {
             an.setModeAnimation(this.curAnims.anims[i]);
             this.container.addChild(an);
             if (an.info.dispatchComplete)
-                an.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+                //an.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+                an.on(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
             if (an.info.completeFrame)
-                an.addEventListener(AnimationItem.NEXT_ANIMATION, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+                //an.addEventListener(AnimationItem.NEXT_ANIMATION, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+                an.on(AnimationItem.NEXT_ANIMATION, (e: createjs.Event) => { this.onCompleteAnimation(e) });
             anArs.push(an);
         }
 
@@ -1056,15 +1090,17 @@ class AnimEnity extends createjs.MovieClip {
                 nameCompleteAnimation = this.curAnims.nameCompleteAnimation;
 
             var anCompl: AnimationItem = this.getAnimByName(nameCompleteAnimation);
-            anCompl.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+            //anCompl.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
+            anCompl.on(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
         }
     }
 
     protected onCompleteAnimation(e: createjs.Event): void {
         if (e != null) {
-            (e.currentTarget as AnimationItem).removeAllEventListeners(e.type);
+            //TODO проблема в том, что в pixi нет такого метода, необходимо продумать что там не так
+            //(e.currentTarget as AnimationItem).removeAllEventListeners(e.type);
             if ((e.currentTarget as AnimationItem).info.dispatchComplete != null) {
-                this.dispatchEvent(e);
+                this.emit(EVENT_COMPLETE, e);
                 this.isPlayAnimation = false;
             }
         }
@@ -1079,7 +1115,7 @@ class AnimEnity extends createjs.MovieClip {
     public reset(): void {
         //if (timeoutID)
         //    clearTimeout(timeoutID);
-        while (this.container.numChildren) {
+        while (this.container.children.length) {
             this.container.removeChildAt(0);
         }
     }
@@ -1114,23 +1150,24 @@ class AnimEnity extends createjs.MovieClip {
 }
 
 class PanelInfo extends createjs.EventDispatcher {
-    protected mc: createjs.MovieClip;
+    protected mc: PIXI.extras.MovieClip;
     protected currentMode: string;
     protected intervalID: number;
     protected dictMethod: Object = new Object();
     protected counter: number;
-    protected curView: createjs.MovieClip;
+    protected curView: PIXI.extras.MovieClip;
     protected curValue: String;
 
-    constructor(mc: createjs.MovieClip) {
+    constructor(mc: PIXI.extras.MovieClip) {
         super();
         this.mc = mc;
 
-        for (var i: number = 0; i < mc.numChildren; i++) {
-            (mc.getChildAt(i) as createjs.DisplayObject).visible = false;
+        //TODO вернуть обратно, как соберу эту панель самостоятельно
+        /*for (var i: number = 0; i < mc.children.length; i++) {
+            (mc.getChildAt(i) as PIXI.DisplayObject).visible = false;
         }
 
-        this.mc["msg_txt"].text = '';
+        this.mc["msg_txt"].text = '';*/
     }
     public setMode(mode: string, value: string = ""): void {
         clearInterval(this.intervalID);
@@ -1152,7 +1189,7 @@ class PanelInfoMain extends PanelInfo {
     public static MODE_TAKE: string = "take";
     public static MODE_RISK: string = "risk";
 
-    constructor(mc: createjs.MovieClip) {
+    constructor(mc: PIXI.extras.MovieClip) {
         super(mc);
 
         this.dictMethod[PanelInfoMain.MODE_ANIM] = (value: string) => { this.showAnimation(value); }
@@ -1168,7 +1205,7 @@ class PanelInfoMain extends PanelInfo {
     private showNextAnimation(): void {
         this.curView.gotoAndStop(this.counter);
         this.counter++;
-        if (this.counter > this.curView.timeline.duration)
+        if (this.counter > this.curView.totalFrames)
             this.counter = 1;
     }
     private showWin(value: string): void {
@@ -1200,7 +1237,7 @@ class PanelInfoGamble extends PanelInfo {
 
     private m: number;
 
-    constructor(mc: createjs.MovieClip, m: number = 1) {
+    constructor(mc: PIXI.extras.MovieClip, m: number = 1) {
         super(mc);
         this.m = m;
 
@@ -1252,6 +1289,7 @@ class PanelInfoGamble extends PanelInfo {
 interface ISlotEnity extends PIXI.Sprite {
     //initGame(): void;
     getPathViewJS(): string;
+    getResourseImg(callback: () => void): void;
     showScene(scene: IScene): void;
     removeScene(scene: IScene): void;
     getStateSlotManager(): StateSlotManager;
@@ -1265,7 +1303,7 @@ interface ISlotEnity extends PIXI.Sprite {
     showHelp(): void;
     hideHelp(): void;
 }
-interface IScene extends createjs.MovieClip {
+interface IScene extends PIXI.Sprite {
 }
 interface IMainScene extends IScene {
     showRollCombination(comb: Array<Array<number>>, callbackCompleteRoll: Function): void;

@@ -522,7 +522,9 @@ class LoadSlot extends Command {
         loadJS("gnome/slot_gnome.js", () => { this.completeLoadSlotJS(); });
     }
     private completeLoadSlotJS(): void {
-        loadJSManifest(mainSlot.slot.getPathViewJS(), () => { this.completeLoad(); });
+        //TO DO тут я буду грузить ресурсы данного автомата вместо этого кода.
+        //loadJSManifest(mainSlot.slot.getPathViewJS(), () => { this.completeLoad(); });
+        mainSlot.slot.getResourseImg(() => { this.completeLoad(); });
     }
     private completeLoad(): void {
         this.notifyComplete();
@@ -535,7 +537,7 @@ class InitCommand extends QueueCommand {
     }
     protected execInternal(): void {
         this.add(new LoadPanel());
-        //this.add(new LoadSlot());
+        this.add(new LoadSlot());
         //this.add(new GetTokenCommand());
         //this.add(new GetGameInfo());
         //this.add(new AuthorizationGame());

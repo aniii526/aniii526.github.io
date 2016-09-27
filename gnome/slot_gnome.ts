@@ -1,4 +1,7 @@
-﻿/*class SlotGnome extends SlotEnity implements ISlotEnity {
+﻿class SlotGnome extends SlotEnity implements ISlotEnity {
+
+    protected loader: PIXI.loaders.Loader;
+
     constructor() {
         super();
 
@@ -7,6 +10,13 @@
 
     public getPathViewJS(): string {
         return "gnome/gnome.js";
+    }
+    
+
+    public getResourseImg(callback: () => void): void {
+        this.loader = PIXI.loader.add('fon_main_scene', 'gnome/images/fon_main_scene.png?1').add('gnome/images/line_mc.json');
+        this.loader.once("complete", callback, this);
+        this.loader.load();
     }
 
     public getStateSlotManager(): StateSlotManager {
@@ -82,23 +92,41 @@ class MainSceneGnome extends MainScene implements IMainScene {
 
 
     constructor() {
-        super(new lib.main_scene());
+        //TO DO надо разобраться с этими мувиками, где я их буду собирать, прямо тут или где то еще
+        //super(new lib.main_scene());
+        super(new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture));
         this.addRoll(48, 33);
-        this.addWinLine(0, 35, lib.line_mc);
+        this.x = 3;
 
-        soundManager.loadSounds(this.soundsManifest);
+        // перенес это внутрь LinesEnity файла slot_enity
+        //let line_mc = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
+
+        this.addWinLine(0, 35, null);
+        this.showWinLines([0,1,2,3,4,5,6,7,8], true, () => { this.completeShowLines() });
+
+        //soundManager.loadSounds(this.soundsManifest);
     }
 
     protected initDisplay(): void {
-        this.addChild(this.mc["anim_main"]);
+        console.log('initDisplay');
 
-        this.infoPanel = new PanelInfoMain(this.mc["mInfo"] as createjs.MovieClip);
+        /*let sp = new PIXI.Sprite(PIXI.loader.resources["fon_middle_btn0001.png"]);
+        sp.x = 800 - sp.width;
+        sp.y = 600 - sp.height;
+        this.mc.addChild(sp);*/
+        /*this.addChild(this.mc["anim_main"]);*/
 
-        mainSlot.bindSetter(this.modelSlot, "balance", (value: number) => { this.updateBalance(value) });
+        this.infoPanel = new PanelInfoMain(this.mc["mInfo"] as PIXI.extras.MovieClip);
+
+        /*mainSlot.bindSetter(this.modelSlot, "balance", (value: number) => { this.updateBalance(value) });
         mainSlot.bindSetter(this.modelSlot, "typeBet", (value: number) => { this.updateBetLine(value) });
         mainSlot.bindSetter(this.modelSlot, "modeLine", (value: number) => { this.updateBetLine(value) });
         mainSlot.bindSetter(mainSlot.slot, "modeLine", (value: boolean) => { this.updateShield(value) });
-        mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.exchangeMode(value) });
+        mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.exchangeMode(value) });*/
+    }
+
+    private completeShowLines(): void {
+
     }
 
 
@@ -223,8 +251,8 @@ class AnimBonus extends AnimEnity {
     public static MODE_LOSE: string = "lose";
     public static MODE_WIN: string = "win";
 
-    public static b: createjs.MovieClip;
-    public static getMcLib(nameMc: string): createjs.MovieClip {
+    public static b: PIXI.extras.MovieClip;
+    public static getMcLib(nameMc: string): PIXI.extras.MovieClip {
         if (AnimBonus.b == null) {
             AnimBonus.b = new lib.anim_bonus();
 
@@ -232,17 +260,19 @@ class AnimBonus extends AnimEnity {
         return Object.create(AnimBonus.b[nameMc]);
     }
 
-    private mc: createjs.MovieClip;
+    private mc: PIXI.extras.MovieClip;
     private animName: Array<string> = ["Stand", "shield1", "lose1", "waslose1", "shieldlose1", "open1", "win1", "waswin1"];
     private curMode: string;
     private isHasShield: boolean;
-    public prize_txt: createjs.Text;
+    public prize_txt: PIXI.Text;
     private prize: number;
 
     constructor() {
         super();
 
-        this.prize_txt = new createjs.Text("100", "28px 'BIP'", "#CCFF00");
+        //TODO разобраться с текстом
+        /*
+        this.prize_txt = new PIXI.Text("100", "28px 'BIP'", "#CCFF00");
         this.prize_txt.name = "prize_txt";
         this.prize_txt.textAlign = "center";
         this.prize_txt.lineHeight = 41;
@@ -250,9 +280,10 @@ class AnimBonus extends AnimEnity {
         this.prize_txt.parent = this;
         this.prize_txt.setTransform(55, 60);
         this.addChild(this.prize_txt);
+        */
     }
 
-    protected createMc(nameMc: string): createjs.MovieClip {
+    protected createMc(nameMc: string): PIXI.extras.MovieClip {
         return AnimBonus.getMcLib(nameMc);
     }
 
@@ -289,17 +320,17 @@ class AnimBonus extends AnimEnity {
         else if (value == AnimBonus.MODE_WIN) {
             this.isPlayAnimation = true;
             ar_anim = this.generateAnim(2);
-            ar_anim[0].anims.push(new AnimationItemVO({ an: this.getWithShield("win1"), startAnim: (nameAnim: string, mcAnim: createjs.MovieClip) => { this.startAnim(nameAnim, mcAnim); } }));
+            ar_anim[0].anims.push(new AnimationItemVO({ an: this.getWithShield("win1"), startAnim: (nameAnim: string, mcAnim: PIXI.extras.MovieClip) => { this.startAnim(nameAnim, mcAnim); } }));
             if (isHasShield)
                 ar_anim[0].anims.push(new AnimationItemVO({ an: "shield1" }));
             ar_anim[0].setCompletAnimation(this.getWithShield("win1"), 1);
 
-            ar_anim[1].anims.push(new AnimationItemVO({ an: "waswin1", dispatchComplete: true, startAnim: (nameAnim: string, mcAnim: createjs.MovieClip) => { this.startAnim(nameAnim, mcAnim); } }));
+            ar_anim[1].anims.push(new AnimationItemVO({ an: "waswin1", dispatchComplete: true, startAnim: (nameAnim: string, mcAnim: PIXI.extras.MovieClip) => { this.startAnim(nameAnim, mcAnim); } }));
         }
         this.showAnim(ar_anim);
     }
 
-    private startAnim(nameAnim: string, mcAnim: createjs.MovieClip): void {
+    private startAnim(nameAnim: string, mcAnim: PIXI.extras.MovieClip): void {
         if (nameAnim == "waswin1") {
             this.prize_txt.text = "" + this.prize;
         }
@@ -327,10 +358,10 @@ class AnimSuperbonus extends AnimEnity {
     private animName: Array<string> = ["superlose1", "superwin1", "superopen1"];
     private curMode: string;
     private prize: number;
-    public prize_txt: createjs.Text;
+    public prize_txt: PIXI.Text;
 
-    public static b: createjs.MovieClip;
-    public static getMcLib(nameMc: string): createjs.MovieClip {
+    public static b: PIXI.extras.MovieClip;
+    public static getMcLib(nameMc: string): PIXI.extras.MovieClip {
         if (AnimSuperbonus.b == null) {
             AnimSuperbonus.b = new lib.anim_sbonus();
 
@@ -338,20 +369,21 @@ class AnimSuperbonus extends AnimEnity {
         return Object.create(AnimSuperbonus.b[nameMc]);
     }
 
-    constructor(mc: createjs.MovieClip) {
+    constructor(mc: PIXI.extras.MovieClip) {
         super();
-
-        this.prize_txt = new createjs.Text("111", "bold 30px 'NewBaskervilleC'", "#E6FF81");
+        //TODO разобраться с текстом
+        /*
+        this.prize_txt = new PIXI.Text("111", "bold 30px 'NewBaskervilleC'", "#E6FF81");
         this.prize_txt.name = "prize_txt";
         this.prize_txt.textAlign = "center";
         this.prize_txt.lineHeight = 35;
         this.prize_txt.lineWidth = 100;
         this.prize_txt.parent = this;
         this.prize_txt.setTransform(165.3, 49.3);
-        this.addChild(this.prize_txt);
+        this.addChild(this.prize_txt);*/
     }
 
-    protected createMc(nameMc: string): createjs.MovieClip {
+    protected createMc(nameMc: string): PIXI.extras.MovieClip {
         return AnimSuperbonus.getMcLib(nameMc);
     }
 
@@ -381,13 +413,13 @@ class AnimSuperbonus extends AnimEnity {
             ar_anim[0].anims.push(new AnimationItemVO({ an: "superopen1" }));
             ar_anim[0].setCompletAnimation("superopen1", 1);
 
-            ar_anim[1].anims.push(new AnimationItemVO({ an: "superwin1", completeStop: true, dispatchComplete: true, completeAnim: (nameAnim: string, mcAnim: createjs.MovieClip) => { this.completeAnim(nameAnim, mcAnim) } }));
+            ar_anim[1].anims.push(new AnimationItemVO({ an: "superwin1", completeStop: true, dispatchComplete: true, completeAnim: (nameAnim: string, mcAnim: PIXI.extras.MovieClip) => { this.completeAnim(nameAnim, mcAnim) } }));
 
         }
         this.showAnim(ar_anim);
     }
 
-    private completeAnim(nameAnim:string, mcAnim:createjs.MovieClip):void
+    private completeAnim(nameAnim: string, mcAnim: PIXI.extras.MovieClip):void
 	{
         this.prize_txt.text = "" + this.prize;
         createjs.Tween.get(this.prize_txt, { override: true }).to({ y: -34 }, 500);
@@ -397,7 +429,7 @@ class AnimSuperbonus extends AnimEnity {
 class BonusSceneGnome extends BonusScene implements IBonusScene {
     private animBonus: AnimBonus;
     private anims: Array<AnimBonus> = new Array<AnimBonus>();
-    private arTextPrizes: Array<createjs.Text>;
+    private arTextPrizes: Array<PIXI.Text>;
     private X_ANIM: number = 30;
 
     constructor() {
@@ -411,7 +443,8 @@ class BonusSceneGnome extends BonusScene implements IBonusScene {
             for (var i: number = 1; i <= 5; i++) {
                 var an: AnimBonus = new AnimBonus();
                 this.anims.push(an);
-                an.addEventListener(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
+                //an.addEventListener(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
+                an.on(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
                 this.mc.addChild(an);
                 an.x = (i - 1) * 129;
             }
@@ -504,7 +537,7 @@ class SuperbonusSceneGnome extends SuperbonusScene implements IBonusScene {
     private arBtn: Array<number> = [0, 4];
     private anim: AnimBonus;
     private anims: Array<AnimSuperbonus> = new Array<AnimSuperbonus>();
-    public prizeTxt: createjs.Text;
+    public prizeTxt: PIXI.Text;
 
     constructor() {
         super(new lib.superbonus_scene());
@@ -515,7 +548,8 @@ class SuperbonusSceneGnome extends SuperbonusScene implements IBonusScene {
             b.y = 172;
             this.anims.push(b);
             this.addChild(b);
-            b.addEventListener(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
+            //b.addEventListener(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
+            b.on(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
         }
 
         this.addChild(this.anim = new AnimBonus());
@@ -558,7 +592,7 @@ class SuperbonusSceneGnome extends SuperbonusScene implements IBonusScene {
 //-------------------------------------------------------------------------------------------
 
 //TO DO
-/*var slotGnome: SlotGnome = new SlotGnome();
-mainSlot.setSlot(slotGnome);*/
+var slotGnome: SlotGnome = new SlotGnome();
+mainSlot.setSlot(slotGnome);
 
 //loadJSManifest("gnome/gnome.js", () => { mainSlot.initSlot(slotGnome) });*/

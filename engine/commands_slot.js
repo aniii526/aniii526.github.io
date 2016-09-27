@@ -469,7 +469,9 @@ var LoadSlot = (function (_super) {
     };
     LoadSlot.prototype.completeLoadSlotJS = function () {
         var _this = this;
-        loadJSManifest(mainSlot.slot.getPathViewJS(), function () { _this.completeLoad(); });
+        //TO DO тут я буду грузить ресурсы данного автомата вместо этого кода.
+        //loadJSManifest(mainSlot.slot.getPathViewJS(), () => { this.completeLoad(); });
+        mainSlot.slot.getResourseImg(function () { _this.completeLoad(); });
     };
     LoadSlot.prototype.completeLoad = function () {
         this.notifyComplete();
@@ -483,7 +485,7 @@ var InitCommand = (function (_super) {
     }
     InitCommand.prototype.execInternal = function () {
         this.add(new LoadPanel());
-        //this.add(new LoadSlot());
+        this.add(new LoadSlot());
         //this.add(new GetTokenCommand());
         //this.add(new GetGameInfo());
         //this.add(new AuthorizationGame());

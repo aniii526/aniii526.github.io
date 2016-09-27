@@ -44,9 +44,9 @@ var PanelAdapter = (function (_super) {
         // не может      
         //this.panel.addEventListener(PanelEvent.PANEL_EVENT, (e: PanelEvent) => { this.onPanelEvent(e); });
         this.panel.on(PanelEvent.PANEL_EVENT, function (e) { _this.onPanelEvent(e); });
-        /*mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.blockMode(value) });
-        mainSlot.bindSetter(this.modelSlot, "modeLine", (value: number) => { this.updateBetLine(value) });
-        mainSlot.bindSetter(this.modelSlot, "typeBet", (value: number) => { this.updateBetLine(value) });*/
+        mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", function (value) { _this.blockMode(value); });
+        mainSlot.bindSetter(this.modelSlot, "modeLine", function (value) { _this.updateBetLine(value); });
+        mainSlot.bindSetter(this.modelSlot, "typeBet", function (value) { _this.updateBetLine(value); });
     };
     PanelAdapter.prototype.setBlockTypeBtn = function (mode, m) {
         this.dictBlockBtns[mode] = m;
@@ -85,13 +85,6 @@ var PanelAdapter = (function (_super) {
         switch (e.eventBtn) {
             case PanelEvent.FULL_SCREEN:
                 toggleFullScreen();
-                /*var stage: Stage = (panelMc as DisplayObject).stage;
-                if (stage) {
-                    if (stage.displayState != StageDisplayState.NORMAL)
-                        stage.displayState = StageDisplayState.NORMAL;
-                    else
-                        stage.displayState = StageDisplayState.FULL_SCREEN;
-                }*/
                 break;
             case PanelEvent.HELP:
                 this.showhelp();
@@ -183,7 +176,7 @@ var PanelAdapter = (function (_super) {
         }
     };
     return PanelAdapter;
-}(createjs.EventDispatcher));
+}(PIXI.utils.EventEmitter));
 //-------------------------------------------------------------------------------------------
 var ModePanelShow = (function () {
     function ModePanelShow(buttons, lines) {

@@ -55,8 +55,8 @@
     public stateSlotManager: StateSlotManager;
 
     public init(): void {
-        //TO DO
-        /*this.stateSlotManager = mainSlot.slot.getStateSlotManager();
+        
+        this.stateSlotManager = mainSlot.slot.getStateSlotManager();
         this.settingRoll = mainSlot.slot.getSettingRoll();
         mainSlot.slot.showScene(mainSlot.slot.getMainScene());
 
@@ -64,7 +64,6 @@
 
         if (this.lastAction && this.lastAction.Action)
             this.stateSlotManager.setModeOnActionID(this.lastAction);
-        */
 
         mainSlot.panel.initPanel();
     }
