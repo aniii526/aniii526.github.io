@@ -607,7 +607,16 @@ class Roll extends PIXI.Sprite {
         //TO DO
         //var shape = new createjs.Shape(new createjs.Graphics().beginFill("red").drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row));
         //this.container.mask = shape;
+
+        let shape:PIXI.Graphics = new PIXI.Graphics();
+        shape.beginFill(0x000000);
+        shape.drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row);
+        shape.endFill();
+
         this.addChild(this.container);
+        this.addChild(shape);
+
+        this.container.mask = shape;
 
     }
 
@@ -730,7 +739,6 @@ class IconRoll extends PIXI.Sprite {
 
         //TODO вернуть работоспособность этого метода
         //var s: PIXI.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
-        //var s: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["icon" + nom +".png"].texture); 
         var s: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICON].textures["icon" + nom + ".png"]); 
         return s;
     }
