@@ -486,9 +486,9 @@ var InitCommand = (function (_super) {
     InitCommand.prototype.execInternal = function () {
         this.add(new LoadPanel());
         this.add(new LoadSlot());
-        //this.add(new GetTokenCommand());
-        //this.add(new GetGameInfo());
-        //this.add(new AuthorizationGame());
+        this.add(new GetTokenCommand());
+        this.add(new GetGameInfo());
+        this.add(new AuthorizationGame());
         _super.prototype.execInternal.call(this);
     };
     return InitCommand;

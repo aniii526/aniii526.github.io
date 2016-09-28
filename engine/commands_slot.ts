@@ -538,9 +538,9 @@ class InitCommand extends QueueCommand {
     protected execInternal(): void {
         this.add(new LoadPanel());
         this.add(new LoadSlot());
-        //this.add(new GetTokenCommand());
-        //this.add(new GetGameInfo());
-        //this.add(new AuthorizationGame());
+        this.add(new GetTokenCommand());
+        this.add(new GetGameInfo());
+        this.add(new AuthorizationGame());
 
         super.execInternal();
     }

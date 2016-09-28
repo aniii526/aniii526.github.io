@@ -30,7 +30,7 @@
             padding:0;
             background-color:#02274A;
 
-            font-family: 'heliosblackcregular';
+            font-family: 'heliosblackcregular','ImpactRegular';
             -webkit-tap-highlight-color: rgba(0,0,0,0); 
             -webkit-touch-callout: none;                
             -webkit-text-size-adjust: none;             
@@ -62,8 +62,8 @@
             mainSlot.startSlot(getparam('gameId'), getparam('partnerid'), getparam('currency'), getparam('userid'), getparam('demo'), getparam('token'));
         else
             // оставил чтобы на локале у себя мог тестить пока
-            //mainSlot.startSlot(22, 1, "USD", "56", 1);
-            mainSlot.startSlot(13, 1, "USD", "56", 1);
+            mainSlot.startSlot(22, 1, "USD", "56", 1);
+            //mainSlot.startSlot(13, 1, "USD", "56", 1);
 
         //TODO переместить позже
         function toggleFullScreen() {

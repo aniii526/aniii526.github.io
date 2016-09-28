@@ -609,7 +609,7 @@ var IconRoll = (function (_super) {
         this.ic = this.getIcon(nom);
         //TO DO тут не правильно возвращается значение иконки которая будет вращатся, так как её еще нет в природе.
         // пока, просто не буду помещать на экран её.
-        //this.addChild(this.ic);
+        this.addChild(this.ic);
     }
     IconRoll.prototype.restart = function () {
         if (this.animMc && this.isAnimate)
@@ -621,7 +621,8 @@ var IconRoll = (function (_super) {
         //throw new Error("Не задана иконка");
         //TODO вернуть работоспособность этого метода
         //var s: PIXI.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
-        var s = new PIXI.DisplayObject();
+        //var s: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["icon" + nom +".png"].texture); 
+        var s = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICON].textures["icon" + nom + ".png"]);
         return s;
     };
     IconRoll.prototype.showAnimationWin = function () {
@@ -701,9 +702,9 @@ var LinesEnity = (function (_super) {
         _super.call(this);
         this.countBlinc = 0;
         this.index = index;
-        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 9));
         this.addChild(this.line);
-        this.line.gotoAndStop(this.getFrame(index));
+        this.line.gotoAndStop(this.getFrame(index) - 1);
         //TODO убрал этот кэш, посмотрим нужен ли он вообще
         //this.line.cache(0, 0, 600, 300);
     }
@@ -982,11 +983,10 @@ var PanelInfo = (function (_super) {
         this.dictMethod = new Object();
         this.mc = mc;
         //TODO вернуть обратно, как соберу эту панель самостоятельно
-        /*for (var i: number = 0; i < mc.children.length; i++) {
-            (mc.getChildAt(i) as PIXI.DisplayObject).visible = false;
+        for (var i = 0; i < mc.children.length; i++) {
+            mc.getChildAt(i).visible = false;
         }
-
-        this.mc["msg_txt"].text = '';*/
+        this.mc["msg_txt"].text = '';
     }
     PanelInfo.prototype.setMode = function (mode, value) {
         if (value === void 0) { value = ""; }
@@ -1001,7 +1001,7 @@ var PanelInfo = (function (_super) {
         }
     };
     return PanelInfo;
-}(createjs.EventDispatcher));
+}(PIXI.utils.EventEmitter));
 var PanelInfoMain = (function (_super) {
     __extends(PanelInfoMain, _super);
     function PanelInfoMain(mc) {
@@ -1018,11 +1018,13 @@ var PanelInfoMain = (function (_super) {
         this.showNextAnimation();
         this.intervalID = setInterval(function () { _this.showNextAnimation(); }, 2000);
     };
+    //TO DO я не понимаю какая тут должна воспроизводится анимация, если сюда вставляется только спрайт с текстом
+    //убрал this.curView.gotoAndStop(this.counter);
     PanelInfoMain.prototype.showNextAnimation = function () {
-        this.curView.gotoAndStop(this.counter);
-        this.counter++;
-        if (this.counter > this.curView.totalFrames)
-            this.counter = 1;
+        //this.curView.gotoAndStop(this.counter);
+        //this.counter++;
+        //if (this.counter > this.curView.totalFrames)
+        this.counter = 1;
     };
     PanelInfoMain.prototype.showWin = function (value) {
         var _this = this;
@@ -1092,13 +1094,7 @@ var PanelInfoGamble = (function (_super) {
     PanelInfoGamble.prototype.showMsgText = function (msg, size) {
         if (size === void 0) { size = 0; }
         this.curView = this.mc["msg_txt"];
-        /*if (size) {
-            size = Math.round(size * m);
-            mc.msg_txt.htmlText = "<font size='" + size + "'>" + msg + "<font/>";
-        }
-        else*/
         this.mc["msg_txt"].text = msg;
-        //this.mc["msg_txt"].y = mc.bounds.y + (mc.bounds.height - mc.msg_txt.textHeight) / 2;
     };
     PanelInfoGamble.MODE_DOUBLE = "double";
     PanelInfoGamble.MODE_MSG = "msg";

@@ -7,6 +7,8 @@
     protected bonus: IBonusScene;
     protected superbonus: IBonusScene;
 
+    public static NAME_ATLAS_ICON: string;
+
     constructor() {
         super();
     }
@@ -702,7 +704,7 @@ class Roll extends PIXI.Sprite {
 //-------------------------------------------------------------------------------------------
 
 class IconRoll extends PIXI.Sprite {
-    private ic: PIXI.DisplayObject;
+    private ic: PIXI.Sprite;
     public nom: number;
     protected animMc: PIXI.extras.MovieClip;
     private isAnimate: boolean = false;
@@ -713,7 +715,7 @@ class IconRoll extends PIXI.Sprite {
         this.ic = this.getIcon(nom);
         //TO DO тут не правильно возвращается значение иконки которая будет вращатся, так как её еще нет в природе.
         // пока, просто не буду помещать на экран её.
-        //this.addChild(this.ic);
+        this.addChild(this.ic);
     }
 
     public restart(): void {
@@ -723,12 +725,13 @@ class IconRoll extends PIXI.Sprite {
     }
 
     //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
-    protected getIcon(nom: number): PIXI.DisplayObject {
+    protected getIcon(nom: number): PIXI.Sprite {
         //throw new Error("Не задана иконка");
 
         //TODO вернуть работоспособность этого метода
         //var s: PIXI.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
-        var s: PIXI.DisplayObject = new PIXI.DisplayObject(); 
+        //var s: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["icon" + nom +".png"].texture); 
+        var s: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICON].textures["icon" + nom + ".png"]); 
         return s;
     }
 
@@ -829,9 +832,9 @@ class LinesEnity extends PIXI.Sprite {
         super();
         this.index = index;
 
-        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 9));
         this.addChild(this.line);
-        this.line.gotoAndStop(this.getFrame(index));
+        this.line.gotoAndStop(this.getFrame(index)-1);
         //TODO убрал этот кэш, посмотрим нужен ли он вообще
         //this.line.cache(0, 0, 600, 300);
     }
@@ -1149,25 +1152,25 @@ class AnimEnity extends PIXI.Sprite {
     }
 }
 
-class PanelInfo extends createjs.EventDispatcher {
-    protected mc: PIXI.extras.MovieClip;
+class PanelInfo extends PIXI.utils.EventEmitter {
+    protected mc: PIXI.Sprite;
     protected currentMode: string;
     protected intervalID: number;
     protected dictMethod: Object = new Object();
     protected counter: number;
-    protected curView: PIXI.extras.MovieClip;
+    protected curView: PIXI.Sprite;
     protected curValue: String;
 
-    constructor(mc: PIXI.extras.MovieClip) {
+    constructor(mc: PIXI.Sprite) {
         super();
         this.mc = mc;
 
         //TODO вернуть обратно, как соберу эту панель самостоятельно
-        /*for (var i: number = 0; i < mc.children.length; i++) {
+        for (var i: number = 0; i < mc.children.length; i++) {
             (mc.getChildAt(i) as PIXI.DisplayObject).visible = false;
         }
 
-        this.mc["msg_txt"].text = '';*/
+        this.mc["msg_txt"].text = '';
     }
     public setMode(mode: string, value: string = ""): void {
         clearInterval(this.intervalID);
@@ -1189,7 +1192,7 @@ class PanelInfoMain extends PanelInfo {
     public static MODE_TAKE: string = "take";
     public static MODE_RISK: string = "risk";
 
-    constructor(mc: PIXI.extras.MovieClip) {
+    constructor(mc: PIXI.Sprite) {
         super(mc);
 
         this.dictMethod[PanelInfoMain.MODE_ANIM] = (value: string) => { this.showAnimation(value); }
@@ -1202,10 +1205,12 @@ class PanelInfoMain extends PanelInfo {
         this.showNextAnimation();
         this.intervalID = setInterval(() => { this.showNextAnimation() }, 2000);
     }
+    //TO DO я не понимаю какая тут должна воспроизводится анимация, если сюда вставляется только спрайт с текстом
+    //убрал this.curView.gotoAndStop(this.counter);
     private showNextAnimation(): void {
-        this.curView.gotoAndStop(this.counter);
-        this.counter++;
-        if (this.counter > this.curView.totalFrames)
+        //this.curView.gotoAndStop(this.counter);
+        //this.counter++;
+        //if (this.counter > this.curView.totalFrames)
             this.counter = 1;
     }
     private showWin(value: string): void {
@@ -1237,7 +1242,7 @@ class PanelInfoGamble extends PanelInfo {
 
     private m: number;
 
-    constructor(mc: PIXI.extras.MovieClip, m: number = 1) {
+    constructor(mc: PIXI.Sprite, m: number = 1) {
         super(mc);
         this.m = m;
 
@@ -1273,15 +1278,7 @@ class PanelInfoGamble extends PanelInfo {
 
     private showMsgText(msg: String, size: number = 0): void {
         this.curView = this.mc["msg_txt"];
-        /*if (size) {
-            size = Math.round(size * m);
-            mc.msg_txt.htmlText = "<font size='" + size + "'>" + msg + "<font/>";
-        }
-        else*/
-        this.mc["msg_txt"].text = msg;
-
-        //this.mc["msg_txt"].y = mc.bounds.y + (mc.bounds.height - mc.msg_txt.textHeight) / 2;
-
+        this.mc["msg_txt"].text = msg
     }
 
 }

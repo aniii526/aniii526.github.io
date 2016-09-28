@@ -44,7 +44,7 @@
     public bets: Array<number>=[1,2,3,4];
     public koeffs: Array<number>;
     public combination: Array<Array<number>>;
-    public balance: number=555;
+    public balance: number=5555;
     public error: number;
     public modeLine: number = 1;// количество линий
     public typeBet: number = 0; // номер ставки из bets

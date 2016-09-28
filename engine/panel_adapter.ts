@@ -124,7 +124,7 @@
                 break;
             case PanelEvent.SELECT_LINE:
                 console.log(e.line);
-                //this.modelSlot.stateSlotManager.getCurrent().downSelectBtn(e.line);
+                this.modelSlot.stateSlotManager.getCurrent().downSelectBtn(e.line);
                 break;
         }
     }

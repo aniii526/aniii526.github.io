@@ -28,13 +28,13 @@ var PanelSlotWeb = (function (_super) {
     // метод создан для переопределения в случае с мобильной панелью
     PanelSlotWeb.prototype.init = function () {
         this.loader = PIXI.loader.add(PanelSlotWeb.nameResoursPanel);
-        this.loader.on("complete", this.completeLoad, this);
+        this.loader.once("complete", this.completeLoad, this);
         this.loader.load();
     };
     PanelSlotWeb.prototype.completeLoad = function () {
         var _this = this;
         this.nameBtns = [
-            new BtnInfo("fullscr_btn", "fon_middle_btn00", 68, 658, "FULL\nSCREEN", { font: '8px Arial' }),
+            new BtnInfo("fullscr_btn", "fon_middle_btn00", 68, 658, "FULL\nSCREEN", { fontSize: '8px', fontFamily: 'Arial' }),
             new BtnInfo("info_btn", "fon_middle_btn00", 123, 658, "INFO"),
             new BtnInfo("select_btn", "fon_big_btn00", 185, 647, "SELECT\nGAME"),
             new BtnInfo("auto_btn", "fon_big_btn00", 258, 647, "AUTO\nSTART"),
@@ -65,7 +65,7 @@ var PanelSlotWeb = (function (_super) {
         this.handler = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, "handle00", 30));
         this.handler.loop = false;
         this.handler.interactive = true;
-        //.animationSpeed = 2;
+        //this.handler.animationSpeed = 0.1;
         this.handler.on("mousedown", function (e) { _this.onHand(); });
         this.handler.on("touchstart", function (e) { _this.onHand(); });
         this.handler.position.x = 957;
@@ -188,21 +188,22 @@ var PanelSlotMob = (function (_super) {
         this.loader.load();*/
     };
     PanelSlotMob.prototype.completeLoad = function () {
+        console.log("МОБИЛЬНАЯ ПАНЕЛЬ");
         this.nameBtns = [
             //new BtnInfo("fullscr_btn", "fon_middle_btn00", 68, 658, "FULL\nSCREEN", { font: '8px Arial' }),
-            new BtnInfo("info_btn", "btn_mob00", 1048, 13, "INFO", { font: '24px heliosblackcregular' }),
+            new BtnInfo("info_btn", "btn_mob00", 1048, 13, "INFO", { fontSize: '24px', fontFamily: 'heliosblackcregular' }),
             //new BtnInfo("select_btn", "fon_big_btn00", 185, 647, "SELECT\nGAME"),
-            new BtnInfo("betone_btn", "btn_mob00", 1048, 138, "GAMBLE\nBET ONE", { font: '23px heliosblackcregular', fill: '#8CDE3E', wordWrap: false }, 'red'),
-            new BtnInfo("maxbet_btn", "btn_mob00", 1048, 264, "GAMBLE\nMAX BET", { font: '23px heliosblackcregular', wordWrap: false }, 'black'),
-            new BtnInfo("auto_btn", "btn_mob00", 1048, 388, "AUTO\nSTART", { font: '24px heliosblackcregular' }),
-            new BtnInfo("start_btn", "btn_mob00", 1048, 512, "TAKE\nWIN", { font: '24px heliosblackcregular' }, 'red')
+            new BtnInfo("betone_btn", "btn_mob00", 1048, 138, "GAMBLE\nBET ONE", { fontSize: '23px', fontFamily: 'heliosblackcregular', fill: '#8CDE3E', wordWrap: false }, 'red'),
+            new BtnInfo("maxbet_btn", "btn_mob00", 1048, 264, "GAMBLE\nMAX BET", { fontSize: '23px', fontFamily: 'heliosblackcregular', wordWrap: false }, 'black'),
+            new BtnInfo("auto_btn", "btn_mob00", 1048, 388, "AUTO\nSTART", { fontSize: '24px', fontFamily: 'heliosblackcregular' }),
+            new BtnInfo("start_btn", "btn_mob00", 1048, 512, "TAKE\nWIN", { fontSize: '24px', fontFamily: 'heliosblackcregular' }, 'red')
         ];
         this.linesBtn = [
-            new BtnInfo("line1_btn", "btn_mob00", 3, 13, "\nLINES", { font: '24px heliosblackcregular' }, '', true),
-            new BtnInfo("line2_btn", "btn_mob00", 3, 138, "\nLINES", { font: '24px heliosblackcregular' }, '', true),
-            new BtnInfo("line3_btn", "btn_mob00", 3, 264, "\nLINES", { font: '24px heliosblackcregular' }, '', true),
-            new BtnInfo("line4_btn", "btn_mob00", 3, 388, "\nLINES", { font: '24px heliosblackcregular' }, '', true),
-            new BtnInfo("line5_btn", "btn_mob00", 3, 512, "\nLINES", { font: '24px heliosblackcregular' }, '', true)
+            new BtnInfo("line1_btn", "btn_mob00", 3, 13, "\nLINES", { fontSize: '24px', fontFamily: 'heliosblackcregular' }, '', true),
+            new BtnInfo("line2_btn", "btn_mob00", 3, 138, "\nLINES", { fontSize: '24px', fontFamily: 'heliosblackcregular' }, '', true),
+            new BtnInfo("line3_btn", "btn_mob00", 3, 264, "\nLINES", { fontSize: '24px', fontFamily: 'heliosblackcregular' }, '', true),
+            new BtnInfo("line4_btn", "btn_mob00", 3, 388, "\nLINES", { fontSize: '24px', fontFamily: 'heliosblackcregular' }, '', true),
+            new BtnInfo("line5_btn", "btn_mob00", 3, 512, "\nLINES", { fontSize: '24px', fontFamily: 'heliosblackcregular' }, '', true)
         ];
         mainSlot.atlasPanel = PIXI.loader.resources["/panel/mob_panel.json"].textures;
         //Фон
@@ -229,7 +230,8 @@ var BtnInfo = (function () {
     function BtnInfo(name, skin, x, y, text, style, substrate, creatlabel) {
         this.style = {
             align: 'center',
-            font: '11px Arial',
+            fontSize: '11px',
+            fontFamily: 'Arial',
             fill: '#ffffff',
             letterSpacing: 1,
             wordWrap: true
@@ -326,13 +328,16 @@ var BtnPanel = (function (_super) {
         if (creatLabel) {
             var styleLabelIndex = {
                 align: 'center',
-                font: '16px Arial',
+                fontSize: '16px',
+                fontFamily: 'Arial',
                 fill: '#ffffff',
                 letterSpacing: 1,
                 wordWrap: true
             };
-            if (mainSlot.isMobile)
-                styleLabelIndex.font = '24px heliosblackcregular';
+            if (mainSlot.isMobile) {
+                styleLabelIndex.fontSize = '24px';
+                styleLabelIndex.fontFamily = 'heliosblackcregular';
+            }
             this.labelIndex = new PIXI.Text();
             this.labelIndex.text = '0';
             this.labelIndex.style = styleLabelIndex;
@@ -368,7 +373,7 @@ var BtnPanel = (function (_super) {
             return;
         if (!this._isModeCB)
             this.setMode(BtnPanel.STATE_UP);
-        console.log(EVENT_CLICK);
+        //console.log(EVENT_CLICK);
         this.emit(BtnPanel.CLICK_BTN, this.name);
     };
     BtnPanel.prototype.onOverBtn = function () {
@@ -467,7 +472,7 @@ var ComboBtns = (function (_super) {
         }
         this.selectIndex = dataIndex;
         if (isDispatch) {
-            console.log(ComboBtns.EXCHANGE_SELECT);
+            //console.log(ComboBtns.EXCHANGE_SELECT);
             this.emit(ComboBtns.EXCHANGE_SELECT);
         }
     };

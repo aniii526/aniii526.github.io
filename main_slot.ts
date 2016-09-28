@@ -154,7 +154,7 @@
             h = Math.ceil(document.documentElement.clientWidth / this.ratio);
         }
 
-        console.log(w, h);
+        //console.log(w, h);
 
         this.renderer.view.style.width = (w / this.pixelRatio) + 'px';
         this.renderer.view.style.height = (h / this.pixelRatio)  + 'px';

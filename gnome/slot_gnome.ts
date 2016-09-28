@@ -4,7 +4,7 @@
 
     constructor() {
         super();
-
+        SlotEnity.NAME_ATLAS_ICON = 'gnome/images/icon_mc.json';
         mainSlot.panel.setBlockTypeBtn(ModelSlot.MODE_SUPERBONUS, new ModePanelShow([PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], [1, 2, 3]));
     }
 
@@ -14,7 +14,7 @@
     
 
     public getResourseImg(callback: () => void): void {
-        this.loader = PIXI.loader.add('fon_main_scene', 'gnome/images/fon_main_scene.png?1').add('gnome/images/line_mc.json');
+        this.loader = PIXI.loader.add('fon_main_scene', 'gnome/images/fon_main_scene.png?1').add('gnome/images/line_mc.json').add('gnome/images/icon_mc.json');
         this.loader.once("complete", callback, this);
         this.loader.load();
     }
@@ -28,8 +28,8 @@
         rollVO.count_roll = 5;
         rollVO.count_icon = 9;
         rollVO.count_row = 3;
-        rollVO.step_y = 97;
-        rollVO.step_x = 112;
+        rollVO.step_y = 120;
+        rollVO.step_x = 140;
         return rollVO;
     }
 
@@ -74,6 +74,22 @@ class MainSceneGnome extends MainScene implements IMainScene {
     private tween: createjs.Tween;
     private infoPanel: PanelInfoMain;
 
+    private total_bet_stat: PIXI.Text;
+    private info_stat_txt: PIXI.Text;
+    private credit_stat: PIXI.Text;
+
+    private bet_txt: PIXI.Text;
+    private line_txt: PIXI.Text;
+    private credit_txt: PIXI.Text;
+    private bet1_txt: PIXI.Text;
+    private bet2_txt: PIXI.Text;
+
+    private bet_txt_x: number;
+    private line_txt_x: number;
+    private credit_txt_x: number;
+    private bet1_txt_x: number;
+    private bet2_txt_x: number;
+
     private soundsManifest: Array<Object> =
     [
         { src: "gnome/sounds/addline.mp3?1473506394550", id: "addline" },
@@ -95,34 +111,136 @@ class MainSceneGnome extends MainScene implements IMainScene {
         //TO DO надо разобраться с этими мувиками, где я их буду собирать, прямо тут или где то еще
         //super(new lib.main_scene());
         super(new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture));
-        this.addRoll(48, 33);
+        this.addRoll(60, 38);
         this.x = 3;
 
         // перенес это внутрь LinesEnity файла slot_enity
         //let line_mc = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
 
-        this.addWinLine(0, 35, null);
-        this.showWinLines([0,1,2,3,4,5,6,7,8], true, () => { this.completeShowLines() });
+        this.addWinLine(52, 65, null);
+        //this.showWinLines([0,1,2,3,4,5,6,7,8], true, () => { this.completeShowLines() });
 
-        //soundManager.loadSounds(this.soundsManifest);
+        soundManager.loadSounds(this.soundsManifest);
     }
 
     protected initDisplay(): void {
         console.log('initDisplay');
 
-        /*let sp = new PIXI.Sprite(PIXI.loader.resources["fon_middle_btn0001.png"]);
-        sp.x = 800 - sp.width;
-        sp.y = 600 - sp.height;
-        this.mc.addChild(sp);*/
-        /*this.addChild(this.mc["anim_main"]);*/
+        let styleLabelIndex: PIXI.TextStyle = {
+            align: 'left',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#D1CAA0',
+            letterSpacing: 1
+        };
 
-        this.infoPanel = new PanelInfoMain(this.mc["mInfo"] as PIXI.extras.MovieClip);
+        // статический текст вверху начало
+        this.total_bet_stat = new PIXI.Text();
+        this.total_bet_stat.text = 'TOTAL BET';
+        this.total_bet_stat.style = styleLabelIndex;
+        this.total_bet_stat.position.x = 12;
+        this.total_bet_stat.position.y = 11;
+        this.mc.addChild(this.total_bet_stat);
 
-        /*mainSlot.bindSetter(this.modelSlot, "balance", (value: number) => { this.updateBalance(value) });
+        this.info_stat_txt = new PIXI.Text();
+        this.info_stat_txt.text = 'LINES';
+        this.info_stat_txt.style = styleLabelIndex;
+        this.info_stat_txt.position.x = 280;
+        this.info_stat_txt.position.y = 11;
+        this.mc.addChild(this.info_stat_txt);
+
+        this.credit_stat = new PIXI.Text();
+        this.credit_stat.text = 'CREDIT';
+        this.credit_stat.style = styleLabelIndex;
+        this.credit_stat.position.x = 560;
+        this.credit_stat.position.y = 11;
+        this.mc.addChild(this.credit_stat);
+        // статический текст вверху конец
+
+        // динамические текстовые поля вверху начало
+        this.bet_txt = new PIXI.Text();
+        this.bet_txt.text = '9999';
+        this.bet_txt.style = styleLabelIndex;
+        this.bet_txt.style.align = 'right';
+        this.bet_txt.position.x = 260;
+        this.bet_txt.position.y = 11;
+        this.bet_txt.anchor.set(1, 0);
+        this.mc.addChild(this.bet_txt);
+
+        this.line_txt = new PIXI.Text();
+        this.line_txt.text = '9999';
+        this.line_txt.style = styleLabelIndex;
+        this.line_txt.style.align = 'right';
+        this.line_txt.position.x = 540;
+        this.line_txt.position.y = 11;
+        this.line_txt.anchor.set(1, 0);
+        this.mc.addChild(this.line_txt);
+
+        this.credit_txt = new PIXI.Text();
+        this.credit_txt.text = '9999';
+        this.credit_txt.style = styleLabelIndex;
+        this.credit_txt.style.align = 'right';
+        this.credit_txt.position.x = 780;
+        this.credit_txt.position.y = 11;
+        this.credit_txt.anchor.set(1, 0);
+        this.mc.addChild(this.credit_txt);
+        // динамические текстовые поля вверху конец
+
+        // динамические текстовые поля внизу начало
+        this.bet1_txt = new PIXI.Text();
+        this.bet1_txt.text = '9999';
+        this.bet1_txt.style = styleLabelIndex;
+        this.bet1_txt.style.fill = '#FFFF00';
+        this.bet1_txt.position.x = 40;
+        this.bet1_txt.position.y = 420;
+        this.bet1_txt.anchor.set(0.5, 0);
+        this.mc.addChild(this.bet1_txt);
+
+        this.bet2_txt = new PIXI.Text();
+        this.bet2_txt.text = '9999';
+        this.bet2_txt.style = styleLabelIndex;
+        this.bet2_txt.style.fill = '#FFFF00';
+        this.bet2_txt.position.x = 760;
+        this.bet2_txt.position.y = 420;
+        this.bet2_txt.anchor.set(0.5, 0);
+        this.mc.addChild(this.bet2_txt);
+        // динамические текстовые поля внизу конец
+
+        // надо собрать панель самостоятельно начало
+        let mInfo: PIXI.Sprite = new PIXI.Sprite();
+        mInfo.position.x = 390;
+        mInfo.position.y = 430;
+        this.mc.addChild(mInfo);
+        this.mc["mInfo"] = mInfo;
+
+        let anim: PIXI.Sprite = new PIXI.Sprite();
+        mInfo.addChild(anim);
+        mInfo["anim"] = anim;
+
+        let play_to_stat: PIXI.Text = new PIXI.Text();
+        play_to_stat.text = 'PLAY 1 TO 225 CREDITS';
+        play_to_stat.style = styleLabelIndex;
+        play_to_stat.style.fill = '#FFFF00';
+        play_to_stat.anchor.set(0.5, 0);
+        anim.addChild(play_to_stat);
+
+        let msg_txt: PIXI.Text = new PIXI.Text();
+        msg_txt.text = '9999';
+        msg_txt.style = styleLabelIndex;
+        msg_txt.style.fill = '#FFFF00';
+        msg_txt.anchor.set(0.5, 0);
+        mInfo.addChild(msg_txt);
+        mInfo["msg_txt"] = msg_txt;
+        // надо собрать панель самостоятельно конец
+
+        this.infoPanel = new PanelInfoMain(this.mc["mInfo"] as PIXI.Sprite);
+
+        mainSlot.bindSetter(this.modelSlot, "balance", (value: number) => { this.updateBalance(value) });
         mainSlot.bindSetter(this.modelSlot, "typeBet", (value: number) => { this.updateBetLine(value) });
         mainSlot.bindSetter(this.modelSlot, "modeLine", (value: number) => { this.updateBetLine(value) });
-        mainSlot.bindSetter(mainSlot.slot, "modeLine", (value: boolean) => { this.updateShield(value) });
-        mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.exchangeMode(value) });*/
+        //TODO я не знаю необходим этот функционал или нет
+        //mainSlot.bindSetter(mainSlot.slot, "modeLine", (value: boolean) => { this.updateShield(value) });
+        mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.exchangeMode(value) });
     }
 
     private completeShowLines(): void {
@@ -133,15 +251,15 @@ class MainSceneGnome extends MainScene implements IMainScene {
     private exchangeMode(value:string):void
 	{
         if (value == ModelSlot.MODE_READY) {
-            this.mc["info_stat_txt"].text = "LINES";
+            this.info_stat_txt.text = "LINES";
             this.updateBetLine(1);
             this.infoPanel.setMode(PanelInfoMain.MODE_ANIM);
 
         }
         else if (value == ModelSlot.MODE_ROUTE_WIN && this.modelSlot.lastAction.Action == ModelSlot.ID_WIN_ROUTE) {
             this.infoPanel.setMode(PanelInfoMain.MODE_WIN, "" + this.modelSlot.lastAction.Summ);
-            this.mc["info_stat_txt"].text = "WIN";
-            this.mc["line_txt"].text = this.modelSlot.lastAction.Summ;
+            this.info_stat_txt.text = "WIN";
+            this.line_txt.text = ""+this.modelSlot.lastAction.Summ;
         } else if (value == ModelSlot.MODE_DEBIT) {
             this.infoPanel.setMode(PanelInfoMain.MODE_TAKE);
         }
@@ -149,16 +267,17 @@ class MainSceneGnome extends MainScene implements IMainScene {
     }
    
     private updateBalance(value: number): void {
-        this.mc["credit_txt"].text = value;
+        this.credit_txt.text = "" + value;
     }
 
     private updateBetLine(type: number): void {
-        this.mc["bet_txt"].text = "" + this.modelSlot.totalBet;
-        this.mc["line_txt"].text = "" + this.modelSlot.modeLine;
-        this.mc["bet1_txt"].text = this.modelSlot.amountBet;
-        this.mc["bet2_txt"].text = this.modelSlot.amountBet;
+        this.bet_txt.text = "" + this.modelSlot.totalBet;
+        this.line_txt.text = "" + this.modelSlot.modeLine;
+        this.bet1_txt.text = "" + this.modelSlot.amountBet;
+        this.bet2_txt.text = "" + this.modelSlot.amountBet
     }
 
+    //TODO возможно на главном экране щит и не нужен, но мб я ошибаюсь
     private updateShield(value: boolean): void {
         this.mc["shield_mc"].visible = value;
     }
