@@ -94,8 +94,16 @@
 
             this.onOrientationChanged();
         }*/
-        window.addEventListener('resize', () => { this.resize(); }, false);
-        this.resize();
+
+        if (!this.isMobile) {
+            window.addEventListener('resize', () => { this.resize(); }, false);
+            this.resize();
+        } else {
+            window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
+            this.onOrientationChanged();
+        }
+        //window.addEventListener('resize', () => { this.resize(); }, false);
+        //this.resize();
 
         //document.body.appendChild(this.stats.domElement);
 

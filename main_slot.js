@@ -51,8 +51,14 @@ var MainSlot = (function () {
         this.stats.setMode(0);
         this.stats.domElement.style.position = "fixed";
         this.stats.domElement.style.top = "0px";
-        window.addEventListener('resize', function () { _this.resize(); }, false);
-        this.resize();
+        if (!this.isMobile) {
+            window.addEventListener('resize', function () { _this.resize(); }, false);
+            this.resize();
+        }
+        else {
+            window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
+            this.onOrientationChanged();
+        }
         this.animate();
         var qc = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, function () { _this.completeInitCommad(); });
