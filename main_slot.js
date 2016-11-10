@@ -118,10 +118,9 @@ var MainSlot = (function () {
             this.panel.resize(w, h);
         }
         if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
-            document.body.style.height = h + 60 + 'px';
-            document.body.style.width = w + 60 + 'px';
+            document.body.style.height = h + 200 + 'px';
+            document.body.style.width = w + 200 + 'px';
             setTimeout(function () {
-                document.body.style.width = '100%';
             }, 100);
         }
     };
