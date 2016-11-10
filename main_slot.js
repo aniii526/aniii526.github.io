@@ -51,21 +51,8 @@ var MainSlot = (function () {
         this.stats.setMode(0);
         this.stats.domElement.style.position = "fixed";
         this.stats.domElement.style.top = "0px";
-        if (!this.isMobile) {
-            window.addEventListener('resize', function () { _this.resize(); }, false);
-            this.resize();
-        }
-        else {
-            if (viewporter.ACTIVE) {
-                window.addEventListener('viewportready', function () { _this.onOrientationChanged(); }, false);
-                window.addEventListener('viewportchange', function () { _this.onOrientationChanged(); }, false);
-                document.body.appendChild(this.stats.domElement);
-            }
-            else {
-                window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
-            }
-            this.onOrientationChanged();
-        }
+        window.addEventListener('resize', function () { _this.resize(); }, false);
+        this.resize();
         this.animate();
         var qc = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, function () { _this.completeInitCommad(); });
