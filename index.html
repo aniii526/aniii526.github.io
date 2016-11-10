@@ -72,6 +72,7 @@
 <body>
     <!--<body onLoad="setTimeout(function() {window.scrollTo(0, 1)}, 100);">-->
     <img name="preloader" src="cube.gif" class="Absolute-Center">
+    <img name="tap" src="tap.jpg" class="Absolute-Center">
         <div id="viewporter">
         </div>
 
@@ -114,6 +115,12 @@
             if (results == null) return "";
             else return results[1];
         }
+
+        $('[name="tap"]').on('click', () => {
+            if (screenfull.enabled) {
+                screenfull.request();
+            }
+        });
 
         //if (document.body.webkitRequestFullScreen) {
         //    window.addEventListener('click', function (e) {
