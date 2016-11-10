@@ -1,0 +1,84 @@
+{"frames": {
+
+"line_1.png":
+{
+	"frame": {"x":2,"y":827,"w":631,"h":57},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":129,"w":631,"h":57},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_2.png":
+{
+	"frame": {"x":2,"y":148,"w":633,"h":59},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":633,"h":59},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_3.png":
+{
+	"frame": {"x":2,"y":210,"w":632,"h":59},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":254,"w":632,"h":59},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_4.png":
+{
+	"frame": {"x":2,"y":546,"w":626,"h":176},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":69,"w":626,"h":176},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_5.png":
+{
+	"frame": {"x":2,"y":272,"w":631,"h":173},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":75,"w":631,"h":173},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_6.png":
+{
+	"frame": {"x":2,"y":725,"w":626,"h":99},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":37,"w":626,"h":99},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_7.png":
+{
+	"frame": {"x":2,"y":448,"w":631,"h":95},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":185,"w":631,"h":95},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_8.png":
+{
+	"frame": {"x":2,"y":2,"w":633,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":161,"w":633,"h":70},
+	"sourceSize": {"w":642,"h":321}
+},
+"line_9.png":
+{
+	"frame": {"x":2,"y":75,"w":633,"h":70},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":84,"w":633,"h":70},
+	"sourceSize": {"w":642,"h":321}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "line_mcttt.png",
+	"format": "RGBA8888",
+	"size": {"w":1024,"h":1024},
+	"scale": "0.5",
+	"smartupdate": "$TexturePacker:SmartUpdate:3fed25f43e554e3a76d34dbbbc4b6d71:cd2afe874eda382be656ab77ed665a5c:00a8e5c252019156b4a15459d4025035$"
+}
+}

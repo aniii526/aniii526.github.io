@@ -303,7 +303,7 @@ var PanelSlotMob = (function (_super) {
         this.openWndSettingsForCloseInfo = false;
     }
     PanelSlotMob.prototype.init = function () {
-        PanelSlotWeb.nameResoursPanel = './panel/mob_panel.json';
+        PanelSlotWeb.nameResoursPanel = './panel/mob_panelttt.json';
         _super.prototype.init.call(this);
     };
     PanelSlotMob.prototype.uniqueShow = function () {

@@ -403,7 +403,7 @@ class PanelSlotMob extends PanelSlotWeb {
     protected btn_select_info: PIXI.Sprite;
 
     public init(): void {
-        PanelSlotWeb.nameResoursPanel = './panel/mob_panel.json';
+        PanelSlotWeb.nameResoursPanel = './panel/mob_panelttt.json';
         //PanelSlotWeb.nameResoursPanel = './panel/web_panel.json';
 
         super.init();
