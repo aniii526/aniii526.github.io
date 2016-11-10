@@ -122,7 +122,6 @@ var MainSlot = (function () {
             document.body.style.width = w + 60 + 'px';
             setTimeout(function () {
                 document.body.style.width = '100%';
-                document.body.style.height = '100%';
             }, 100);
         }
     };
