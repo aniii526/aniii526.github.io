@@ -80,7 +80,7 @@
         this.stats.domElement.style.top = "0px";
 
         // тут ! правильно стоит
-        if (!this.isMobile) {
+        /*if (!this.isMobile) {
             window.addEventListener('resize', () => { this.resize(); }, false);
             this.resize();
         } else {
@@ -93,7 +93,10 @@
             }
 
             this.onOrientationChanged();
-        }
+        }*/
+
+        window.addEventListener('resize', () => { this.resize(); }, false);
+        this.resize();
 
         //document.body.appendChild(this.stats.domElement);
 
