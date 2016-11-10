@@ -20,8 +20,6 @@ var Command = (function (_super) {
         configurable: true
     });
     Command.prototype.execute = function () {
-        console.log("Execute " + this.type);
-        //try {
         if (this.executing || this.complete)
             return;
         this._executing = true;
@@ -29,10 +27,6 @@ var Command = (function (_super) {
             Command.cache.push(this);
         }
         this.execInternal();
-        //  }
-        //  catch (e) {
-        //     console.log("Error " + e + "  in " + this);
-        //  }
     };
     Command.prototype.reset = function () {
         this._complete = false;
@@ -47,7 +41,6 @@ var Command = (function (_super) {
                 Command.cache.splice(index, 1);
             }
             this._complete = true;
-            console.log("Complete command: " + this.type);
             this.dispatchEvent(EVENT_COMPLETE);
         }
     };
@@ -57,7 +50,6 @@ var Command = (function (_super) {
     Command.cache = [];
     return Command;
 }(createjs.EventDispatcher));
-//-------------------------------------------------------------------------------------------
 var QueueCommand = (function (_super) {
     __extends(QueueCommand, _super);
     function QueueCommand() {
@@ -111,8 +103,6 @@ var QueueCommand = (function (_super) {
         this._runningCommand.removeEventListener(EVENT_COMPLETE, this.onCommandComplete);
         this._runningCommand = null;
         this.dispatchEvent(QueueCommand.COMMAND_COMPLETE);
-        // if (this.dispatchProgress)
-        //     this.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, total - queue.length, total));
         this.run();
     };
     QueueCommand.prototype.reset = function () {
@@ -135,7 +125,6 @@ var QueueCommand = (function (_super) {
     QueueCommand.COMMAND_COMPLETE = "commandComplete";
     return QueueCommand;
 }(Command));
-//-------------------------------------------------------------------------------------------
 var GetTokenCommand = (function (_super) {
     __extends(GetTokenCommand, _super);
     function GetTokenCommand() {
@@ -143,7 +132,6 @@ var GetTokenCommand = (function (_super) {
     }
     GetTokenCommand.prototype.execInternal = function () {
         if (mainSlot.model.Token == null && !mainSlot.testServer)
-            //this.sendToPath("http://192.168.10.125:9055/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
             this.sendToPath("https://partners.1xbet.org/1xSlotsTest/GetToken?UserId=" + mainSlot.model.userid);
         else
             this.notifyComplete();
@@ -157,13 +145,11 @@ var GetTokenCommand = (function (_super) {
     };
     return GetTokenCommand;
 }(Command));
-//-------------------------------------------------------------------------------------------
 var ConnectCommand = (function (_super) {
     __extends(ConnectCommand, _super);
     function ConnectCommand(type) {
         _super.call(this, type);
         this.param = new Object();
-        //this.type = type;
     }
     ConnectCommand.prototype.execInternal = function () {
         this.param["IdPartner"] = mainSlot.model.partnerid;
@@ -180,20 +166,14 @@ var ConnectCommand = (function (_super) {
     ConnectCommand.prototype.sendToPath = function (urlPath) {
         var _this = this;
         var dataReq = JSON.stringify(this.param);
-        /* $.ajaxSetup({
-             contentType: "application/json; charset=utf-8"
-         });
-         $.post(urlPath, this.param);*/
         $.ajax({
             url: urlPath,
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             headers: { 'Content-Type': 'application/json' },
-            // processData: true,
             success: function (msg) { _this.processData(msg); },
             error: function (result) {
-                //alert('Service call failed: ' + result.status + '' + result.statusText);
             },
             data: dataReq
         });
@@ -224,7 +204,6 @@ var ConnectCommand = (function (_super) {
     };
     return ConnectCommand;
 }(Command));
-//-------------------------------------------------------------------------------------------
 var ServerResponseEvent = (function (_super) {
     __extends(ServerResponseEvent, _super);
     function ServerResponseEvent(data, bubbles, cancelable) {
@@ -237,7 +216,6 @@ var ServerResponseEvent = (function (_super) {
     ServerResponseEvent.RESPONSE = "response";
     return ServerResponseEvent;
 }(createjs.Event));
-//-------------------------------------------------------------------------------------------
 var AuthorizationGame = (function (_super) {
     __extends(AuthorizationGame, _super);
     function AuthorizationGame() {
@@ -246,7 +224,6 @@ var AuthorizationGame = (function (_super) {
     AuthorizationGame.prototype.execInternal = function () {
         if (mainSlot.testServer) {
             var str = '{"Error":0,"Msg":"Не завершенная игра","Action":"7","Balance":100973.74,"CombinationSpin":"3;3;6;8;8&5;1;1;9;1&2;8;8;9;9","Currency":"USD","GameId":22,"Round":1825,"Summ":0,"SummAux":0,"Token":"bc52a2e3-77a8-44ef-823d-f46246b06bee"} ';
-            //var str: string = '{"Error":16,"Msg":"Не завершенная игра","Action":"31","Balance":100973.74,"CombinationSpin":"3;3;6;8;8&5;1;1;9;1&2;8;8;9;9","Currency":"USD","GameId":22,"Round":1825,"Summ":0,"SummAux":0,"Token":"bc52a2e3-77a8-44ef-823d-f46246b06bee"} ';
             var obj = JSON.parse(str);
             this.processData(obj);
             return;
@@ -276,7 +253,6 @@ var AuthorizationGame = (function (_super) {
     };
     return AuthorizationGame;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var BalanceGame = (function (_super) {
     __extends(BalanceGame, _super);
     function BalanceGame() {
@@ -289,7 +265,6 @@ var BalanceGame = (function (_super) {
     };
     return BalanceGame;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var DebitGame = (function (_super) {
     __extends(DebitGame, _super);
     function DebitGame() {
@@ -306,7 +281,6 @@ var DebitGame = (function (_super) {
     };
     return DebitGame;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var CreditGame = (function (_super) {
     __extends(CreditGame, _super);
     function CreditGame(cntLine, summa) {
@@ -325,7 +299,6 @@ var CreditGame = (function (_super) {
     };
     return CreditGame;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var GambleEndGame = (function (_super) {
     __extends(GambleEndGame, _super);
     function GambleEndGame(clickUser) {
@@ -342,7 +315,6 @@ var GambleEndGame = (function (_super) {
     };
     return GambleEndGame;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var GambleGame = (function (_super) {
     __extends(GambleGame, _super);
     function GambleGame(comb) {
@@ -360,7 +332,6 @@ var GambleGame = (function (_super) {
     };
     return GambleGame;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var GambleStartGame = (function (_super) {
     __extends(GambleStartGame, _super);
     function GambleStartGame() {
@@ -376,7 +347,6 @@ var GambleStartGame = (function (_super) {
     };
     return GambleStartGame;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var GetAsyncResponse = (function (_super) {
     __extends(GetAsyncResponse, _super);
     function GetAsyncResponse(tokenAsync, timeout) {
@@ -403,7 +373,6 @@ var GetAsyncResponse = (function (_super) {
     };
     return GetAsyncResponse;
 }(ConnectCommand));
-//-------------------------------------------------------------------------------------------
 var GetGameInfo = (function (_super) {
     __extends(GetGameInfo, _super);
     function GetGameInfo() {
@@ -428,6 +397,7 @@ var GetGameInfo = (function (_super) {
     GetGameInfo.prototype.completeConnect = function (obj) {
         mainSlot.model.bets = obj["Bets"];
         mainSlot.model.koeffs = obj["Koeffs"];
+        mainSlot.model.lineMax = obj["LineMax"];
         _super.prototype.completeConnect.call(this, obj);
     };
     return GetGameInfo;
@@ -440,20 +410,16 @@ var LoadPanel = (function (_super) {
     LoadPanel.prototype.execInternal = function () {
         var _this = this;
         mainSlot.panel = new PanelAdapter();
-        //Сделать нормальную зависимость.
         loadJS("panel/panel_slot_web.js", function () { _this.completeLoadPanelJS(); });
     };
     LoadPanel.prototype.completeLoadPanelJS = function () {
         var _this = this;
-        //Сделать нормальную зависимость.
         this.panelView = (mainSlot.isMobile) ? new PanelSlotMob() : new PanelSlotWeb();
-        // не может в addEventListener
         this.panelView.on(EVENT_ONLOAD, function () { _this.completeLoad(); });
     };
     LoadPanel.prototype.completeLoad = function () {
         mainSlot.panel.setPanel(this.panelView);
-        //боллее нет необходимости в ресайзе ручками, все будет ресайзится самостоятельно.
-        //mainSlot.resize();
+        mainSlot.resize();
         this.notifyComplete();
     };
     return LoadPanel;
@@ -465,12 +431,26 @@ var LoadSlot = (function (_super) {
     }
     LoadSlot.prototype.execInternal = function () {
         var _this = this;
-        loadJS("gnome/slot_gnome.js", function () { _this.completeLoadSlotJS(); });
+        var id_game = mainSlot.model.gameId + '';
+        id_game = GameList.LUCK_CRAFT;
+        switch (id_game) {
+            case GameList.MAD_LUCK:
+                loadJS("gnome/slot_gnome.js", function () { _this.completeLoadSlotJS(); });
+                break;
+            case GameList.REVENGERS:
+                loadJS("revengers/slot_revengers.js", function () { _this.completeLoadSlotJS(); });
+                break;
+            case GameList.SMITHERS:
+                loadJS("smithers/slot_smithers.js", function () { _this.completeLoadSlotJS(); });
+                break;
+            case GameList.LUCK_CRAFT:
+                loadJS("luckcraft/slot_luckcraft.js", function () { _this.completeLoadSlotJS(); });
+                break;
+        }
+        return;
     };
     LoadSlot.prototype.completeLoadSlotJS = function () {
         var _this = this;
-        //TO DO тут я буду грузить ресурсы данного автомата вместо этого кода.
-        //loadJSManifest(mainSlot.slot.getPathViewJS(), () => { this.completeLoad(); });
         mainSlot.slot.getResourseImg(function () { _this.completeLoad(); });
     };
     LoadSlot.prototype.completeLoad = function () {
@@ -478,6 +458,15 @@ var LoadSlot = (function (_super) {
     };
     return LoadSlot;
 }(Command));
+var GameList = (function () {
+    function GameList() {
+    }
+    GameList.MAD_LUCK = "22";
+    GameList.REVENGERS = "13";
+    GameList.SMITHERS = "28";
+    GameList.LUCK_CRAFT = "25";
+    return GameList;
+}());
 var InitCommand = (function (_super) {
     __extends(InitCommand, _super);
     function InitCommand() {

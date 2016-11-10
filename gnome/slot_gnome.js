@@ -7,14 +7,28 @@ var SlotGnome = (function (_super) {
     __extends(SlotGnome, _super);
     function SlotGnome() {
         _super.call(this);
-        SlotEnity.NAME_ATLAS_ICON = 'gnome/images/icon_mc.json';
+        SlotEnity.NAME_ATLAS_ICON = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_ICON_ANIM = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_BONUS_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_GAMBLE_SCENE = 'gnome/images/gamble_card2.json';
+        SlotEnity.NAME_ATLAS_HELP_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_MAIN_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_SUPER_BONUS_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
         mainSlot.panel.setBlockTypeBtn(ModelSlot.MODE_SUPERBONUS, new ModePanelShow([PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], [1, 2, 3]));
     }
-    SlotGnome.prototype.getPathViewJS = function () {
-        return "gnome/gnome.js";
-    };
     SlotGnome.prototype.getResourseImg = function (callback) {
-        this.loader = PIXI.loader.add('fon_main_scene', 'gnome/images/fon_main_scene.png?1').add('gnome/images/line_mc.json').add('gnome/images/icon_mc.json');
+        this.loader = PIXI.loader
+            .add('mainback', 'gnome/images/img_v2/game/mainback_madluck.jpg?2')
+            .add('mainback_number', 'gnome/images/img_v2/game/mainback_number.png?1')
+            .add('gnome/images/line_mc.json')
+            .add('gnome/images/img_v2/game/prokrut_main/icon_main.json')
+            .add('gnome/images/gamble_card.json')
+            .add('gnome/images/gamble_card2.json')
+            .add('double', 'gnome/images/img_v2/gamble/double.jpg?1')
+            .add('help_bg', 'gnome/images/img_v2/help/help.jpg?1')
+            .add('help_scene_0', 'gnome/images/img_v2/help/help0.jpg?1')
+            .add('help_scene_1', 'gnome/images/img_v2/help/help1.jpg?1')
+            .add('help_scene_2', 'gnome/images/img_v2/help/help2.jpg?1');
         this.loader.once("complete", callback, this);
         this.loader.load();
     };
@@ -26,8 +40,9 @@ var SlotGnome = (function (_super) {
         rollVO.count_roll = 5;
         rollVO.count_icon = 9;
         rollVO.count_row = 3;
-        rollVO.step_y = 120;
-        rollVO.step_x = 140;
+        rollVO.step_y = 195;
+        rollVO.step_x = 215;
+        rollVO.width_mask = 195;
         return rollVO;
     };
     SlotGnome.prototype.initGame = function () {
@@ -58,15 +73,15 @@ var SlotGnome = (function (_super) {
             this.mainScene = new MainSceneGnome();
         return this.mainScene;
     };
+    SlotGnome.prototype.getIsShield = function () {
+        return mainSlot.model.shield;
+    };
     return SlotGnome;
 }(SlotEnity));
-//-------------------------------------------------------------------------------------------
 var MainSceneGnome = (function (_super) {
     __extends(MainSceneGnome, _super);
     function MainSceneGnome() {
-        //TO DO надо разобраться с этими мувиками, где я их буду собирать, прямо тут или где то еще
-        //super(new lib.main_scene());
-        _super.call(this, new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture));
+        _super.call(this, new PIXI.Sprite());
         this.soundsManifest = [
             { src: "gnome/sounds/addline.mp3?1473506394550", id: "addline" },
             { src: "gnome/sounds/b1_loss.mp3?1473506394550", id: "b1_loss" },
@@ -81,148 +96,71 @@ var MainSceneGnome = (function (_super) {
             { src: "gnome/sounds/routestop.mp3?1473506394551", id: "routestop" },
             { src: "gnome/sounds/sb_loss.mp3?1473506394551", id: "sb_loss" }
         ];
-        this.addRoll(60, 38);
-        this.x = 3;
-        // перенес это внутрь LinesEnity файла slot_enity
-        //let line_mc = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
-        this.addWinLine(52, 65, null);
-        //this.showWinLines([0,1,2,3,4,5,6,7,8], true, () => { this.completeShowLines() });
-        soundManager.loadSounds(this.soundsManifest);
+        var mainback = new PIXI.Sprite(PIXI.loader.resources["mainback"].texture);
+        mainback.x = -300;
+        mainback.cacheAsBitmap = true;
+        this.mc.addChild(mainback);
+        var mainback_number = new PIXI.Sprite(PIXI.loader.resources["mainback_number"].texture);
+        mainback_number.x = -36;
+        mainback_number.y = 108;
+        mainback_number.cacheAsBitmap = true;
+        this.mc.addChild(mainback_number);
+        this.addRoll(72, 132);
+        this.addWinLine(-36, 108, null);
     }
     MainSceneGnome.prototype.initDisplay = function () {
         var _this = this;
-        console.log('initDisplay');
         var styleLabelIndex = {
             align: 'left',
             fontSize: '17px',
             fontFamily: 'heliosblackcregular',
-            fill: '#D1CAA0',
+            fill: '#FFFF00',
             letterSpacing: 1
         };
-        // статический текст вверху начало
-        this.total_bet_stat = new PIXI.Text();
-        this.total_bet_stat.text = 'TOTAL BET';
-        this.total_bet_stat.style = styleLabelIndex;
-        this.total_bet_stat.position.x = 12;
-        this.total_bet_stat.position.y = 11;
-        this.mc.addChild(this.total_bet_stat);
-        this.info_stat_txt = new PIXI.Text();
-        this.info_stat_txt.text = 'LINES';
-        this.info_stat_txt.style = styleLabelIndex;
-        this.info_stat_txt.position.x = 280;
-        this.info_stat_txt.position.y = 11;
-        this.mc.addChild(this.info_stat_txt);
-        this.credit_stat = new PIXI.Text();
-        this.credit_stat.text = 'CREDIT';
-        this.credit_stat.style = styleLabelIndex;
-        this.credit_stat.position.x = 560;
-        this.credit_stat.position.y = 11;
-        this.mc.addChild(this.credit_stat);
-        // статический текст вверху конец
-        // динамические текстовые поля вверху начало
-        this.bet_txt = new PIXI.Text();
-        this.bet_txt.text = '9999';
-        this.bet_txt.style = styleLabelIndex;
-        this.bet_txt.style.align = 'right';
-        this.bet_txt.position.x = 260;
-        this.bet_txt.position.y = 11;
-        this.bet_txt.anchor.set(1, 0);
-        this.mc.addChild(this.bet_txt);
-        this.line_txt = new PIXI.Text();
-        this.line_txt.text = '9999';
-        this.line_txt.style = styleLabelIndex;
-        this.line_txt.style.align = 'right';
-        this.line_txt.position.x = 540;
-        this.line_txt.position.y = 11;
-        this.line_txt.anchor.set(1, 0);
-        this.mc.addChild(this.line_txt);
-        this.credit_txt = new PIXI.Text();
-        this.credit_txt.text = '9999';
-        this.credit_txt.style = styleLabelIndex;
-        this.credit_txt.style.align = 'right';
-        this.credit_txt.position.x = 780;
-        this.credit_txt.position.y = 11;
-        this.credit_txt.anchor.set(1, 0);
-        this.mc.addChild(this.credit_txt);
-        // динамические текстовые поля вверху конец
-        // динамические текстовые поля внизу начало
-        this.bet1_txt = new PIXI.Text();
-        this.bet1_txt.text = '9999';
-        this.bet1_txt.style = styleLabelIndex;
-        this.bet1_txt.style.fill = '#FFFF00';
-        this.bet1_txt.position.x = 40;
-        this.bet1_txt.position.y = 420;
-        this.bet1_txt.anchor.set(0.5, 0);
-        this.mc.addChild(this.bet1_txt);
-        this.bet2_txt = new PIXI.Text();
-        this.bet2_txt.text = '9999';
-        this.bet2_txt.style = styleLabelIndex;
-        this.bet2_txt.style.fill = '#FFFF00';
-        this.bet2_txt.position.x = 760;
-        this.bet2_txt.position.y = 420;
-        this.bet2_txt.anchor.set(0.5, 0);
-        this.mc.addChild(this.bet2_txt);
-        // динамические текстовые поля внизу конец
-        // надо собрать панель самостоятельно начало
-        var mInfo = new PIXI.Sprite();
-        mInfo.position.x = 390;
-        mInfo.position.y = 430;
-        this.mc.addChild(mInfo);
-        this.mc["mInfo"] = mInfo;
-        var anim = new PIXI.Sprite();
-        mInfo.addChild(anim);
-        mInfo["anim"] = anim;
-        var play_to_stat = new PIXI.Text();
-        play_to_stat.text = 'PLAY 1 TO 225 CREDITS';
-        play_to_stat.style = styleLabelIndex;
-        play_to_stat.style.fill = '#FFFF00';
-        play_to_stat.anchor.set(0.5, 0);
-        anim.addChild(play_to_stat);
-        var msg_txt = new PIXI.Text();
-        msg_txt.text = '9999';
-        msg_txt.style = styleLabelIndex;
-        msg_txt.style.fill = '#FFFF00';
-        msg_txt.anchor.set(0.5, 0);
-        mInfo.addChild(msg_txt);
-        mInfo["msg_txt"] = msg_txt;
-        // надо собрать панель самостоятельно конец
-        this.infoPanel = new PanelInfoMain(this.mc["mInfo"]);
+        mainSlot.panel.panel.setTxtInfo('PLEASE PRESS START');
         mainSlot.bindSetter(this.modelSlot, "balance", function (value) { _this.updateBalance(value); });
         mainSlot.bindSetter(this.modelSlot, "typeBet", function (value) { _this.updateBetLine(value); });
         mainSlot.bindSetter(this.modelSlot, "modeLine", function (value) { _this.updateBetLine(value); });
-        //TODO я не знаю необходим этот функционал или нет
-        //mainSlot.bindSetter(mainSlot.slot, "modeLine", (value: boolean) => { this.updateShield(value) });
         mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", function (value) { _this.exchangeMode(value); });
+        mainSlot.panel.panel.setModeComboBet(0);
+    };
+    MainSceneGnome.prototype.getAnimIconVOForId = function (id) {
+        return new AnimIconVO();
     };
     MainSceneGnome.prototype.completeShowLines = function () {
     };
+    MainSceneGnome.prototype.onCompleteRolls = function () {
+        _super.prototype.onCompleteRolls.call(this);
+    };
     MainSceneGnome.prototype.exchangeMode = function (value) {
         if (value == ModelSlot.MODE_READY) {
-            this.info_stat_txt.text = "LINES";
             this.updateBetLine(1);
-            this.infoPanel.setMode(PanelInfoMain.MODE_ANIM);
         }
         else if (value == ModelSlot.MODE_ROUTE_WIN && this.modelSlot.lastAction.Action == ModelSlot.ID_WIN_ROUTE) {
-            this.infoPanel.setMode(PanelInfoMain.MODE_WIN, "" + this.modelSlot.lastAction.Summ);
-            this.info_stat_txt.text = "WIN";
-            this.line_txt.text = "" + this.modelSlot.lastAction.Summ;
+            mainSlot.panel.panel.setTxtTotalWin("" + this.modelSlot.lastAction.Summ);
+            mainSlot.panel.panel.setTxtInfo('WIN ' + this.modelSlot.lastAction.Summ);
         }
         else if (value == ModelSlot.MODE_DEBIT) {
-            this.infoPanel.setMode(PanelInfoMain.MODE_TAKE);
         }
     };
     MainSceneGnome.prototype.updateBalance = function (value) {
-        this.credit_txt.text = "" + value;
+        mainSlot.panel.panel.setTxtBalance("" + value);
     };
     MainSceneGnome.prototype.updateBetLine = function (type) {
-        this.bet_txt.text = "" + this.modelSlot.totalBet;
-        this.line_txt.text = "" + this.modelSlot.modeLine;
-        this.bet1_txt.text = "" + this.modelSlot.amountBet;
-        this.bet2_txt.text = "" + this.modelSlot.amountBet;
+        mainSlot.panel.panel.setTxtTotalBet("" + this.modelSlot.totalBet);
+        mainSlot.panel.panel.setTxtTotalWin("0");
+        mainSlot.panel.panel.setTxtBet("" + this.modelSlot.amountBet);
+        this.index_bets = this.modelSlot.typeBet;
+        this.index_lines = this.modelSlot.modeLine;
+        this.updateShield();
     };
-    //TODO возможно на главном экране щит и не нужен, но мб я ошибаюсь
-    MainSceneGnome.prototype.updateShield = function (value) {
-        this.mc["shield_mc"].visible = value;
+    MainSceneGnome.prototype.updateShield = function () {
+        if (this.index_bets >= 2 && this.index_lines >= 5) {
+            this.modelSlot.shield = true;
+        }
+        else {
+            this.modelSlot.shield = false;
+        }
     };
     MainSceneGnome.prototype.getNumBonus = function () {
         var countInd = this.getContIndex(9);
@@ -233,83 +171,146 @@ var MainSceneGnome = (function (_super) {
     };
     return MainSceneGnome;
 }(MainScene));
-//-------------------------------------------------------------------------------------------
 var HelpSceneGnome = (function (_super) {
     __extends(HelpSceneGnome, _super);
     function HelpSceneGnome() {
-        _super.call(this, new lib.help_scene());
+        _super.call(this, new PIXI.Sprite());
+        var help_bg = new PIXI.Sprite(PIXI.loader.resources["help_bg"].texture);
+        help_bg.x = 53;
+        help_bg.y = 112;
+        help_bg.cacheAsBitmap = true;
+        this.mc.addChild(help_bg);
+        this.mc["anim"] = new PIXI.extras.MovieClip([
+            PIXI.loader.resources["help_scene_0"].texture,
+            PIXI.loader.resources["help_scene_1"].texture,
+            PIXI.loader.resources["help_scene_2"].texture
+        ]);
+        this.mc["anim"].x = 70;
+        this.mc["anim"].y = 123;
+        this.mc["anim"].visible = false;
+        this.mc.addChild(this.mc["anim"]);
     }
     return HelpSceneGnome;
 }(HelpScene));
-//-------------------------------------------------------------------------------------------
 var GambleSceneGnome = (function (_super) {
     __extends(GambleSceneGnome, _super);
     function GambleSceneGnome() {
-        _super.call(this, new lib.gamble_scene());
-        //чтобы "1" Максова не торчала.
-        this.mc["step_txt"].visible = false;
+        _super.call(this, new PIXI.Sprite());
+        var mainback = new PIXI.Sprite(PIXI.loader.resources["mainback"].texture);
+        mainback.x = -300;
+        mainback.cacheAsBitmap = true;
+        this.mc.addChild(mainback);
+        var mainback_number = new PIXI.Sprite(PIXI.loader.resources["mainback_number"].texture);
+        mainback_number.x = -36;
+        mainback_number.y = 108;
+        mainback_number.cacheAsBitmap = true;
+        this.mc.addChild(mainback_number);
+        var gamble_scene = new PIXI.Sprite(PIXI.loader.resources["double"].texture);
+        gamble_scene.x = 53;
+        gamble_scene.y = 112;
+        gamble_scene.cacheAsBitmap = true;
+        this.mc.addChild(gamble_scene);
+        var styleLabelIndex = {
+            align: 'left',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#FFFF00',
+            letterSpacing: 1
+        };
+        var dealer_card = new PIXI.Sprite();
+        dealer_card.position.x = 170;
+        dealer_card.position.y = 330;
+        this.mc.addChild(dealer_card);
+        this.mc["dealer_card"] = dealer_card;
+        var dealer = new PIXI.Sprite(PIXI.loader.resources['gnome/images/gamble_card2.json'].textures["dealer_icon.png"]);
+        dealer.position.x = 146;
+        dealer.position.y = 310;
+        this.mc.addChild(dealer);
+        this.mc["dealer"] = dealer;
+        var card;
+        for (var i = 1; i <= 4; i++) {
+            card = new PIXI.Sprite();
+            card.position.x = 400 + 163 * (i - 1);
+            card.position.y = 330;
+            this.mc.addChild(card);
+            this.mc["card" + i] = card;
+        }
+        card = null;
+        this.step_txt = new PIXI.Text();
+        this.step_txt.text = 'RISK STEP:';
+        this.step_txt.style = styleLabelIndex;
+        this.step_txt.position.x = 600;
+        this.step_txt.position.y = 230;
+        this.step_txt.anchor.set(0.5, 0);
+        this.mc.addChild(this.step_txt);
+        this.mc["step_txt"] = this.step_txt;
         this.createCards(CardDefault);
-        this.addChild(this.pick_mc = this.mc["pick_mc"]);
+        this.pick_mc = new PIXI.Sprite(PIXI.loader.resources['gnome/images/gamble_card2.json'].textures["pick_icon.png"]);
+        this.pick_mc.anchor.set(0.5, 0);
+        this.pick_mc.position.y = 560;
+        this.pick_mc.position.x = this.mc["card1"].x + 82;
+        this.mc.addChild(this.pick_mc);
     }
     GambleSceneGnome.prototype.initDisplay = function () {
         var _this = this;
-        this.infoPanel = new PanelInfoGamble(this.mc["info_table"]);
-        //this.mc["step_txt"].visible = false;
+        var styleLabelIndex = {
+            align: 'left',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#FFFF00',
+            letterSpacing: 1
+        };
         mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", function (value) { _this.exchangeMode(value); });
         this.showMsgDouble();
     };
     GambleSceneGnome.prototype.exchangeMode = function (value) {
         if (value == ModelSlot.MODE_GAMBLE_LOSE) {
-            // anim.setMode(AnimMain.MODE_LOSE);
-            this.infoPanel.setMode(PanelInfoGamble.MODE_MSG, "YOU LOSE");
+            mainSlot.panel.panel.setTxtInfo("YOU LOSE");
         }
         else if (value == ModelSlot.MODE_GAMBLE_WIN) {
-            //anim.setMode(AnimMain.MODE_WIN);
-            this.showMsgDouble();
+            mainSlot.panel.panel.setTxtInfo("YOU WIN");
         }
         else if (value == ModelSlot.MODE_DEBIT) {
-            this.infoPanel.setMode(PanelInfoGamble.MODE_MSG, "TAKE...");
+            mainSlot.panel.panel.setTxtInfo("TAKE...");
         }
     };
     GambleSceneGnome.prototype.showMsgDouble = function () {
-        if (this.infoPanel != null)
-            this.infoPanel.setMode(PanelInfoGamble.MODE_DOUBLE, "" + this.modelSlot.lastAction.Summ * 2);
+        mainSlot.panel.panel.setTxtInfo("SELECT CARD OR START");
     };
     GambleSceneGnome.prototype.setSelectValue = function (type) {
         _super.prototype.setSelectValue.call(this, type);
-        this.pick_mc.x = this.mc["card" + type].x + 45;
+        this.pick_mc.x = this.mc["card" + type].x + 82;
         this.pick_mc.visible = true;
     };
     GambleSceneGnome.prototype.resetGamble = function () {
         var _this = this;
         _super.prototype.resetGamble.call(this);
-        this.mc["bet_txt"].text = "" + this.modelSlot.totalBet;
-        setTimeout(function () { _this.mc["step_mc"].gotoAndStop("_" + _this.modelSlot.getStepGamble(), 1); });
+        mainSlot.panel.panel.setTxtTotalBet("" + this.modelSlot.totalBet);
+        setTimeout(function () { _this.mc['step_txt'].text = 'RISK STEP : ' + _this.modelSlot.getStepGamble().toString(); });
         this.showMsgDouble();
     };
     GambleSceneGnome.prototype.updatePrize = function () {
-        this.mc["prize_txt"].text = "" + this.modelSlot.summInput;
-        this.mc["win_txt"].text = "" + this.modelSlot.lastAction.Summ;
+        mainSlot.panel.panel.setTxtTotalWin("" + this.modelSlot.lastAction.Summ);
     };
     return GambleSceneGnome;
 }(GambleScene));
-//-------------------------------------------------------------------------------------------
 var AnimBonus = (function (_super) {
     __extends(AnimBonus, _super);
     function AnimBonus() {
         _super.call(this);
         this.animName = ["Stand", "shield1", "lose1", "waslose1", "shieldlose1", "open1", "win1", "waswin1"];
-        //TODO разобраться с текстом
-        /*
-        this.prize_txt = new PIXI.Text("100", "28px 'BIP'", "#CCFF00");
-        this.prize_txt.name = "prize_txt";
-        this.prize_txt.textAlign = "center";
-        this.prize_txt.lineHeight = 41;
-        this.prize_txt.lineWidth = 96;
-        this.prize_txt.parent = this;
-        this.prize_txt.setTransform(55, 60);
+        var styleLabelIndex = {
+            align: 'center',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#D1CAA0',
+            letterSpacing: 1
+        };
+        this.prize_txt = new PIXI.Text();
+        this.prize_txt.text = 'PRIZE';
+        this.prize_txt.style = styleLabelIndex;
+        this.prize_txt.anchor.set(0.5, 0.5);
         this.addChild(this.prize_txt);
-        */
     }
     AnimBonus.getMcLib = function (nameMc) {
         if (AnimBonus.b == null) {
@@ -344,9 +345,9 @@ var AnimBonus = (function (_super) {
             if (isHasShield)
                 ar_anim[0].anims.push(new AnimationItemVO({ an: "shield1" }));
             ar_anim[0].setCompletAnimation("open1", 1);
-            ar_anim[1].anims.push(new AnimationItemVO({ an: this.getWithShield("&lose1"), startAnim: this.startAnim }));
+            ar_anim[1].anims.push(new AnimationItemVO({ an: this.getWithShield("&lose1"), startAnim: function (nameAnim, mcAnim) { _this.startAnim(nameAnim, mcAnim); } }));
             ar_anim[1].setCompletAnimation(this.getWithShield("&lose1"), 2);
-            ar_anim[2].anims.push(new AnimationItemVO({ an: "waslose1" }));
+            ar_anim[2].anims.push(new AnimationItemVO({ an: "waslose1", dispatchComplete: true, startAnim: function (nameAnim, mcAnim) { _this.startAnim(nameAnim, mcAnim); } }));
         }
         else if (value == AnimBonus.MODE_WIN) {
             this.isPlayAnimation = true;
@@ -386,16 +387,6 @@ var AnimSuperbonus = (function (_super) {
     function AnimSuperbonus(mc) {
         _super.call(this);
         this.animName = ["superlose1", "superwin1", "superopen1"];
-        //TODO разобраться с текстом
-        /*
-        this.prize_txt = new PIXI.Text("111", "bold 30px 'NewBaskervilleC'", "#E6FF81");
-        this.prize_txt.name = "prize_txt";
-        this.prize_txt.textAlign = "center";
-        this.prize_txt.lineHeight = 35;
-        this.prize_txt.lineWidth = 100;
-        this.prize_txt.parent = this;
-        this.prize_txt.setTransform(165.3, 49.3);
-        this.addChild(this.prize_txt);*/
     }
     AnimSuperbonus.getMcLib = function (nameMc) {
         if (AnimSuperbonus.b == null) {
@@ -446,23 +437,75 @@ var BonusSceneGnome = (function (_super) {
     __extends(BonusSceneGnome, _super);
     function BonusSceneGnome() {
         var _this = this;
-        _super.call(this, new lib.bonus_scene());
+        _super.call(this, new PIXI.Sprite(PIXI.loader.resources["bonus_scene"].texture));
         this.anims = new Array();
         this.X_ANIM = 30;
-        this.animBonus = new AnimBonus();
-        this.mc.addChild(this.animBonus);
+        var styleLabelIndex = {
+            align: 'left',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#D1CAA0',
+            letterSpacing: 1
+        };
+        this.total_bet_stat = new PIXI.Text();
+        this.total_bet_stat.text = 'TOTAL BET';
+        this.total_bet_stat.style = styleLabelIndex;
+        this.total_bet_stat.position.x = 12;
+        this.total_bet_stat.position.y = 11;
+        this.mc.addChild(this.total_bet_stat);
+        this.info_stat_txt = new PIXI.Text();
+        this.info_stat_txt.text = 'TOTAL WIN';
+        this.info_stat_txt.style = styleLabelIndex;
+        this.info_stat_txt.position.x = 280;
+        this.info_stat_txt.position.y = 11;
+        this.mc.addChild(this.info_stat_txt);
+        this.credit_stat = new PIXI.Text();
+        this.credit_stat.text = 'CREDIT';
+        this.credit_stat.style = styleLabelIndex;
+        this.credit_stat.position.x = 560;
+        this.credit_stat.position.y = 11;
+        this.mc.addChild(this.credit_stat);
+        this.bet_txt = new PIXI.Text();
+        this.bet_txt.text = '9999';
+        this.bet_txt.style = styleLabelIndex;
+        this.bet_txt.style.align = 'right';
+        this.bet_txt.position.x = 260;
+        this.bet_txt.position.y = 11;
+        this.bet_txt.anchor.set(1, 0);
+        this.mc.addChild(this.bet_txt);
+        this.win_txt = new PIXI.Text();
+        this.win_txt.text = '9999';
+        this.win_txt.style = styleLabelIndex;
+        this.win_txt.style.align = 'right';
+        this.win_txt.position.x = 540;
+        this.win_txt.position.y = 11;
+        this.win_txt.anchor.set(1, 0);
+        this.mc.addChild(this.win_txt);
+        this.credit_txt = new PIXI.Text();
+        this.credit_txt.text = '9999';
+        this.credit_txt.style = styleLabelIndex;
+        this.credit_txt.style.align = 'right';
+        this.credit_txt.position.x = 780;
+        this.credit_txt.position.y = 11;
+        this.credit_txt.anchor.set(1, 0);
+        this.mc.addChild(this.credit_txt);
         setTimeout(function () {
+            _this.animBonus = new AnimBonus();
+            _this.mc.addChild(_this.animBonus);
             _this.animBonus.x = _this.X_ANIM;
+            var an;
             for (var i = 1; i <= 5; i++) {
-                var an = new AnimBonus();
+                an = new AnimBonus();
                 _this.anims.push(an);
-                //an.addEventListener(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
                 an.on(EVENT_COMPLETE, function () { _this.onCompleteAnimation(); });
                 _this.mc.addChild(an);
                 an.x = (i - 1) * 129;
             }
+            an = null;
         }, 1);
     }
+    BonusSceneGnome.prototype.initDisplay = function () {
+    };
     BonusSceneGnome.prototype.onCompleteAnimation = function () {
         this.setPositionGnome(this.selectID + 1);
         if (this.isLose || this.arBonuses.length == 0) {
@@ -474,9 +517,9 @@ var BonusSceneGnome = (function (_super) {
     };
     BonusSceneGnome.prototype.resetBonus = function (summ, isSb, completeCallback) {
         _super.prototype.resetBonus.call(this, summ, isSb, completeCallback);
-        this.mc["bet_txt"].text = "" + this.modelSlot.totalBet;
-        this.mc["credit_txt"].text = "" + this.modelSlot.balance;
-        this.mc["win_txt"].text = "0";
+        this.bet_txt.text = "" + this.modelSlot.totalBet;
+        this.win_txt.text = "0";
+        this.credit_txt.text = "" + this.modelSlot.balance;
         this.arTextPrizes = new Array();
         for (var i = 0; i < 5; i++) {
             this.anims[i].reset();
@@ -531,7 +574,6 @@ var BonusSceneGnome = (function (_super) {
     };
     return BonusSceneGnome;
 }(BonusScene));
-//-------------------------------------------------------------------------------------------
 var SuperbonusSceneGnome = (function (_super) {
     __extends(SuperbonusSceneGnome, _super);
     function SuperbonusSceneGnome() {
@@ -545,12 +587,11 @@ var SuperbonusSceneGnome = (function (_super) {
             b.y = 172;
             this.anims.push(b);
             this.addChild(b);
-            //b.addEventListener(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
             b.on(EVENT_COMPLETE, function () { _this.onCompleteAnimation(); });
         }
         this.addChild(this.anim = new AnimBonus());
-        this.anim.x = 284; //this.mc["an_main"].x;
-        this.anim.y = 11; //this.mc["an_main"].y;
+        this.anim.x = 284;
+        this.anim.y = 11;
     }
     SuperbonusSceneGnome.prototype.onCompleteAnimation = function () {
         if (!this.isWin)
@@ -577,11 +618,6 @@ var SuperbonusSceneGnome = (function (_super) {
     };
     return SuperbonusSceneGnome;
 }(SuperbonusScene));
-//-------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------
-//TO DO
 var slotGnome = new SlotGnome();
 mainSlot.setSlot(slotGnome);
-//loadJSManifest("gnome/gnome.js", () => { mainSlot.initSlot(slotGnome) });*/ 
 //# sourceMappingURL=slot_gnome.js.map

@@ -1,0 +1,6 @@
+D:\work\git\WebProject-1xslot\html5\MadLuck\bin\MadLuck.dll.config
+D:\work\git\WebProject-1xslot\html5\MadLuck\bin\MadLuck.dll
+D:\work\git\WebProject-1xslot\html5\MadLuck\bin\MadLuck.pdb
+D:\work\git\WebProject-1xslot\html5\MadLuck\obj\Debug\MadLuck.csprojResolveAssemblyReference.cache
+D:\work\git\WebProject-1xslot\html5\MadLuck\obj\Debug\MadLuck.dll
+D:\work\git\WebProject-1xslot\html5\MadLuck\obj\Debug\MadLuck.pdb

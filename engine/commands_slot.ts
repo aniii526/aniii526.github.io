@@ -15,21 +15,15 @@
     }
 
     public execute(): void {
-        console.log("Execute " + this.type);
-        //try {
-            if (this.executing || this.complete)
-                return;
+        if (this.executing || this.complete)
+            return;
 
-            this._executing = true;
+        this._executing = true;
 
-            if (Command.cache.indexOf(this) == -1) {
-                Command.cache.push(this);
-            }
-            this.execInternal();
-      //  }
-      //  catch (e) {
-       //     console.log("Error " + e + "  in " + this);
-      //  }
+        if (Command.cache.indexOf(this) == -1) {
+            Command.cache.push(this);
+        }
+        this.execInternal();
     }
     protected reset(): void {
         this._complete = false;
@@ -46,7 +40,6 @@
             }
             this._complete = true;
 
-            console.log("Complete command: " + this.type);
             this.dispatchEvent(EVENT_COMPLETE);
         }
     }
@@ -483,6 +476,7 @@ class GetGameInfo extends ConnectCommand {
     protected completeConnect(obj: Object): void {
         mainSlot.model.bets = obj["Bets"];
         mainSlot.model.koeffs = obj["Koeffs"];
+        mainSlot.model.lineMax = obj["LineMax"];
         super.completeConnect(obj);
     }
 }
@@ -503,23 +497,42 @@ class LoadPanel extends Command {
     private completeLoadPanelJS(): void {
         //Сделать нормальную зависимость.
         this.panelView = (mainSlot.isMobile) ? new PanelSlotMob() : new PanelSlotWeb();
-        // не может в addEventListener
         this.panelView.on(EVENT_ONLOAD, () => { this.completeLoad() });
     }
     private completeLoad(): void {
         mainSlot.panel.setPanel(this.panelView);
-        //боллее нет необходимости в ресайзе ручками, все будет ресайзится самостоятельно.
-        //mainSlot.resize();
+        mainSlot.resize();
         this.notifyComplete();
     }
 }
+//TODO ТУТ ДОБАВЛЯТЬ НОВЫЕ ИГРЫ В СПИСОК
 class LoadSlot extends Command {
     constructor() {
         super("LoadSlot");
     }
 
     protected execInternal(): void {
-        loadJS("gnome/slot_gnome.js", () => { this.completeLoadSlotJS(); });
+        //loadJS("gnome/slot_gnome.js", () => { this.completeLoadSlotJS(); });
+        let id_game: string = mainSlot.model.gameId + '';
+
+        id_game = GameList.LUCK_CRAFT;
+
+        switch (id_game) {
+            case GameList.MAD_LUCK:
+                loadJS("gnome/slot_gnome.js", () => { this.completeLoadSlotJS(); });
+                break;
+            case GameList.REVENGERS:
+                loadJS("revengers/slot_revengers.js", () => { this.completeLoadSlotJS(); });
+                break;
+            case GameList.SMITHERS:
+                loadJS("smithers/slot_smithers.js", () => { this.completeLoadSlotJS(); });
+                break;
+            case GameList.LUCK_CRAFT:
+                loadJS("luckcraft/slot_luckcraft.js", () => { this.completeLoadSlotJS(); });
+                break;
+        }
+        return;
+
     }
     private completeLoadSlotJS(): void {
         //TO DO тут я буду грузить ресурсы данного автомата вместо этого кода.
@@ -529,6 +542,13 @@ class LoadSlot extends Command {
     private completeLoad(): void {
         this.notifyComplete();
     }
+}
+
+class GameList {
+    public static MAD_LUCK: string = "22";
+    public static REVENGERS: string = "13";
+    public static SMITHERS: string = "28";
+    public static LUCK_CRAFT: string = "25";
 }
 
 class InitCommand extends QueueCommand {

@@ -28,7 +28,9 @@
     public static ID_BONUSSPEC_WIN: number = 42;
 
     //public path_server: string = "http://192.168.10.124:8078/IntermalService.svc/";
+    
     public path_server: string = "https://slotsrv.1xbet.org/test/";
+    public path_server_demo: string = "https://slotsrv.1xbet.org/testDemo/";
     public Token: string;
     public TokenAsync: string;
     public KeyHash: string = "sdf34g21v";
@@ -38,20 +40,23 @@
     public currency: string;
     public userid: string;
     public demo: number;
+	public BackUrl: string = 'https://1xslot.com/';
     public settingRoll: RollVO;
     public lastAction: ActionVO;
 
     public bets: Array<number>=[1,2,3,4];
     public koeffs: Array<number>;
     public combination: Array<Array<number>>;
+    public lineMax: number = 9;
     public balance: number=5555;
     public error: number;
     public modeLine: number = 1;// количество линий
     public typeBet: number = 0; // номер ставки из bets
     public currentWin: number = 0;
     public summInput: number = 0;
-    public isAutoMode: boolean;
+    public isAutoMode: boolean = false;
 
+	public shield: boolean = false;
     public stateSlotManager: StateSlotManager;
 
     public init(): void {
@@ -66,6 +71,7 @@
             this.stateSlotManager.setModeOnActionID(this.lastAction);
 
         mainSlot.panel.initPanel();
+		mainSlot.panel.hidePanelLoader();
     }
 
     // значение ставки
@@ -169,6 +175,7 @@ class RollVO {
     public step_y: number;
     public width: number;
     public height_mask: number;
+    public width_mask: number;
 
     public filterIcon: Array<number>;
     public diffIconRoute: number = 4; // разница в прокрутах
@@ -238,6 +245,12 @@ class ActionVO extends BaseVO {
 
 }
 
+
+class AnimIconVO {
+    public anim_speed: number = 1;
+    public textures: Array<PIXI.Texture>;
+}
+
 //-------------------------------------------------------------------------------------------
 
 class StateSlotManager extends createjs.EventDispatcher {
@@ -262,7 +275,6 @@ class StateSlotManager extends createjs.EventDispatcher {
     }
 
     public setCurrentModeSlot(mode: string, data: Object = null): void {
-        console.log("Mode state: " + mode);
         this.currentMode = mode;
         if (!this.dictionaryStateSlot[mode]) {
             throw new Error("Режим " + mode + " не добавлен в StateSlotManager");
@@ -287,6 +299,10 @@ class StateSlotManager extends createjs.EventDispatcher {
                 this.setCurrentModeSlot(ModelSlot.MODE_GAMBLE_WIN);
             else if (action.Action == ModelSlot.ID_GAMBLE_START)
                 this.setCurrentModeSlot(ModelSlot.MODE_GAMBLE);
+			 else if (action.Action == ModelSlot.ID_BONUS_WIN || action.Action == ModelSlot.ID_BONUS_WIN_SB || action.Action == ModelSlot.ID_BONUS_WIN_SB_NO)
+                this.setCurrentModeSlot(ModelSlot.MODE_BONUS_CHOICE);
+            /*else if (action.Action == ModelSlot.ID_BONUS_WIN_SB || action.Action == ModelSlot.ID_BONUS_WIN_SB_NO)
+                    this.setCurrentModeSlot(ModelSlot.MODE_GAMBLE);*/
             else
                 this.setCurrentModeSlot(ModelSlot.MODE_ROUTE_WIN);
         }
@@ -313,10 +329,6 @@ class StateSlotManagerDefault extends StateSlotManager {
         this.addStateSlot(ModelSlot.MODE_GAMBLE_CHOICE, new StateSlotGambleChoice());
         this.addStateSlot(ModelSlot.MODE_GAMBLE_WIN, new StateSlotGambleWin);
         this.addStateSlot(ModelSlot.MODE_GAMBLE_LOSE, new StateSlotGambleLoose());
-
-        this.addStateSlot(ModelSlot.MODE_BONUS, new StateSlotBonus());
-        this.addStateSlot(ModelSlot.MODE_BONUS_CHOICE, new StateSlotBonusChoice());
-        this.addStateSlot(ModelSlot.MODE_SUPERBONUS, new StateSlotSuperbonus());
     }
 }
 
@@ -381,6 +393,9 @@ class StateSlotReady extends StateSlot {
     }
 
     private autoStart(value: boolean): void {
+
+        mainSlot.panel.panel.setStateAuto(value);
+
         if (value && this.main.getCurrent() == this)
             this.downStart();
     }
@@ -490,10 +505,11 @@ class StateSlotRouteWin extends StateSlot {
 
     public runStateSlot(oldStateSlot: StateSlot): void {
         this.mainScene = this.slotGame.getMainScene();
-
+        //console.log('add animation');
+        // вот тут не переключая состояния можно начать показывать анимации.
         if (this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN || this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB_NO || this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB) {
-            //this.main.setCurrentModeSlot(ModelSlot.MODE_BONUS);
-            this.main.setCurrentModeSlot(ModelSlot.MODE_SUPERBONUS);	
+            this.main.setCurrentModeSlot(ModelSlot.MODE_BONUS);
+            //this.main.setCurrentModeSlot(ModelSlot.MODE_SUPERBONUS);	
             this.model.isAutoMode = false;
             this.panel.blockBtnByType(PanelEvent.AUTO);
         }
@@ -504,6 +520,7 @@ class StateSlotRouteWin extends StateSlot {
         }
         else {
             this.panel.blockAll();
+            this.panel.hideAll();
             this.model.currentWin = this.model.lastAction.Summ;
             this.mainScene.showWinLines(this.model.lastAction.WinLines, true, () => { this.completeShowLines() });
             this.mainScene.showWin(this.model.lastAction.Summ);
@@ -513,8 +530,10 @@ class StateSlotRouteWin extends StateSlot {
     private completeShowLines(): void {
         this.panel.reBlock();
 
-        if (this.model.isAutoMode)
-            this.tween = createjs.Tween.get(this).wait(2000).call(() => { this.downStart(); });
+        if (this.model.isAutoMode) {
+            this.downStart();
+        }
+            //this.tween = createjs.Tween.get(this).wait(2000).call(() => { this.downStart(); });
     }
 
     public exitStateSlot(newStateSlot: StateSlot): void {
@@ -658,7 +677,8 @@ class StateSlotGambleLoose extends StateSlotGamble {
 class StateSlotBonus extends StateSlot {
     public runStateSlot(oldStateSlot: StateSlot): void {
         this.slotGame.getMainScene().showWinBonus();
-
+		
+		//TO DO дерьмовое место, подумаю как тут исправить этот слабый узел.
         var se: SoundEnity = soundManager.playSound(SoundManager.SOUND_BONUS);
         if (se.isPlayed) {
             se.addEventListener(SoundEnity.COMPLETE_SOUND, this.onCompleteSound);
@@ -681,78 +701,7 @@ class StateSlotBonus extends StateSlot {
     }
 }
 
-//-------------------------------------------------------------------------------------------
 
-class StateSlotBonusChoice extends StateSlot {
-    protected bonus: IBonusScene;
-
-    public runStateSlot(oldStateSlot: StateSlot): void {
-        this.bonus = this.slotGame.getBonusScene();
-       
-        this.model.currentWin = 0;
-
-        this.panel.setModeComboBet(0);
-
-        setTimeout(() => {
-            this.slotGame.showScene(this.bonus);
-            this.bonus.resetBonus(this.model.lastAction.Summ, this.isSuperbonus, () => { this.completeBonus() });
-        }, 10);
-    }
-
-    private get isSuperbonus(): boolean {
-        return this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB_NO || this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB;
-    }
-
-    private completeBonus(): void {
-        if (this.isSuperbonus)
-            this.main.setCurrentModeSlot(ModelSlot.MODE_SUPERBONUS);
-        else {
-            this.main.setCurrentModeSlot(ModelSlot.MODE_DEBIT, ModelSlot.MODE_READY);
-        }
-    }
-
-    public exitStateSlot(newStateSlot: StateSlot): void {
-        this.slotGame.removeScene(this.bonus);
-    }
-
-    public downSelectBtn(nom: number): void {
-        this.bonus.selectBonus(nom);
-    }
-}
-
-//-------------------------------------------------------------------------------------------
-
-class StateSlotSuperbonus extends StateSlot {
-    protected bonus: IBonusScene;
-
-    public runStateSlot(oldStateSlot: StateSlot): void {
-        this.model.currentWin = this.model.lastAction.Summ;
-
-        this.bonus = this.slotGame.getSuperbonusScene();
-        this.bonus.resetBonus(this.model.lastAction.SummAux, this.isWin, () => { this.completeBonus()});
-
-        this.slotGame.showScene(this.bonus);
-        this.panel.setModeComboBet(0);
-    }
-
-    public exitStateSlot(newStateSlot: StateSlot): void {
-        this.slotGame.removeScene(this.bonus);
-    }
-
-    private completeBonus(): void {
-        this.main.setCurrentModeSlot(ModelSlot.MODE_DEBIT, ModelSlot.MODE_READY);
-
-    }
-
-    private get isWin(): boolean {
-        return this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB;
-    }
-
-    public downSelectBtn(nom: number): void {
-        this.bonus.selectBonus(nom);
-        this.panel.blockComboBtns();
-    }
-}
 
 
 

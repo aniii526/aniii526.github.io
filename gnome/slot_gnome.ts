@@ -4,17 +4,32 @@
 
     constructor() {
         super();
-        SlotEnity.NAME_ATLAS_ICON = 'gnome/images/icon_mc.json';
+        //SlotEnity.NAME_ATLAS_ICON = 'gnome/images/icon_mc.json';
+        SlotEnity.NAME_ATLAS_ICON = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_ICON_ANIM = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+
+        SlotEnity.NAME_ATLAS_BONUS_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_GAMBLE_SCENE = 'gnome/images/gamble_card2.json';
+        SlotEnity.NAME_ATLAS_HELP_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_MAIN_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_SUPER_BONUS_SCENE = 'gnome/images/img_v2/game/prokrut_main/icon_main.json';
+
         mainSlot.panel.setBlockTypeBtn(ModelSlot.MODE_SUPERBONUS, new ModePanelShow([PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], [1, 2, 3]));
     }
 
-    public getPathViewJS(): string {
-        return "gnome/gnome.js";
-    }
-    
-
     public getResourseImg(callback: () => void): void {
-        this.loader = PIXI.loader.add('fon_main_scene', 'gnome/images/fon_main_scene.png?1').add('gnome/images/line_mc.json').add('gnome/images/icon_mc.json');
+        this.loader = PIXI.loader
+            .add('mainback', 'gnome/images/img_v2/game/mainback_madluck.jpg?2')
+            .add('mainback_number', 'gnome/images/img_v2/game/mainback_number.png?1')
+            .add('gnome/images/line_mc.json')
+            .add('gnome/images/img_v2/game/prokrut_main/icon_main.json')
+            .add('gnome/images/gamble_card.json')
+            .add('gnome/images/gamble_card2.json')
+            .add('double', 'gnome/images/img_v2/gamble/double.jpg?1')
+            .add('help_bg', 'gnome/images/img_v2/help/help.jpg?1')
+            .add('help_scene_0', 'gnome/images/img_v2/help/help0.jpg?1')
+            .add('help_scene_1', 'gnome/images/img_v2/help/help1.jpg?1')
+            .add('help_scene_2', 'gnome/images/img_v2/help/help2.jpg?1');
         this.loader.once("complete", callback, this);
         this.loader.load();
     }
@@ -28,8 +43,9 @@
         rollVO.count_roll = 5;
         rollVO.count_icon = 9;
         rollVO.count_row = 3;
-        rollVO.step_y = 120;
-        rollVO.step_x = 140;
+        rollVO.step_y = 195;
+        rollVO.step_x = 215;
+        rollVO.width_mask = 195;
         return rollVO;
     }
 
@@ -66,6 +82,10 @@
             this.mainScene = new MainSceneGnome();
         return this.mainScene;
     }
+	
+	public getIsShield(): boolean {
+        return mainSlot.model.shield;
+    }
 }
 
 //-------------------------------------------------------------------------------------------
@@ -74,21 +94,8 @@ class MainSceneGnome extends MainScene implements IMainScene {
     private tween: createjs.Tween;
     private infoPanel: PanelInfoMain;
 
-    private total_bet_stat: PIXI.Text;
-    private info_stat_txt: PIXI.Text;
-    private credit_stat: PIXI.Text;
-
-    private bet_txt: PIXI.Text;
-    private line_txt: PIXI.Text;
-    private credit_txt: PIXI.Text;
-    private bet1_txt: PIXI.Text;
-    private bet2_txt: PIXI.Text;
-
-    private bet_txt_x: number;
-    private line_txt_x: number;
-    private credit_txt_x: number;
-    private bet1_txt_x: number;
-    private bet2_txt_x: number;
+	private index_bets: number;
+    private index_lines: number;
 
     private soundsManifest: Array<Object> =
     [
@@ -108,108 +115,45 @@ class MainSceneGnome extends MainScene implements IMainScene {
 
 
     constructor() {
-        //TO DO надо разобраться с этими мувиками, где я их буду собирать, прямо тут или где то еще
-        //super(new lib.main_scene());
-        super(new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture));
-        this.addRoll(60, 38);
-        this.x = 3;
+        super(new PIXI.Sprite());
+
+        let mainback: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["mainback"].texture);
+        mainback.x = -300;
+        mainback.cacheAsBitmap = true;
+        this.mc.addChild(mainback);
+
+        let mainback_number: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["mainback_number"].texture);
+        mainback_number.x = -36;
+        mainback_number.y = 108;
+        mainback_number.cacheAsBitmap = true;
+        this.mc.addChild(mainback_number);
+
+        //this.addRoll(72, 123);
+        this.addRoll(72, 132);
 
         // перенес это внутрь LinesEnity файла slot_enity
         //let line_mc = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 30));
 
-        this.addWinLine(52, 65, null);
-        //this.showWinLines([0,1,2,3,4,5,6,7,8], true, () => { this.completeShowLines() });
+        this.addWinLine(-36, 108, null);
 
-        soundManager.loadSounds(this.soundsManifest);
+        //я не хочу пока загружать музончик
+        //soundManager.loadSounds(this.soundsManifest);
     }
 
     protected initDisplay(): void {
-        console.log('initDisplay');
 
         let styleLabelIndex: PIXI.TextStyle = {
             align: 'left',
             fontSize: '17px',
             fontFamily: 'heliosblackcregular',
-            fill: '#D1CAA0',
+            fill: '#FFFF00',
             letterSpacing: 1
         };
 
-        // статический текст вверху начало
-        this.total_bet_stat = new PIXI.Text();
-        this.total_bet_stat.text = 'TOTAL BET';
-        this.total_bet_stat.style = styleLabelIndex;
-        this.total_bet_stat.position.x = 12;
-        this.total_bet_stat.position.y = 11;
-        this.mc.addChild(this.total_bet_stat);
-
-        this.info_stat_txt = new PIXI.Text();
-        this.info_stat_txt.text = 'LINES';
-        this.info_stat_txt.style = styleLabelIndex;
-        this.info_stat_txt.position.x = 280;
-        this.info_stat_txt.position.y = 11;
-        this.mc.addChild(this.info_stat_txt);
-
-        this.credit_stat = new PIXI.Text();
-        this.credit_stat.text = 'CREDIT';
-        this.credit_stat.style = styleLabelIndex;
-        this.credit_stat.position.x = 560;
-        this.credit_stat.position.y = 11;
-        this.mc.addChild(this.credit_stat);
-        // статический текст вверху конец
-
-        // динамические текстовые поля вверху начало
-        this.bet_txt = new PIXI.Text();
-        this.bet_txt.text = '9999';
-        this.bet_txt.style = styleLabelIndex;
-        this.bet_txt.style.align = 'right';
-        this.bet_txt.position.x = 260;
-        this.bet_txt.position.y = 11;
-        this.bet_txt.anchor.set(1, 0);
-        this.mc.addChild(this.bet_txt);
-
-        this.line_txt = new PIXI.Text();
-        this.line_txt.text = '9999';
-        this.line_txt.style = styleLabelIndex;
-        this.line_txt.style.align = 'right';
-        this.line_txt.position.x = 540;
-        this.line_txt.position.y = 11;
-        this.line_txt.anchor.set(1, 0);
-        this.mc.addChild(this.line_txt);
-
-        this.credit_txt = new PIXI.Text();
-        this.credit_txt.text = '9999';
-        this.credit_txt.style = styleLabelIndex;
-        this.credit_txt.style.align = 'right';
-        this.credit_txt.position.x = 780;
-        this.credit_txt.position.y = 11;
-        this.credit_txt.anchor.set(1, 0);
-        this.mc.addChild(this.credit_txt);
-        // динамические текстовые поля вверху конец
-
-        // динамические текстовые поля внизу начало
-        this.bet1_txt = new PIXI.Text();
-        this.bet1_txt.text = '9999';
-        this.bet1_txt.style = styleLabelIndex;
-        this.bet1_txt.style.fill = '#FFFF00';
-        this.bet1_txt.position.x = 40;
-        this.bet1_txt.position.y = 420;
-        this.bet1_txt.anchor.set(0.5, 0);
-        this.mc.addChild(this.bet1_txt);
-
-        this.bet2_txt = new PIXI.Text();
-        this.bet2_txt.text = '9999';
-        this.bet2_txt.style = styleLabelIndex;
-        this.bet2_txt.style.fill = '#FFFF00';
-        this.bet2_txt.position.x = 760;
-        this.bet2_txt.position.y = 420;
-        this.bet2_txt.anchor.set(0.5, 0);
-        this.mc.addChild(this.bet2_txt);
-        // динамические текстовые поля внизу конец
-
         // надо собрать панель самостоятельно начало
-        let mInfo: PIXI.Sprite = new PIXI.Sprite();
-        mInfo.position.x = 390;
-        mInfo.position.y = 430;
+        /*let mInfo: PIXI.Sprite = new PIXI.Sprite();
+        //mInfo.position.x = 1300;
+        //mInfo.position.y = 500;
         this.mc.addChild(mInfo);
         this.mc["mInfo"] = mInfo;
 
@@ -217,23 +161,27 @@ class MainSceneGnome extends MainScene implements IMainScene {
         mInfo.addChild(anim);
         mInfo["anim"] = anim;
 
-        let play_to_stat: PIXI.Text = new PIXI.Text();
-        play_to_stat.text = 'PLAY 1 TO 225 CREDITS';
-        play_to_stat.style = styleLabelIndex;
-        play_to_stat.style.fill = '#FFFF00';
-        play_to_stat.anchor.set(0.5, 0);
-        anim.addChild(play_to_stat);
+        let play_to_txt: PIXI.Text = new PIXI.Text();
+        play_to_txt.text = 'PLAY 1 TO 225 CREDITS';
+        play_to_txt.style = styleLabelIndex;
+        play_to_txt.style.fill = '#FFFF00';
+        play_to_txt.anchor.set(0.5, 0);
+        anim.addChild(play_to_txt);
+        anim["play_to_txt"] = play_to_txt;
 
         let msg_txt: PIXI.Text = new PIXI.Text();
         msg_txt.text = '9999';
         msg_txt.style = styleLabelIndex;
         msg_txt.style.fill = '#FFFF00';
         msg_txt.anchor.set(0.5, 0);
+        msg_txt.position.y = msg_txt.position.y + msg_txt.height / 2;
         mInfo.addChild(msg_txt);
         mInfo["msg_txt"] = msg_txt;
-        // надо собрать панель самостоятельно конец
+        // надо собрать панель самостоятельно конец*/
 
-        this.infoPanel = new PanelInfoMain(this.mc["mInfo"] as PIXI.Sprite);
+        //this.infoPanel = new PanelInfoMain(/*this.mc["mInfo"] as PIXI.Sprite*/);
+
+        mainSlot.panel.panel.setTxtInfo('PLEASE PRESS START');
 
         mainSlot.bindSetter(this.modelSlot, "balance", (value: number) => { this.updateBalance(value) });
         mainSlot.bindSetter(this.modelSlot, "typeBet", (value: number) => { this.updateBetLine(value) });
@@ -241,45 +189,70 @@ class MainSceneGnome extends MainScene implements IMainScene {
         //TODO я не знаю необходим этот функционал или нет
         //mainSlot.bindSetter(mainSlot.slot, "modeLine", (value: boolean) => { this.updateShield(value) });
         mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.exchangeMode(value) });
+
+        // вот таким чудным образом я выделяю кнопку в начале.
+        mainSlot.panel.panel.setModeComboBet(0);
+    }
+
+    public getAnimIconVOForId(id: number): AnimIconVO {
+        return new AnimIconVO();
     }
 
     private completeShowLines(): void {
 
     }
 
+    protected onCompleteRolls(): void {
+        super.onCompleteRolls();
+        /*if (this.callbackCompleteRoll != null)
+            this.callbackCompleteRoll();*/
+    }
 
+    //TODO В НОВОЙ ПАНЕЛИ ПЕРЕДЕЛАТЬ ЭТОТ МЕТОД
     private exchangeMode(value:string):void
 	{
         if (value == ModelSlot.MODE_READY) {
-            this.info_stat_txt.text = "LINES";
+            //this.info_stat_txt.text = "LINES";
             this.updateBetLine(1);
-            this.infoPanel.setMode(PanelInfoMain.MODE_ANIM);
+            //this.infoPanel.setMode(PanelInfoMain.MODE_ANIM);
 
         }
         else if (value == ModelSlot.MODE_ROUTE_WIN && this.modelSlot.lastAction.Action == ModelSlot.ID_WIN_ROUTE) {
-            this.infoPanel.setMode(PanelInfoMain.MODE_WIN, "" + this.modelSlot.lastAction.Summ);
-            this.info_stat_txt.text = "WIN";
-            this.line_txt.text = ""+this.modelSlot.lastAction.Summ;
+            //this.infoPanel.setMode(PanelInfoMain.MODE_WIN, "" + this.modelSlot.lastAction.Summ);
+            //this.info_stat_txt.text = "WIN";
+            mainSlot.panel.panel.setTxtTotalWin("" + this.modelSlot.lastAction.Summ);
+            mainSlot.panel.panel.setTxtInfo('WIN ' + this.modelSlot.lastAction.Summ);
         } else if (value == ModelSlot.MODE_DEBIT) {
-            this.infoPanel.setMode(PanelInfoMain.MODE_TAKE);
+            //this.infoPanel.setMode(PanelInfoMain.MODE_TAKE);
         }
 
     }
    
     private updateBalance(value: number): void {
-        this.credit_txt.text = "" + value;
+        mainSlot.panel.panel.setTxtBalance("" + value);
     }
 
     private updateBetLine(type: number): void {
-        this.bet_txt.text = "" + this.modelSlot.totalBet;
-        this.line_txt.text = "" + this.modelSlot.modeLine;
-        this.bet1_txt.text = "" + this.modelSlot.amountBet;
-        this.bet2_txt.text = "" + this.modelSlot.amountBet
+        mainSlot.panel.panel.setTxtTotalBet("" + this.modelSlot.totalBet);
+        mainSlot.panel.panel.setTxtTotalWin("0");
+        mainSlot.panel.panel.setTxtBet("" + this.modelSlot.amountBet);
+
+		
+		this.index_bets = this.modelSlot.typeBet;
+        this.index_lines = this.modelSlot.modeLine;
+        this.updateShield();
     }
 
     //TODO возможно на главном экране щит и не нужен, но мб я ошибаюсь
-    private updateShield(value: boolean): void {
-        this.mc["shield_mc"].visible = value;
+    private updateShield(): void {
+        if (this.index_bets >= 2 && this.index_lines >= 5) {
+            //this.mc["shield_mc"].visible = true;
+            this.modelSlot.shield = true;
+        }
+        else {
+            //this.mc["shield_mc"].visible = false;
+            this.modelSlot.shield = false;
+        }
     }
 
     protected getNumBonus(): number {
@@ -295,7 +268,24 @@ class MainSceneGnome extends MainScene implements IMainScene {
 
 class HelpSceneGnome extends HelpScene implements IHelpScene {
     constructor() {
-        super(new lib.help_scene());
+        super(new PIXI.Sprite()); //help_bg
+        //PIXI.loader.resources["help_scene_1"].texture
+
+        let help_bg: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["help_bg"].texture);
+        help_bg.x = 53;
+        help_bg.y = 112;
+        help_bg.cacheAsBitmap = true;
+        this.mc.addChild(help_bg);
+
+        this.mc["anim"] = new PIXI.extras.MovieClip([
+            PIXI.loader.resources["help_scene_0"].texture,
+            PIXI.loader.resources["help_scene_1"].texture,
+            PIXI.loader.resources["help_scene_2"].texture
+        ]);
+        this.mc["anim"].x = 70;
+        this.mc["anim"].y = 123;
+        this.mc["anim"].visible = false;
+        this.mc.addChild(this.mc["anim"]);
     }
 }
 
@@ -303,63 +293,136 @@ class HelpSceneGnome extends HelpScene implements IHelpScene {
 
 class GambleSceneGnome extends GambleScene implements IGambleScene {
 
-    private infoPanel:PanelInfoGamble;
+    //private infoPanel: PanelInfoGamble;
+
+    private total_bet_stat: PIXI.Text;
+    private info_stat_txt: PIXI.Text;
+    private credit_stat: PIXI.Text;
+
+    private bet_txt: PIXI.Text;
+    private prize_txt: PIXI.Text;
+    private win_txt: PIXI.Text;
+
+    private step_txt: PIXI.Text;
 
     constructor() {
-        super(new lib.gamble_scene());
-        //чтобы "1" Максова не торчала.
-        this.mc["step_txt"].visible = false;
+        super(new PIXI.Sprite());
+
+        let mainback: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["mainback"].texture);
+        mainback.x = -300;
+        mainback.cacheAsBitmap = true;
+        this.mc.addChild(mainback);
+
+        let mainback_number: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["mainback_number"].texture);
+        mainback_number.x = -36;
+        mainback_number.y = 108;
+        mainback_number.cacheAsBitmap = true;
+        this.mc.addChild(mainback_number);
+
+        let gamble_scene: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources["double"].texture);
+        gamble_scene.x = 53;
+        gamble_scene.y = 112;
+        gamble_scene.cacheAsBitmap = true;
+        this.mc.addChild(gamble_scene);
+
+        let styleLabelIndex: PIXI.TextStyle = {
+            align: 'left',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#FFFF00',
+            letterSpacing: 1
+        };
+
+        // надо собрать карты самостоятельно начало
+        let dealer_card: PIXI.Sprite = new PIXI.Sprite();
+        dealer_card.position.x = 170;
+        dealer_card.position.y = 330;
+        this.mc.addChild(dealer_card);
+        this.mc["dealer_card"] = dealer_card;
+
+        // надо собрать карты самостоятельно начало
+        let dealer: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources['gnome/images/gamble_card2.json'].textures["dealer_icon.png"]);
+        dealer.position.x = 146;
+        dealer.position.y = 310;
+        this.mc.addChild(dealer);
+        this.mc["dealer"] = dealer;
+
+        let card: PIXI.Sprite;
+        for (var i: number = 1; i <= 4; i++) {
+            card = new PIXI.Sprite();
+            card.position.x = 400 + 163 * (i - 1);
+            card.position.y = 330;
+            this.mc.addChild(card);
+            this.mc["card" + i] = card;
+        }
+        card = null;
+
+        // текущий шаг риска
+        this.step_txt = new PIXI.Text();
+        this.step_txt.text = 'RISK STEP:';
+        this.step_txt.style = styleLabelIndex;
+        this.step_txt.position.x = 600;
+        this.step_txt.position.y = 230;
+        this.step_txt.anchor.set(0.5, 0);
+        this.mc.addChild(this.step_txt);
+        this.mc["step_txt"] = this.step_txt;
+
         this.createCards(CardDefault);
-        
-        this.addChild(this.pick_mc = this.mc["pick_mc"]);
+
+        this.pick_mc = new PIXI.Sprite(PIXI.loader.resources['gnome/images/gamble_card2.json'].textures["pick_icon.png"]);
+        this.pick_mc.anchor.set(0.5, 0);
+        this.pick_mc.position.y = 560;
+        this.pick_mc.position.x = this.mc["card1"].x + 82;
+        this.mc.addChild(this.pick_mc);
     }
 
     protected initDisplay(): void {
-        this.infoPanel = new PanelInfoGamble(this.mc["info_table"]);
-        //this.mc["step_txt"].visible = false;
+
+        let styleLabelIndex: PIXI.TextStyle = {
+            align: 'left',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#FFFF00',
+            letterSpacing: 1
+        };
 
         mainSlot.bindSetter(this.modelSlot.stateSlotManager, "currentMode", (value: string) => { this.exchangeMode(value) });
 
         this.showMsgDouble();
     }
-    private exchangeMode(value:string):void
-	{
+    private exchangeMode(value: string): void {
         if (value == ModelSlot.MODE_GAMBLE_LOSE) {
-           // anim.setMode(AnimMain.MODE_LOSE);
-            this.infoPanel.setMode(PanelInfoGamble.MODE_MSG, "YOU LOSE");
+            mainSlot.panel.panel.setTxtInfo("YOU LOSE");
         }
         else if (value == ModelSlot.MODE_GAMBLE_WIN) {
-            //anim.setMode(AnimMain.MODE_WIN);
-            this.showMsgDouble();
+            mainSlot.panel.panel.setTxtInfo("YOU WIN");
         }
         else if (value == ModelSlot.MODE_DEBIT) {
-            this.infoPanel.setMode(PanelInfoGamble.MODE_MSG, "TAKE...");
+            mainSlot.panel.panel.setTxtInfo("TAKE...");
         }
     }
 
     private showMsgDouble(): void {
-        if (this.infoPanel != null)
-            this.infoPanel.setMode(PanelInfoGamble.MODE_DOUBLE, "" + this.modelSlot.lastAction.Summ * 2);
-    }	
+        mainSlot.panel.panel.setTxtInfo("SELECT CARD OR START");
+    }
 
 
     public setSelectValue(type: number): void {
         super.setSelectValue(type);
-        this.pick_mc.x = this.mc["card" + type].x + 45;
+        this.pick_mc.x = this.mc["card" + type].x + 82;
         this.pick_mc.visible = true;
     }
 
     public resetGamble(): void {
         super.resetGamble();
-        this.mc["bet_txt"].text = "" + this.modelSlot.totalBet;
-        setTimeout(() => { this.mc["step_mc"].gotoAndStop("_" + this.modelSlot.getStepGamble(), 1); });
+        //this.bet_txt.text = "" + this.modelSlot.totalBet;
+        mainSlot.panel.panel.setTxtTotalBet("" + this.modelSlot.totalBet);
+        setTimeout(() => { this.mc['step_txt'].text = 'RISK STEP : ' + this.modelSlot.getStepGamble().toString(); });
         this.showMsgDouble();
     }
 
     protected updatePrize(): void {
-        this.mc["prize_txt"].text = "" + this.modelSlot.summInput;
-        this.mc["win_txt"].text = "" + this.modelSlot.lastAction.Summ;
-
+        mainSlot.panel.panel.setTxtTotalWin("" + this.modelSlot.lastAction.Summ);
     }
 }
 
@@ -389,17 +452,22 @@ class AnimBonus extends AnimEnity {
     constructor() {
         super();
 
-        //TODO разобраться с текстом
-        /*
-        this.prize_txt = new PIXI.Text("100", "28px 'BIP'", "#CCFF00");
-        this.prize_txt.name = "prize_txt";
-        this.prize_txt.textAlign = "center";
-        this.prize_txt.lineHeight = 41;
-        this.prize_txt.lineWidth = 96;
-        this.prize_txt.parent = this;
-        this.prize_txt.setTransform(55, 60);
+        let styleLabelIndex: PIXI.TextStyle = {
+            align: 'center',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#D1CAA0',
+            letterSpacing: 1
+        };
+
+        // статический текст вверху начало
+        this.prize_txt = new PIXI.Text();
+        this.prize_txt.text = 'PRIZE';
+        this.prize_txt.style = styleLabelIndex;
+        this.prize_txt.anchor.set(0.5, 0.5);
+        //this.prize_txt.position.x = 12;
+        //this.prize_txt.position.y = 11;
         this.addChild(this.prize_txt);
-        */
     }
 
     protected createMc(nameMc: string): PIXI.extras.MovieClip {
@@ -431,10 +499,10 @@ class AnimBonus extends AnimEnity {
                 ar_anim[0].anims.push(new AnimationItemVO({ an: "shield1" }));
             ar_anim[0].setCompletAnimation("open1", 1);
 
-            ar_anim[1].anims.push(new AnimationItemVO({ an: this.getWithShield("&lose1"), startAnim: this.startAnim }));
+            ar_anim[1].anims.push(new AnimationItemVO({ an: this.getWithShield("&lose1"), startAnim: (nameAnim: string, mcAnim: PIXI.extras.MovieClip) => { this.startAnim(nameAnim, mcAnim); } }));
             ar_anim[1].setCompletAnimation(this.getWithShield("&lose1"), 2);
 
-            ar_anim[2].anims.push(new AnimationItemVO({ an: "waslose1" }));
+            ar_anim[2].anims.push(new AnimationItemVO({ an: "waslose1", dispatchComplete: true, startAnim: (nameAnim: string, mcAnim: PIXI.extras.MovieClip) => { this.startAnim(nameAnim, mcAnim); } }));
         }
         else if (value == AnimBonus.MODE_WIN) {
             this.isPlayAnimation = true;
@@ -551,23 +619,97 @@ class BonusSceneGnome extends BonusScene implements IBonusScene {
     private arTextPrizes: Array<PIXI.Text>;
     private X_ANIM: number = 30;
 
-    constructor() {
-        super(new lib.bonus_scene());
+    private total_bet_stat: PIXI.Text;
+    private info_stat_txt: PIXI.Text;
+    private credit_stat: PIXI.Text;
 
-        this.animBonus = new AnimBonus();
-        this.mc.addChild(this.animBonus);
+    private bet_txt: PIXI.Text;
+    private win_txt: PIXI.Text;
+    private credit_txt: PIXI.Text;
+
+    constructor() {
+        super(new PIXI.Sprite(PIXI.loader.resources["bonus_scene"].texture));
+
+        let styleLabelIndex: PIXI.TextStyle = {
+            align: 'left',
+            fontSize: '17px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#D1CAA0',
+            letterSpacing: 1
+        };
+
+        // статический текст вверху начало
+        this.total_bet_stat = new PIXI.Text();
+        this.total_bet_stat.text = 'TOTAL BET';
+        this.total_bet_stat.style = styleLabelIndex;
+        this.total_bet_stat.position.x = 12;
+        this.total_bet_stat.position.y = 11;
+        this.mc.addChild(this.total_bet_stat);
+
+        this.info_stat_txt = new PIXI.Text();
+        this.info_stat_txt.text = 'TOTAL WIN';
+        this.info_stat_txt.style = styleLabelIndex;
+        this.info_stat_txt.position.x = 280;
+        this.info_stat_txt.position.y = 11;
+        this.mc.addChild(this.info_stat_txt);
+
+        this.credit_stat = new PIXI.Text();
+        this.credit_stat.text = 'CREDIT';
+        this.credit_stat.style = styleLabelIndex;
+        this.credit_stat.position.x = 560;
+        this.credit_stat.position.y = 11;
+        this.mc.addChild(this.credit_stat);
+        // статический текст вверху конец
+
+        // динамические текстовые поля вверху начало
+        this.bet_txt = new PIXI.Text();
+        this.bet_txt.text = '9999';
+        this.bet_txt.style = styleLabelIndex;
+        this.bet_txt.style.align = 'right';
+        this.bet_txt.position.x = 260;
+        this.bet_txt.position.y = 11;
+        this.bet_txt.anchor.set(1, 0);
+        this.mc.addChild(this.bet_txt);
+
+        this.win_txt = new PIXI.Text();
+        this.win_txt.text = '9999';
+        this.win_txt.style = styleLabelIndex;
+        this.win_txt.style.align = 'right';
+        this.win_txt.position.x = 540;
+        this.win_txt.position.y = 11;
+        this.win_txt.anchor.set(1, 0);
+        this.mc.addChild(this.win_txt);
+
+        this.credit_txt = new PIXI.Text();
+        this.credit_txt.text = '9999';
+        this.credit_txt.style = styleLabelIndex;
+        this.credit_txt.style.align = 'right';
+        this.credit_txt.position.x = 780;
+        this.credit_txt.position.y = 11;
+        this.credit_txt.anchor.set(1, 0);
+        this.mc.addChild(this.credit_txt);
+        // динамические текстовые поля вверху конец
+
         setTimeout(() => {
+            this.animBonus = new AnimBonus();
+            this.mc.addChild(this.animBonus);
             this.animBonus.x = this.X_ANIM;
 
+            var an: AnimBonus;
             for (var i: number = 1; i <= 5; i++) {
-                var an: AnimBonus = new AnimBonus();
+                an = new AnimBonus();
                 this.anims.push(an);
-                //an.addEventListener(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
                 an.on(EVENT_COMPLETE, () => { this.onCompleteAnimation() });
                 this.mc.addChild(an);
                 an.x = (i - 1) * 129;
             }
+
+            an = null;
         }, 1);
+    }
+
+    protected initDisplay(): void {
+        
     }
 
     private onCompleteAnimation(): void {
@@ -583,15 +725,15 @@ class BonusSceneGnome extends BonusScene implements IBonusScene {
     public resetBonus(summ: number, isSb: boolean, completeCallback: Function): void {
         super.resetBonus(summ, isSb, completeCallback);
 
-        this.mc["bet_txt"].text = "" + this.modelSlot.totalBet;
-        this.mc["credit_txt"].text = "" + this.modelSlot.balance;
-        this.mc["win_txt"].text = "0";
+        this.bet_txt.text = "" + this.modelSlot.totalBet;
+        this.win_txt.text = "0";
+        this.credit_txt.text = "" + this.modelSlot.balance;
 
         this.arTextPrizes = new Array();
         for (var i: number = 0; i < 5; i++) {
             this.anims[i].reset();
         }
-
+        
         var countPrizes: number = isSb ? (this.isHasShield ? 4 : 5) : Math.round(Math.random() * 2) + 1;
         this.arPrizes = this.getPrizes(summ, countPrizes);
         this.setBombForShield();
@@ -607,7 +749,7 @@ class BonusSceneGnome extends BonusScene implements IBonusScene {
                 this.arBonuses.push(0);
             }
         }
-
+        
         this.selectID = -1;
         this.setPositionGnome(1);
     }

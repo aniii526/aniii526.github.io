@@ -8,6 +8,20 @@
     protected superbonus: IBonusScene;
 
     public static NAME_ATLAS_ICON: string;
+    public static NAME_ATLAS_ICON_ANIM: string;
+
+    public static NAME_ATLAS_BONUS_SCENE: string;
+    public static NAME_ATLAS_GAMBLE_SCENE: string;
+    public static NAME_ATLAS_HELP_SCENE: string;
+    public static NAME_ATLAS_MAIN_SCENE: string; 
+    public static NAME_ATLAS_SUPER_BONUS_SCENE: string;
+    public static NAME_ATLAS_RECT: string;
+
+    public static NAME_ATLAS_ICON_1: string;
+    public static NAME_ATLAS_ICON_4: string;
+    public static NAME_ATLAS_ICON_6: string;
+    public static NAME_ATLAS_ICON_9: string;
+    public static NAME_ATLAS_ICONS: string;
 
     constructor() {
         super();
@@ -78,8 +92,10 @@ class BScene extends SceneSlot {
 
     constructor(mc: PIXI.Sprite) {
         super(mc);
+    }
 
-        this.tmm = new TextMoneyMove(mc["win_txt"]);
+    protected initTM(): void {
+        this.tmm = new TextMoneyMove(this.mc["win_txt"]);
         this.tmm.addEventListener(EVENT_COMPLETE, () => { this.onCompleteMoveText() });
     }
 
@@ -113,7 +129,9 @@ class BScene extends SceneSlot {
     protected completeBonus(arText: Array<PIXI.Text>, time: number = 1000): void {
         this.timeoutComplete = time;
         if (arText)
-            createjs.Tween.get(this).wait(300).call(() => { this.tmm.startMove(arText); });
+            createjs.Tween.get(this).wait(300).call(() => {
+                this.tmm.startMove(arText);
+            });
         else
             createjs.Tween.get(this).wait(this.timeoutComplete).call(() => { this.completeCallback(); });
     }
@@ -131,6 +149,8 @@ class BScene extends SceneSlot {
 class MainScene extends SceneSlot {
     protected rolls: Rolls;
     protected lines: LinesWin;
+    protected animlayers: AnimWin;
+    private fon: PIXI.Graphics;
     protected callbackCompleteRoll: Function;
     protected callbackCompleteLines: Function;
 
@@ -139,7 +159,7 @@ class MainScene extends SceneSlot {
     }
 
     protected addRoll(px: number, py: number): void {
-        this.addChild(this.rolls = new Rolls(this.modelSlot.settingRoll));
+        this.mc.addChild(this.rolls = new Rolls(this.modelSlot.settingRoll));
         //this.rolls.addEventListener(Rolls.COMPLETE_ROLLS, () => { this.onCompleteRolls(); });
         this.rolls.on(Rolls.COMPLETE_ROLLS, () => { this.onCompleteRolls(); });
         this.rolls.x = px;
@@ -152,12 +172,26 @@ class MainScene extends SceneSlot {
     //TODO
     //буду решать что тут сделать, пусть пока так LineClass с типом any
     protected addWinLine(px: number, py: number, LineClass: any): void {
+        this.fon = new PIXI.Graphics();
+        this.fon.beginFill(0x000000, 0.5);
+        this.fon.drawRect(0, 0, 1095, 625);
+        this.fon.endFill();
+        this.fon.x = 53;
+        this.fon.y = 112;
+        this.fon.visible = false;
+        this.addChild(this.fon);
+
         this.lines = new LinesWin(LineClass)
         this.addChild(this.lines);
         //this.lines.addEventListener(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
         this.lines.on(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
         this.lines.x = px;
         this.lines.y = py;
+
+        this.animlayers = new AnimWin();
+        this.animlayers.x = 53;
+        this.animlayers.y = 112;
+        this.addChild(this.animlayers);
     }
 
     protected onCompleteShowLine(): void {
@@ -172,11 +206,25 @@ class MainScene extends SceneSlot {
 
     public showWinLines(ar: Array<number>, isAnimate: boolean = true, callbackCompleteLines: Function = null): void {
         this.callbackCompleteLines = callbackCompleteLines;
-
-        if (ar != null && ar.length)
+        // старая версия
+        /*if (ar != null && ar.length)
             this.lines.showLines(ar, isAnimate);
         else
+            this.lines.clear();*/
+
+        // новая версия
+        if (ar != null && ar.length) {
+            this.lines.showLines(ar, isAnimate);
+            if (this.callbackCompleteLines) {
+                this.fon.visible = true;
+                this.animlayers.show();
+            }
+        }
+        else {
+            this.fon.visible = false;
             this.lines.clear();
+            this.animlayers.clear();
+        }
     }
 
     public showWinBonus(): void {
@@ -206,8 +254,7 @@ class MainScene extends SceneSlot {
 class HelpScene extends SceneSlot {
     constructor(mc: PIXI.Sprite) {
         super(mc);
-        //mc.stop();
-        // this.hideHelp();
+        //this.hideHelp();
     }
 
     protected bindProperties(): void {
@@ -216,20 +263,20 @@ class HelpScene extends SceneSlot {
 
     public selectBtn(nom: number): void {
         //TO DO читай выше
-        /*if (nom == 0) {
-            if (this.mc.currentFrame == 0) {
-                this.mc.gotoAndStop(this.mc.totalFrames - 1);
+        if (nom == 0) {
+            if (this.mc["anim"].currentFrame == 0) {
+                this.mc["anim"].gotoAndStop(this.mc["anim"].totalFrames - 1);
             }
             else {
-                this.mc.gotoAndStop(this.mc.currentFrame - 1);
+                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame - 1);
             }
         }
         else {
-            if (this.mc.currentFrame == this.mc.totalFrames - 1)
-                this.mc.gotoAndStop(0);
+            if (this.mc["anim"].currentFrame == this.mc["anim"].totalFrames - 1)
+                this.mc["anim"].gotoAndStop(0);
             else
-                this.mc.gotoAndStop(this.mc.currentFrame + 1);
-        }*/
+                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame + 1);
+        }
     }
 
     public showhelp(): void {
@@ -246,18 +293,20 @@ class GambleScene extends SceneSlot {
     protected cards: Array<Card> = new Array<Card>();
     protected selectNom: number;
     protected resultcards: string;
-    protected pick_mc: PIXI.extras.MovieClip;
+    protected pick_mc: PIXI.Sprite;
 
     protected createCards(cardClass: new () => Card): void {
         this.mc.addChild(this.dealer = new cardClass());
-        this.dealer.x = this.mc["dealer_card"].x - 8;
-        this.dealer.y = this.mc["dealer_card"].y - 6;
+        this.mc.swapChildren(this.dealer, this.mc["dealer"]);
+        this.dealer.x = this.mc["dealer_card"].x;
+        this.dealer.y = this.mc["dealer_card"].y;
 
         for (var i: number = 1; i <= 4; i++) {
             var c: Card = new cardClass();
+            c.indexCard = i;
             this.mc.addChild(c);
-            c.x = this.mc["card" + i].x - 8;
-            c.y = this.mc["card" + i].y - 6;
+            c.x = this.mc["card" + i].x;
+            c.y = this.mc["card" + i].y;
             this.cards.push(c);
         }
     }
@@ -294,9 +343,12 @@ class GambleScene extends SceneSlot {
         var ar: Array<string> = value.split("&");
 
         var c: Array<string> = ar[0].split("_");
-        this.setSelectValue(parseInt(c[2]));
+        var c2: Array<string> = ar[ar.length - 1].split("_");
+        this.setSelectValue(parseInt(c2[1].charAt(c2[1].length - 2)));
         this.dealer.setCard(c[1], c[0]);
-        ar.shift();
+        //ar.shift();
+        //убираю к херам из H(4) цифру и скобки оставляя только букву;
+        ar[ar.length - 1] = c2[0] + '_' + c2[1].charAt(0);
         this.resultGamble(ar.join("&"));
     }
 
@@ -326,8 +378,9 @@ class GambleScene extends SceneSlot {
 
     public setSelectValue(type: number): void {
         this.selectNom = type;
-        this.mc["pick_mc"].x = this.mc["card" + this.selectNom].x - 19;
-        this.mc["pick_mc"].visible = true;
+        //Это вроде не нужно
+        //this.mc["pick_mc"].x = this.mc["card" + this.selectNom].x - 19;
+        //this.mc["pick_mc"].visible = true;
     }
 
 
@@ -421,7 +474,12 @@ class TextMoneyMove extends createjs.EventDispatcher {
         if (this.intervalID != null)
             clearInterval(this.intervalID);
 
+        //TODO Это просто костылище, чтобы убрать отображение 0 после высчитывания из него суммы. 
+        if (this.sourceTF)
+            this.sourceTF.visible = false;
+
         if (this.arTF.length > 0) {
+
             this.sourceTF = this.arTF.shift();
             this.moneyOnStep = this.sourceValue / 30;
             if (this.moneyOnStep < 3)
@@ -467,14 +525,16 @@ class TextMoneyMove extends createjs.EventDispatcher {
 //-------------------------------------------------------------------------------------------
 
 class Card extends PIXI.Sprite {
-    private mc: PIXI.extras.MovieClip;
+    private mc: PIXI.Sprite;
     private suits: Array<string>;
     public suit: string;
     public value: string;
+    public indexCard: number;
 
     public Card(suit: string = null, value: string = null) {
         this.suits = this.getSiutsFormat();
         this.setCard(suit, value);
+        //this.setCard('2', 'S');
     }
 
     protected getSiutsFormat(): Array<string> {
@@ -485,14 +545,50 @@ class Card extends PIXI.Sprite {
         this.suit = suit;
         this.value = value;
 
-        if (this.mc && this.mc.parent)
+        if (this.mc && this.mc.parent) {
+            this.mc.off("mousedown", (e: PIXI.interaction.InteractionEvent) => { this.onUpBtn(e) });
+            this.mc.off("touchstart", (e: PIXI.interaction.InteractionEvent) => { this.onUpBtn(e) });
             this.removeChild(this.mc);
-        this.mc = this.getCard(suit);
-        if (value)
-            //вот тут была ошибка и в принципе ошибки могут быть во многих местах, так как отчет в 
-            //креат жс идет не с 1, а с нуля, но макс это не взял в расчет.
-            this.mc.gotoAndStop(parseInt(value) - 2);
+        }
+
+        this.mc = this.getCard(this.suit);
+        this.mc.interactive = true;
+        this.mc.on("mousedown", (e: PIXI.interaction.InteractionEvent) => { this.onUpBtn(e) });
+        this.mc.on("touchstart", (e: PIXI.interaction.InteractionEvent) => { this.onUpBtn(e) });
+        if (this.value) {
+
+            let index = parseInt(this.value) - 2;
+            this.mc["num"].gotoAndStop(index);
+
+            /*this.mc["img"].visible = true;
+            switch (index) {
+                // валет
+                case 9:
+                    this.mc["img"].gotoAndStop(0);
+                    this.mc["suit"].visible = false;
+                    break;
+                // дама
+                case 10:
+                    this.mc["img"].gotoAndStop(1);
+                    this.mc["suit"].visible = false;
+                    break;
+                // король
+                case 11:
+                    this.mc["img"].gotoAndStop(2);
+                    this.mc["suit"].visible = false;
+                    break;
+                // задник
+                default:
+                    this.mc["img"].visible = false;
+                    this.mc["suit"].visible = true;
+            }*/
+
+        }
         this.addChild(this.mc);
+    }
+
+    private onUpBtn(e: PIXI.interaction.InteractionEvent): void {
+        mainSlot.panel.outClickBtn(new PanelEvent(PanelEvent.SELECT_LINE, ((e.target as PIXI.Sprite).parent as Card).indexCard));
     }
 
     public setCardOnStr(suitValue: String): void {
@@ -500,10 +596,9 @@ class Card extends PIXI.Sprite {
         this.setCard(ar[1], ar[0]);
     }
 
-    protected getCard(suit: string): PIXI.extras.MovieClip {
-        //TO DO текстуры карт надо запихнуть, а то будут проблемы
-        //return new PIXI.extras.MovieClip();
-        return new PIXI.extras.MovieClip(null);
+    //этот метод все равно не вызывается, просто возвращаемое значение сохранить необходимо 
+    protected getCard(suit: string): PIXI.Sprite {
+        return new PIXI.Sprite();
     }
 
     public getRandomCard(startValue: number = 0): string {
@@ -517,22 +612,104 @@ class Card extends PIXI.Sprite {
     }
 }
 
+/*class CardEvent extends PIXI.interaction.InteractionData {
+    public static MOUSE_DOWN: string = "mousedown";
+    public static TOUCH_START: string = "touchstart";
+    
+    public eventBtn: string;
+    public line: number;
+
+    constructor(eventBtn: string, line: number = 0) {
+        super();
+        this.eventBtn = eventBtn;
+        this.line = line;
+    }
+}*/
+
 //-------------------------------------------------------------------------------------------
 
 class CardDefault extends Card {
 
-    protected getCard(suit: string): PIXI.extras.MovieClip {
+    protected getCard(suit: string): PIXI.Sprite {
         switch (suit) {
+            // пики
             case "S":
-                return new lib.spades_card();
+                let card: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                let suit: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["piki_icon_big.png"]);
+                suit.position.x = 45;
+                suit.position.y = 111;
+                card.addChild(suit);
+                card["suit"] = suit;
+
+                let num: PIXI.extras.MovieClip = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "clubs_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+
+                return card;
+
+            // крести
             case "C":
-                return new lib.clubs_card();
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                suit = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["tref_icon_big.png"]);
+                suit.position.x = 45;
+                suit.position.y = 111;
+                card.addChild(suit);
+                card["suit"] = suit;
+
+                num = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "clubs_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+
+                return card;
+
+            // буби
             case "D":
-                return new lib.diamonds_card();
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                suit = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["bybi_icon_big.png"]);
+                suit.position.x = 45;
+                suit.position.y = 111;
+                card.addChild(suit);
+                card["suit"] = suit;
+
+                num = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "diamonds_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+
+                return card;
+
+            // черви
             case "H":
-                return new lib.hearts_card();
+            case "(": //супер уебищный костыль который должен спасти от бага который случился 1 раз за все время и больше не повторяется, когда с сервера мне не пришла последняя буква. 
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                suit = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["chervi_icon_big.png"]);
+                suit.position.x = 45;
+                suit.position.y = 111;
+                card.addChild(suit);
+                card["suit"] = suit;
+
+                num = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "diamonds_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+
+                return card;
+
+            // задник
             default:
-                return new lib.back_card();
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_back.png"]);
+
+                return card;
         }
     }
 
@@ -568,6 +745,9 @@ class Rolls extends PIXI.Sprite {
         for (var i: number = 0; i < comb.length; i++) {
             this.arRoll[i].setComb(comb[i]);
         }
+
+
+
     }
     public showWinBonus(idItem: number): void {
         for (var i: number = 0; i < this.arRoll.length; i++) {
@@ -604,18 +784,13 @@ class Roll extends PIXI.Sprite {
         this.nomRoll = nomRoll;
         this.rollVO = rollVO;
 
-        //TO DO
-        //var shape = new createjs.Shape(new createjs.Graphics().beginFill("red").drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row));
-        //this.container.mask = shape;
-
-        let shape:PIXI.Graphics = new PIXI.Graphics();
-        shape.beginFill(0x000000);
+        let shape: PIXI.Graphics = new PIXI.Graphics();
+        shape.beginFill(0xff0000);
         shape.drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row);
         shape.endFill();
-
-        this.addChild(this.container);
         this.addChild(shape);
 
+        this.addChild(this.container);
         this.container.mask = shape;
 
     }
@@ -625,6 +800,11 @@ class Roll extends PIXI.Sprite {
     }
 
     public setComb(comb: Array<number>): void {
+        //возможно фильтр не нужен
+        //var blur_filter = new PIXI.filters.BlurYFilter();
+        //blur_filter.blur = 10;
+        //this.filters = [blur_filter];
+
         if (this.currentComb != null) {
             this.targetComb = comb;
             this.createLine(Roll.ICON_ROUTE + this.nomRoll * this.rollVO.diffIconRoute);
@@ -632,12 +812,14 @@ class Roll extends PIXI.Sprite {
 
         }
         else {
+            //вот тут первое определение
             this.setContentIcons(comb);
             this.currentComb = comb;
             this.completeRoll();
         }
     }
 
+    // 
     public showWinBonus(idItem: number): void {
         for (var i: number = 0; i < this.container.children.length; i++) {
             var ic: IconRoll = this.container.getChildAt(i) as IconRoll;
@@ -696,6 +878,13 @@ class Roll extends PIXI.Sprite {
 
     private completeRoll(): void {
         //this.dispatchEvent(Roll.COMPLETE_ROLL);
+        //showNormalIcon
+        //this.filters = null;count_row
+
+        for (var i: number = 0; i < this.rollVO.count_row; i++) {
+            (this.container.getChildAt(i) as IconRoll).showNormalIcon();
+        }
+
         this.emit(Roll.COMPLETE_ROLL);
     }
 
@@ -714,48 +903,196 @@ class Roll extends PIXI.Sprite {
 
 class IconRoll extends PIXI.Sprite {
     private ic: PIXI.Sprite;
+    private ic_blur: PIXI.Sprite;
     public nom: number;
     protected animMc: PIXI.extras.MovieClip;
     private isAnimate: boolean = false;
+
+    private isBlur: boolean = false;
 
     constructor(nom: number) {
         super();
         this.nom = nom;
         this.ic = this.getIcon(nom);
-        //TO DO тут не правильно возвращается значение иконки которая будет вращатся, так как её еще нет в природе.
-        // пока, просто не буду помещать на экран её.
+        this.ic_blur = this.getIconBlur(nom);
         this.addChild(this.ic);
+        //this.addChild(this.ic_blur);
     }
 
     public restart(): void {
         if (this.animMc && this.isAnimate)
             this.removeChild(this.animMc);
         this.isAnimate = false;
+
+        this.isBlur = true;
+        this.addChild(this.ic_blur);
+        this.removeChild(this.ic);
     }
 
-    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
     protected getIcon(nom: number): PIXI.Sprite {
-        //throw new Error("Не задана иконка");
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_" + nom + ".png"]);
+    }
 
-        //TODO вернуть работоспособность этого метода
-        //var s: PIXI.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
-        var s: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICON].textures["icon" + nom + ".png"]); 
-        return s;
+    protected getIconBlur(nom: number): PIXI.Sprite {
+        //throw new Error("Не задана иконка");
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_blur_" + nom + ".png"]);
     }
 
     public showAnimationWin(): void {
-        if (!this.animMc)
+        while (this.children.length) {
+            this.removeChildAt(0);
+        }
+        if (!this.animMc) {
             this.animMc = this.getAnimMc();
+            this.animMc.loop = true;
+            //TODO скорость анимации надо цеплять откуда то
+            this.animMc.animationSpeed = 0.1;
+        }
+        this.animMc.gotoAndPlay(0);
         this.isAnimate = true;
         this.addChild(this.animMc);
     }
 
-    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
-    protected getAnimMc(): PIXI.extras.MovieClip {
-        // throw new Error("Не задана иконка анимации");
-        var s: PIXI.extras.MovieClip = new lib["icon" + this.nom + "_an"];
-        return s;
+    public showNormalIcon(): void {
+
+        if (this.isBlur == true)
+            this.removeChild(this.ic_blur);
+
+        this.addChild(this.ic);
     }
+
+    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная анимированная иконка.
+    protected getAnimMc(): PIXI.extras.MovieClip {
+        //return new PIXI.extras.MovieClip([PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICON_ANIM].textures["icon_blur_" + nom + ".png"]]);
+        //TODO изменить имя анимации. в идеале везде переписать в переменную.
+        return new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_MAIN_SCENE, "icon_seif_open_", 4));
+    }
+}
+
+//-------------------------------------------------------------------------------------------
+
+class AnimWin extends PIXI.Sprite {
+
+    private viewTablePart: Array<AnimWinEnity>;
+
+    constructor() {
+        super();
+        this.init();
+    }
+
+    public init(): void {
+        // тут буду резать и создавать куски
+
+        this.viewTablePart = new Array<AnimWinEnity>();
+
+        //let sprite: PIXI.Sprite;
+        let animWinEnity: AnimWinEnity;
+        let baseTexture: PIXI.BaseTexture = PIXI.loader.resources["mainback"].texture.baseTexture;
+        for (let j: number = 0; j < 3; j++){
+            for (let i: number = 0; i < 5; i++) {
+                animWinEnity = new AnimWinEnity();
+                animWinEnity.position.x = 20 + (i * (195 + 20));
+                animWinEnity.position.y = 20 + (j * 195);
+                this.viewTablePart.push(animWinEnity);
+                this.addChild(animWinEnity);
+
+                //animWinEnity.fon = new PIXI.Sprite(new PIXI.Texture(baseTexture, new PIXI.Rectangle((353 + 20) + (i * (195 + 20)), (112 + 20) + (j * 195), 195, 195)));
+                animWinEnity.init();
+            }
+        }
+
+    }
+
+    public show(): void {
+        //this.viewTablePart[0].show();
+    }
+
+    public clear(): void {
+        //this.viewTablePart[0].clear();
+
+        //if (this.viewLines != null) {
+        //    for (var i: number = 0; i < this.viewLines.length; i++) {
+        //        this.viewLines[i].parent.removeChild(this.viewLines[i]);
+        //    }
+        //}
+        //this.viewLines = new Array<LinesEnity>();
+    }
+}
+
+class AnimWinEnity extends PIXI.Sprite {
+
+    public fon: PIXI.Sprite;
+    public border: PIXI.extras.MovieClip;
+
+    private anim_1: PIXI.extras.MovieClip;
+    private anim_2: PIXI.extras.MovieClip;
+    private anim_3: PIXI.extras.MovieClip;
+    private anim_4: PIXI.extras.MovieClip;
+    private anim_5: PIXI.extras.MovieClip;
+    private anim_6: PIXI.extras.MovieClip;
+    private anim_7: PIXI.extras.MovieClip;
+    private anim_8: PIXI.extras.MovieClip;
+    private anim_9: PIXI.extras.MovieClip;
+
+    private temp_id: number = 0;
+
+    private aktiv: boolean;
+
+    constructor() {
+        super();
+        this.visible = false;
+        this.aktiv = false;
+    }
+
+    public init(): void {
+        //this.addChild(this.fon);
+
+        // границу
+        //this.border = new PIXI.extras.MovieClip();
+        //this.addChild(this.border);
+    }
+
+    public show(): void {
+        if (this.aktiv) return;
+
+        let id: number = 5;
+        if (!this['anim_' + id]) {
+            let animIconVO: AnimIconVO = mainSlot.slot.getMainScene().getAnimIconVOForId(id);
+
+            this['anim_' + id] = new PIXI.extras.MovieClip(animIconVO.textures);
+            this['anim_' + id].animationSpeed = animIconVO.anim_speed;
+            this['anim_' + id].loop = true;
+        }
+        this['anim_' + id].play();
+        this.addChild(this['anim_' + id]);
+
+        this.temp_id = id;
+        this.visible = true;
+        this.aktiv = true;
+    }
+
+    public clear(): void {
+        if (this.temp_id != 0)
+            this['anim_' + this.temp_id].gotoAndStop(0);
+
+        while (this.children.length) {
+            this.removeChildAt(0);
+        }
+        this.visible = false;
+        this.aktiv = false;
+    }
+}
+
+class ConstantsRollIcon {
+    public static ID_10: number = 5;
+    public static ID_J: number = 3;
+    public static ID_Q: number = 7;
+    public static ID_K: number = 8;
+    public static ID_A: number = 2;
+    public static ID_ICON_1: number = 4;
+    public static ID_ICON_2: number = 9;
+    public static ID_ICON_3: number = 6;
+    public static ID_ICON_4: number = 1;
 }
 
 //-------------------------------------------------------------------------------------------
@@ -840,11 +1177,13 @@ class LinesEnity extends PIXI.Sprite {
         super();
         this.index = index;
 
-        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 9));
+        //TODOatlas вернуть потом обратно 
+        //this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_MAIN_SCENE, "line", 9));
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("gnome/images/line_mc.json", "line_", 9));
         this.addChild(this.line);
-        this.line.gotoAndStop(this.getFrame(index)-1);
+        this.line.gotoAndStop(this.getFrame(index) - 1);
         //TODO убрал этот кэш, посмотрим нужен ли он вообще
-        //this.line.cache(0, 0, 600, 300);
+        this.line.cacheAsBitmap = true;
     }
 
     public showLine(isAnimate: boolean): void {
@@ -924,6 +1263,7 @@ class AnimationItem extends PIXI.Sprite {
         this.nameAn = nameAn;
         //this.addChild(mc);
 
+
         //TODO надо посмотреть что тут за логика и как мне её перенести на pixi
         // потому что я просто переписал тут addEventListener на on, а в данном случае это не правильно
         //this.addEventListener("added", () => { this.onAddToStage() });
@@ -936,10 +1276,12 @@ class AnimationItem extends PIXI.Sprite {
         this.mc.stop();
 
         this.rand = Math.random();
+
+        //this.mc.onComplete = () => { this.completeAnim() };
     }
 
     private onAddToStage(): void {
-        this.addFrameScript(this.mc.totalFrames - 1, () => { this.completeAnim() });
+        //this.addFrameScript(this.mc.totalFrames - 1, () => { this.completeAnim() });
 
         this.mc.gotoAndPlay(1);
         if (this.info.startAnim != null) {
@@ -1210,6 +1552,7 @@ class PanelInfoMain extends PanelInfo {
     private showAnimation(value: string): void {
         this.counter = 1;
         this.curView = this.mc["anim"];
+        this.curView["play_to_txt"].text = "PLAY " + mainSlot.model.bets[0] + " TO\n" + mainSlot.model.bets[mainSlot.model.bets.length - 1] * mainSlot.model.lineMax + " CREDITS";
         this.showNextAnimation();
         this.intervalID = setInterval(() => { this.showNextAnimation() }, 2000);
     }
@@ -1219,7 +1562,7 @@ class PanelInfoMain extends PanelInfo {
         //this.curView.gotoAndStop(this.counter);
         //this.counter++;
         //if (this.counter > this.curView.totalFrames)
-            this.counter = 1;
+        this.counter = 1;
     }
     private showWin(value: string): void {
         this.counter = 1;
@@ -1269,7 +1612,7 @@ class PanelInfoGamble extends PanelInfo {
             this.curView.visible = false;
         if (this.counter == 1) {
             this.curView = this.mc["double_to"];
-            this.curView["windouble_txt"].text = this.curValue + "?";
+            this.curView["windouble_txt"].text = 'DOUBLE TO ' + this.curValue + "?";
         }
         else {
             this.showMsgText("TAKE OR RISK", 20);
@@ -1292,8 +1635,6 @@ class PanelInfoGamble extends PanelInfo {
 }
 
 interface ISlotEnity extends PIXI.Sprite {
-    //initGame(): void;
-    getPathViewJS(): string;
     getResourseImg(callback: () => void): void;
     showScene(scene: IScene): void;
     removeScene(scene: IScene): void;
@@ -1301,8 +1642,6 @@ interface ISlotEnity extends PIXI.Sprite {
     getSettingRoll(): RollVO;
     getHelpScene(): IHelpScene;
     getGambleScene(): IGambleScene;
-    getBonusScene(): IBonusScene;
-    getSuperbonusScene(): IBonusScene;
     getMainScene(): IMainScene;
     getIsShield(): boolean;
     showHelp(): void;
@@ -1315,6 +1654,7 @@ interface IMainScene extends IScene {
     showWinLines(ar: Array<number>, isAnimate?: boolean, completeShowLines?: Function): void;
     showWinBonus(): void;
     showWin(value: number): void;
+    getAnimIconVOForId(value: number): AnimIconVO;
 }
 interface IHelpScene extends IScene {
     selectBtn(nom: number): void;

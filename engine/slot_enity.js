@@ -33,7 +33,6 @@ var SlotEnity = (function (_super) {
     };
     return SlotEnity;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
 var SceneSlot = (function (_super) {
     __extends(SceneSlot, _super);
     function SceneSlot(mc) {
@@ -48,16 +47,17 @@ var SceneSlot = (function (_super) {
     };
     return SceneSlot;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
 var BScene = (function (_super) {
     __extends(BScene, _super);
     function BScene(mc) {
-        var _this = this;
         _super.call(this, mc);
         this.isBlockSelectedBtn = true;
-        this.tmm = new TextMoneyMove(mc["win_txt"]);
-        this.tmm.addEventListener(EVENT_COMPLETE, function () { _this.onCompleteMoveText(); });
     }
+    BScene.prototype.initTM = function () {
+        var _this = this;
+        this.tmm = new TextMoneyMove(this.mc["win_txt"]);
+        this.tmm.addEventListener(EVENT_COMPLETE, function () { _this.onCompleteMoveText(); });
+    };
     BScene.prototype.getWinTxt = function () {
         return this.mc["win_txt"];
     };
@@ -85,7 +85,9 @@ var BScene = (function (_super) {
         if (time === void 0) { time = 1000; }
         this.timeoutComplete = time;
         if (arText)
-            createjs.Tween.get(this).wait(300).call(function () { _this.tmm.startMove(arText); });
+            createjs.Tween.get(this).wait(300).call(function () {
+                _this.tmm.startMove(arText);
+            });
         else
             createjs.Tween.get(this).wait(this.timeoutComplete).call(function () { _this.completeCallback(); });
     };
@@ -97,7 +99,6 @@ var BScene = (function (_super) {
     };
     return BScene;
 }(SceneSlot));
-//-------------------------------------------------------------------------------------------
 var MainScene = (function (_super) {
     __extends(MainScene, _super);
     function MainScene(mc) {
@@ -105,8 +106,7 @@ var MainScene = (function (_super) {
     }
     MainScene.prototype.addRoll = function (px, py) {
         var _this = this;
-        this.addChild(this.rolls = new Rolls(this.modelSlot.settingRoll));
-        //this.rolls.addEventListener(Rolls.COMPLETE_ROLLS, () => { this.onCompleteRolls(); });
+        this.mc.addChild(this.rolls = new Rolls(this.modelSlot.settingRoll));
         this.rolls.on(Rolls.COMPLETE_ROLLS, function () { _this.onCompleteRolls(); });
         this.rolls.x = px;
         this.rolls.y = py;
@@ -115,16 +115,25 @@ var MainScene = (function (_super) {
         if (this.callbackCompleteRoll != null)
             this.callbackCompleteRoll();
     };
-    //TODO
-    //буду решать что тут сделать, пусть пока так LineClass с типом any
     MainScene.prototype.addWinLine = function (px, py, LineClass) {
         var _this = this;
+        this.fon = new PIXI.Graphics();
+        this.fon.beginFill(0x000000, 0.5);
+        this.fon.drawRect(0, 0, 1095, 625);
+        this.fon.endFill();
+        this.fon.x = 53;
+        this.fon.y = 112;
+        this.fon.visible = false;
+        this.addChild(this.fon);
         this.lines = new LinesWin(LineClass);
         this.addChild(this.lines);
-        //this.lines.addEventListener(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
         this.lines.on(LinesWin.END_BLINK, function () { _this.onCompleteShowLine(); });
         this.lines.x = px;
         this.lines.y = py;
+        this.animlayers = new AnimWin();
+        this.animlayers.x = 53;
+        this.animlayers.y = 112;
+        this.addChild(this.animlayers);
     };
     MainScene.prototype.onCompleteShowLine = function () {
         if (this.callbackCompleteLines != null)
@@ -138,10 +147,18 @@ var MainScene = (function (_super) {
         if (isAnimate === void 0) { isAnimate = true; }
         if (callbackCompleteLines === void 0) { callbackCompleteLines = null; }
         this.callbackCompleteLines = callbackCompleteLines;
-        if (ar != null && ar.length)
+        if (ar != null && ar.length) {
             this.lines.showLines(ar, isAnimate);
-        else
+            if (this.callbackCompleteLines) {
+                this.fon.visible = true;
+                this.animlayers.show();
+            }
+        }
+        else {
+            this.fon.visible = false;
             this.lines.clear();
+            this.animlayers.clear();
+        }
     };
     MainScene.prototype.showWinBonus = function () {
         this.rolls.showWinBonus(this.getNumBonus());
@@ -162,32 +179,28 @@ var MainScene = (function (_super) {
     };
     return MainScene;
 }(SceneSlot));
-//TO DO надо править сильно этот класс, в нем уже создавать объект мувиклип и переключать его, а не сам контейнер.
 var HelpScene = (function (_super) {
     __extends(HelpScene, _super);
     function HelpScene(mc) {
         _super.call(this, mc);
-        //mc.stop();
-        // this.hideHelp();
     }
     HelpScene.prototype.bindProperties = function () {
     };
     HelpScene.prototype.selectBtn = function (nom) {
-        //TO DO читай выше
-        /*if (nom == 0) {
-            if (this.mc.currentFrame == 0) {
-                this.mc.gotoAndStop(this.mc.totalFrames - 1);
+        if (nom == 0) {
+            if (this.mc["anim"].currentFrame == 0) {
+                this.mc["anim"].gotoAndStop(this.mc["anim"].totalFrames - 1);
             }
             else {
-                this.mc.gotoAndStop(this.mc.currentFrame - 1);
+                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame - 1);
             }
         }
         else {
-            if (this.mc.currentFrame == this.mc.totalFrames - 1)
-                this.mc.gotoAndStop(0);
+            if (this.mc["anim"].currentFrame == this.mc["anim"].totalFrames - 1)
+                this.mc["anim"].gotoAndStop(0);
             else
-                this.mc.gotoAndStop(this.mc.currentFrame + 1);
-        }*/
+                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame + 1);
+        }
     };
     HelpScene.prototype.showhelp = function () {
         this.addChild(this.mc);
@@ -205,13 +218,15 @@ var GambleScene = (function (_super) {
     }
     GambleScene.prototype.createCards = function (cardClass) {
         this.mc.addChild(this.dealer = new cardClass());
-        this.dealer.x = this.mc["dealer_card"].x - 8;
-        this.dealer.y = this.mc["dealer_card"].y - 6;
+        this.mc.swapChildren(this.dealer, this.mc["dealer"]);
+        this.dealer.x = this.mc["dealer_card"].x;
+        this.dealer.y = this.mc["dealer_card"].y;
         for (var i = 1; i <= 4; i++) {
             var c = new cardClass();
+            c.indexCard = i;
             this.mc.addChild(c);
-            c.x = this.mc["card" + i].x - 8;
-            c.y = this.mc["card" + i].y - 6;
+            c.x = this.mc["card" + i].x;
+            c.y = this.mc["card" + i].y;
             this.cards.push(c);
         }
     };
@@ -242,9 +257,10 @@ var GambleScene = (function (_super) {
     GambleScene.prototype.setLastGamble = function (value) {
         var ar = value.split("&");
         var c = ar[0].split("_");
-        this.setSelectValue(parseInt(c[2]));
+        var c2 = ar[ar.length - 1].split("_");
+        this.setSelectValue(parseInt(c2[1].charAt(c2[1].length - 2)));
         this.dealer.setCard(c[1], c[0]);
-        ar.shift();
+        ar[ar.length - 1] = c2[0] + '_' + c2[1].charAt(0);
         this.resultGamble(ar.join("&"));
     };
     GambleScene.prototype.resetGamble = function () {
@@ -270,8 +286,6 @@ var GambleScene = (function (_super) {
     };
     GambleScene.prototype.setSelectValue = function (type) {
         this.selectNom = type;
-        this.mc["pick_mc"].x = this.mc["card" + this.selectNom].x - 19;
-        this.mc["pick_mc"].visible = true;
     };
     GambleScene.prototype.updatePrize = function () {
     };
@@ -332,7 +346,6 @@ var SuperbonusScene = (function (_super) {
     }
     return SuperbonusScene;
 }(BScene));
-//-------------------------------------------------------------------------------------------
 var TextMoneyMove = (function (_super) {
     __extends(TextMoneyMove, _super);
     function TextMoneyMove(tf) {
@@ -348,6 +361,8 @@ var TextMoneyMove = (function (_super) {
         var _this = this;
         if (this.intervalID != null)
             clearInterval(this.intervalID);
+        if (this.sourceTF)
+            this.sourceTF.visible = false;
         if (this.arTF.length > 0) {
             this.sourceTF = this.arTF.shift();
             this.moneyOnStep = this.sourceValue / 30;
@@ -392,7 +407,6 @@ var TextMoneyMove = (function (_super) {
     });
     return TextMoneyMove;
 }(createjs.EventDispatcher));
-//-------------------------------------------------------------------------------------------
 var Card = (function (_super) {
     __extends(Card, _super);
     function Card() {
@@ -408,26 +422,34 @@ var Card = (function (_super) {
         return ["S", "C", "D", "H"];
     };
     Card.prototype.setCard = function (suit, value) {
+        var _this = this;
         if (value === void 0) { value = null; }
         this.suit = suit;
         this.value = value;
-        if (this.mc && this.mc.parent)
+        if (this.mc && this.mc.parent) {
+            this.mc.off("mousedown", function (e) { _this.onUpBtn(e); });
+            this.mc.off("touchstart", function (e) { _this.onUpBtn(e); });
             this.removeChild(this.mc);
-        this.mc = this.getCard(suit);
-        if (value)
-            //вот тут была ошибка и в принципе ошибки могут быть во многих местах, так как отчет в 
-            //креат жс идет не с 1, а с нуля, но макс это не взял в расчет.
-            this.mc.gotoAndStop(parseInt(value) - 2);
+        }
+        this.mc = this.getCard(this.suit);
+        this.mc.interactive = true;
+        this.mc.on("mousedown", function (e) { _this.onUpBtn(e); });
+        this.mc.on("touchstart", function (e) { _this.onUpBtn(e); });
+        if (this.value) {
+            var index = parseInt(this.value) - 2;
+            this.mc["num"].gotoAndStop(index);
+        }
         this.addChild(this.mc);
+    };
+    Card.prototype.onUpBtn = function (e) {
+        mainSlot.panel.outClickBtn(new PanelEvent(PanelEvent.SELECT_LINE, e.target.parent.indexCard));
     };
     Card.prototype.setCardOnStr = function (suitValue) {
         var ar = suitValue.split("_");
         this.setCard(ar[1], ar[0]);
     };
     Card.prototype.getCard = function (suit) {
-        //TO DO текстуры карт надо запихнуть, а то будут проблемы
-        //return new PIXI.extras.MovieClip();
-        return new PIXI.extras.MovieClip(null);
+        return new PIXI.Sprite();
     };
     Card.prototype.getRandomCard = function (startValue) {
         if (startValue === void 0) { startValue = 0; }
@@ -440,7 +462,6 @@ var Card = (function (_super) {
     };
     return Card;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
 var CardDefault = (function (_super) {
     __extends(CardDefault, _super);
     function CardDefault() {
@@ -449,20 +470,69 @@ var CardDefault = (function (_super) {
     CardDefault.prototype.getCard = function (suit) {
         switch (suit) {
             case "S":
-                return new lib.spades_card();
+                var card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                var suit_1 = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["piki_icon_big.png"]);
+                suit_1.position.x = 45;
+                suit_1.position.y = 111;
+                card.addChild(suit_1);
+                card["suit"] = suit_1;
+                var num = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "clubs_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+                return card;
             case "C":
-                return new lib.clubs_card();
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                suit_1 = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["tref_icon_big.png"]);
+                suit_1.position.x = 45;
+                suit_1.position.y = 111;
+                card.addChild(suit_1);
+                card["suit"] = suit_1;
+                num = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "clubs_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+                return card;
             case "D":
-                return new lib.diamonds_card();
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                suit_1 = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["bybi_icon_big.png"]);
+                suit_1.position.x = 45;
+                suit_1.position.y = 111;
+                card.addChild(suit_1);
+                card["suit"] = suit_1;
+                num = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "diamonds_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+                return card;
             case "H":
-                return new lib.hearts_card();
+            case "(":
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_face.png"]);
+                suit_1 = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["chervi_icon_big.png"]);
+                suit_1.position.x = 45;
+                suit_1.position.y = 111;
+                card.addChild(suit_1);
+                card["suit"] = suit_1;
+                num = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_GAMBLE_SCENE, "diamonds_num", 13));
+                num.position.x = 16;
+                num.position.y = 23;
+                num.anchor.set(0, 0);
+                card.addChild(num);
+                card["num"] = num;
+                return card;
             default:
-                return new lib.back_card();
+                card = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_GAMBLE_SCENE].textures["card_back.png"]);
+                return card;
         }
     };
     return CardDefault;
 }(Card));
-//-------------------------------------------------------------------------------------------
 var Rolls = (function (_super) {
     __extends(Rolls, _super);
     function Rolls(rollVO) {
@@ -496,14 +566,12 @@ var Rolls = (function (_super) {
         soundManager.stopSound(SoundManager.SOUND_ROUTESTART);
         this.counter++;
         if (this.counter == this.rollVO.count_roll) {
-            //this.dispatchEvent(Rolls.COMPLETE_ROLLS);
             this.emit(Rolls.COMPLETE_ROLLS);
         }
     };
     Rolls.COMPLETE_ROLLS = "complete_rolls";
     return Rolls;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
 var Roll = (function (_super) {
     __extends(Roll, _super);
     function Roll(nomRoll, rollVO) {
@@ -512,15 +580,12 @@ var Roll = (function (_super) {
         this.cacheIcons = new Object();
         this.nomRoll = nomRoll;
         this.rollVO = rollVO;
-        //TO DO
-        //var shape = new createjs.Shape(new createjs.Graphics().beginFill("red").drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row));
-        //this.container.mask = shape;
         var shape = new PIXI.Graphics();
-        shape.beginFill(0x000000);
+        shape.beginFill(0xff0000);
         shape.drawRect(0, 0, rollVO.step_x, rollVO.height_mask ? rollVO.height_mask : rollVO.step_y * rollVO.count_row);
         shape.endFill();
-        this.addChild(this.container);
         this.addChild(shape);
+        this.addChild(this.container);
         this.container.mask = shape;
     }
     Object.defineProperty(Roll.prototype, "isHasCombination", {
@@ -582,14 +647,15 @@ var Roll = (function (_super) {
         var t = count / Roll.TIME_ON_ICON;
         createjs.Tween.get(this.container, { override: true }).to({ y: 0 }, t * 1000)
             .call(function () { _this.completeRoll(); });
-        // TweenMax.to(container, t, { y: 0, ease: Sine.easeOut, onComplete: completeRoll });
         createjs.Tween.get(this).wait((t - 0.15) * 1000).call(function () { _this.playSound(); });
     };
     Roll.prototype.playSound = function () {
         soundManager.playSound(SoundManager.SOUND_ROUTESTOP, false);
     };
     Roll.prototype.completeRoll = function () {
-        //this.dispatchEvent(Roll.COMPLETE_ROLL);
+        for (var i = 0; i < this.rollVO.count_row; i++) {
+            this.container.getChildAt(i).showNormalIcon();
+        }
         this.emit(Roll.COMPLETE_ROLL);
     };
     Roll.prototype.setContentIcons = function (ar) {
@@ -605,50 +671,134 @@ var Roll = (function (_super) {
     Roll.TIME_ON_ICON = 15;
     return Roll;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
 var IconRoll = (function (_super) {
     __extends(IconRoll, _super);
     function IconRoll(nom) {
         _super.call(this);
         this.isAnimate = false;
+        this.isBlur = false;
         this.nom = nom;
         this.ic = this.getIcon(nom);
-        //TO DO тут не правильно возвращается значение иконки которая будет вращатся, так как её еще нет в природе.
-        // пока, просто не буду помещать на экран её.
+        this.ic_blur = this.getIconBlur(nom);
         this.addChild(this.ic);
     }
     IconRoll.prototype.restart = function () {
         if (this.animMc && this.isAnimate)
             this.removeChild(this.animMc);
         this.isAnimate = false;
+        this.isBlur = true;
+        this.addChild(this.ic_blur);
+        this.removeChild(this.ic);
     };
-    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
     IconRoll.prototype.getIcon = function (nom) {
-        //throw new Error("Не задана иконка");
-        //TODO вернуть работоспособность этого метода
-        //var s: PIXI.DisplayObject = new lib["icon" + nom]; //getDefinitionByName("icon" + nom) as Class;
-        var s = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICON].textures["icon" + nom + ".png"]);
-        return s;
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_" + nom + ".png"]);
+    };
+    IconRoll.prototype.getIconBlur = function (nom) {
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_blur_" + nom + ".png"]);
     };
     IconRoll.prototype.showAnimationWin = function () {
-        if (!this.animMc)
+        while (this.children.length) {
+            this.removeChildAt(0);
+        }
+        if (!this.animMc) {
             this.animMc = this.getAnimMc();
+            this.animMc.loop = true;
+            this.animMc.animationSpeed = 0.1;
+        }
+        this.animMc.gotoAndPlay(0);
         this.isAnimate = true;
         this.addChild(this.animMc);
     };
-    //TO DO поправить эту функцию, сделать чтобы возвращалась правильная иконка.
+    IconRoll.prototype.showNormalIcon = function () {
+        if (this.isBlur == true)
+            this.removeChild(this.ic_blur);
+        this.addChild(this.ic);
+    };
     IconRoll.prototype.getAnimMc = function () {
-        // throw new Error("Не задана иконка анимации");
-        var s = new lib["icon" + this.nom + "_an"];
-        return s;
+        return new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_MAIN_SCENE, "icon_seif_open_", 4));
     };
     return IconRoll;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
+var AnimWin = (function (_super) {
+    __extends(AnimWin, _super);
+    function AnimWin() {
+        _super.call(this);
+        this.init();
+    }
+    AnimWin.prototype.init = function () {
+        this.viewTablePart = new Array();
+        var animWinEnity;
+        var baseTexture = PIXI.loader.resources["mainback"].texture.baseTexture;
+        for (var j = 0; j < 3; j++) {
+            for (var i = 0; i < 5; i++) {
+                animWinEnity = new AnimWinEnity();
+                animWinEnity.position.x = 20 + (i * (195 + 20));
+                animWinEnity.position.y = 20 + (j * 195);
+                this.viewTablePart.push(animWinEnity);
+                this.addChild(animWinEnity);
+                animWinEnity.init();
+            }
+        }
+    };
+    AnimWin.prototype.show = function () {
+    };
+    AnimWin.prototype.clear = function () {
+    };
+    return AnimWin;
+}(PIXI.Sprite));
+var AnimWinEnity = (function (_super) {
+    __extends(AnimWinEnity, _super);
+    function AnimWinEnity() {
+        _super.call(this);
+        this.temp_id = 0;
+        this.visible = false;
+        this.aktiv = false;
+    }
+    AnimWinEnity.prototype.init = function () {
+    };
+    AnimWinEnity.prototype.show = function () {
+        if (this.aktiv)
+            return;
+        var id = 5;
+        if (!this['anim_' + id]) {
+            var animIconVO = mainSlot.slot.getMainScene().getAnimIconVOForId(id);
+            this['anim_' + id] = new PIXI.extras.MovieClip(animIconVO.textures);
+            this['anim_' + id].animationSpeed = animIconVO.anim_speed;
+            this['anim_' + id].loop = true;
+        }
+        this['anim_' + id].play();
+        this.addChild(this['anim_' + id]);
+        this.temp_id = id;
+        this.visible = true;
+        this.aktiv = true;
+    };
+    AnimWinEnity.prototype.clear = function () {
+        if (this.temp_id != 0)
+            this['anim_' + this.temp_id].gotoAndStop(0);
+        while (this.children.length) {
+            this.removeChildAt(0);
+        }
+        this.visible = false;
+        this.aktiv = false;
+    };
+    return AnimWinEnity;
+}(PIXI.Sprite));
+var ConstantsRollIcon = (function () {
+    function ConstantsRollIcon() {
+    }
+    ConstantsRollIcon.ID_10 = 5;
+    ConstantsRollIcon.ID_J = 3;
+    ConstantsRollIcon.ID_Q = 7;
+    ConstantsRollIcon.ID_K = 8;
+    ConstantsRollIcon.ID_A = 2;
+    ConstantsRollIcon.ID_ICON_1 = 4;
+    ConstantsRollIcon.ID_ICON_2 = 9;
+    ConstantsRollIcon.ID_ICON_3 = 6;
+    ConstantsRollIcon.ID_ICON_4 = 1;
+    return ConstantsRollIcon;
+}());
 var LinesWin = (function (_super) {
     __extends(LinesWin, _super);
-    //TODO
-    //буду решать что тут сделать, пусть пока так LineClass с типом any
     function LinesWin(LineClass) {
         _super.call(this);
         this.lines = new Array(9);
@@ -670,7 +820,6 @@ var LinesWin = (function (_super) {
             this.viewLines[this.step].showLine(this.isAnimate);
         }
         else {
-            //this.dispatchEvent(LinesWin.END_BLINK)
             this.emit(LinesWin.END_BLINK);
         }
     };
@@ -678,7 +827,6 @@ var LinesWin = (function (_super) {
         var _this = this;
         if (!this.lines[ind - 1]) {
             this.lines[ind - 1] = new LinesEnity(this.classLine, ind);
-            //this.lines[ind - 1].addEventListener(LinesWin.END_BLINK, () => { this.onEndBlink(); });
             this.lines[ind - 1].on(LinesWin.END_BLINK, function () { _this.onEndBlink(); });
         }
         return this.lines[ind - 1];
@@ -698,20 +846,16 @@ var LinesWin = (function (_super) {
     LinesWin.END_BLINK = "end_blinc";
     return LinesWin;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
 var LinesEnity = (function (_super) {
     __extends(LinesEnity, _super);
-    //TODO
-    //буду решать что тут сделать, пусть пока так LineClass с типом any
     function LinesEnity(classLine, index) {
         _super.call(this);
         this.countBlinc = 0;
         this.index = index;
-        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName('gnome/images/line_mc.json', "line_mc00", 9));
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("gnome/images/line_mc.json", "line_", 9));
         this.addChild(this.line);
         this.line.gotoAndStop(this.getFrame(index) - 1);
-        //TODO убрал этот кэш, посмотрим нужен ли он вообще
-        //this.line.cache(0, 0, 600, 300);
+        this.line.cacheAsBitmap = true;
     }
     LinesEnity.prototype.showLine = function (isAnimate) {
         this.countBlinc = isAnimate ? LinesEnity.BLINK_COUNT : 1;
@@ -728,7 +872,6 @@ var LinesEnity = (function (_super) {
                 .call(function () { _this.hideBlinkLines(); });
         }
         else {
-            //this.dispatchEvent(LinesWin.END_BLINK)
             this.emit(LinesWin.END_BLINK);
         }
     };
@@ -745,18 +888,17 @@ var LinesEnity = (function (_super) {
     LinesEnity.BLINK_COUNT = 10;
     return LinesEnity;
 }(PIXI.Sprite));
-//-------------------------------------------------------------------------------------------
 var AnimationItemVO = (function () {
     function AnimationItemVO(data) {
         this.an = null;
         this.anRandom = null;
-        this.timeHide = null; // скрывать после проигрывания на 
-        this.randomTime = null; // Math.random() * randomTime * timeHide
-        this.completeAnim = null; // метод вызываем при комплите
-        this.startAnim = null; // метод вызываем при комплите
-        this.completeStop = null; // стоп при комплите
-        this.dispatchComplete = null; // диспатчить от всей анимации
-        this.completeFrame = null; // завершить на данном фрейме
+        this.timeHide = null;
+        this.randomTime = null;
+        this.completeAnim = null;
+        this.startAnim = null;
+        this.completeStop = null;
+        this.dispatchComplete = null;
+        this.completeFrame = null;
         for (var s in data) {
             if (this.hasOwnProperty(s))
                 this[s] = data[s];
@@ -779,11 +921,6 @@ var AnimationItem = (function (_super) {
         this.objFrameCallback = new Object();
         this.mc = mc;
         this.nameAn = nameAn;
-        //this.addChild(mc);
-        //TODO надо посмотреть что тут за логика и как мне её перенести на pixi
-        // потому что я просто переписал тут addEventListener на on, а в данном случае это не правильно
-        //this.addEventListener("added", () => { this.onAddToStage() });
-        //this.addEventListener("removed ", () => { this.onRemoveFromStage() });
         this.on("added", function () { _this.onAddToStage(); });
         this.on("removed ", function () { _this.onRemoveFromStage(); });
         this.addChild(mc);
@@ -791,8 +928,6 @@ var AnimationItem = (function (_super) {
         this.rand = Math.random();
     }
     AnimationItem.prototype.onAddToStage = function () {
-        var _this = this;
-        this.addFrameScript(this.mc.totalFrames - 1, function () { _this.completeAnim(); });
         this.mc.gotoAndPlay(1);
         if (this.info.startAnim != null) {
             this.info.startAnim(this.nameAn, this.mc);
@@ -833,7 +968,6 @@ var AnimationItem = (function (_super) {
         var _this = this;
         this.objFrameCallback[fr] = frameCallback;
         if (!this.mc.listeners("tick"))
-            //this.mc.addEventListener("tick", () => { this.onTick() });
             this.mc.on("tick", function () { _this.onTick(); });
     };
     AnimationItem.prototype.onTick = function () {
@@ -847,7 +981,7 @@ var AnimationItem = (function (_super) {
 var AnimationVO = (function () {
     function AnimationVO() {
         this.nextAnim = -1;
-        this.noReset = false; // стирать или нет предыдущее
+        this.noReset = false;
     }
     AnimationVO.prototype.setCompleteTime = function (completeTime, randomTime, nextAnim) {
         this.completeTime = completeTime;
@@ -909,10 +1043,8 @@ var AnimEnity = (function (_super) {
             an.setModeAnimation(this.curAnims.anims[i]);
             this.container.addChild(an);
             if (an.info.dispatchComplete)
-                //an.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
                 an.on(EVENT_COMPLETE, function (e) { _this.onCompleteAnimation(e); });
             if (an.info.completeFrame)
-                //an.addEventListener(AnimationItem.NEXT_ANIMATION, (e: createjs.Event) => { this.onCompleteAnimation(e) });
                 an.on(AnimationItem.NEXT_ANIMATION, function (e) { _this.onCompleteAnimation(e); });
             anArs.push(an);
         }
@@ -928,14 +1060,11 @@ var AnimEnity = (function (_super) {
             else
                 nameCompleteAnimation = this.curAnims.nameCompleteAnimation;
             var anCompl = this.getAnimByName(nameCompleteAnimation);
-            //anCompl.addEventListener(EVENT_COMPLETE, (e: createjs.Event) => { this.onCompleteAnimation(e) });
             anCompl.on(EVENT_COMPLETE, function (e) { _this.onCompleteAnimation(e); });
         }
     };
     AnimEnity.prototype.onCompleteAnimation = function (e) {
         if (e != null) {
-            //TODO проблема в том, что в pixi нет такого метода, необходимо продумать что там не так
-            //(e.currentTarget as AnimationItem).removeAllEventListeners(e.type);
             if (e.currentTarget.info.dispatchComplete != null) {
                 this.emit(EVENT_COMPLETE, e);
                 this.isPlayAnimation = false;
@@ -949,8 +1078,6 @@ var AnimEnity = (function (_super) {
         }
     };
     AnimEnity.prototype.reset = function () {
-        //if (timeoutID)
-        //    clearTimeout(timeoutID);
         while (this.container.children.length) {
             this.container.removeChildAt(0);
         }
@@ -959,10 +1086,6 @@ var AnimEnity = (function (_super) {
         if (this.animsCach[nameAnim] == null) {
             this.animsCach[nameAnim] = new AnimationItem(this.getMC(nameAnim), nameAnim);
         }
-        /*  for (var i: number = 0; i < this.anims.length; i++) {
-              if (this.anims[i].name == nameAnim)
-                  return this.anims[i];
-          }*/
         return this.animsCach[nameAnim];
     };
     AnimEnity.prototype.removeAnimByName = function (nameAnim) {
@@ -987,7 +1110,6 @@ var PanelInfo = (function (_super) {
         _super.call(this);
         this.dictMethod = new Object();
         this.mc = mc;
-        //TODO вернуть обратно, как соберу эту панель самостоятельно
         for (var i = 0; i < mc.children.length; i++) {
             mc.getChildAt(i).visible = false;
         }
@@ -1020,15 +1142,11 @@ var PanelInfoMain = (function (_super) {
         var _this = this;
         this.counter = 1;
         this.curView = this.mc["anim"];
+        this.curView["play_to_txt"].text = "PLAY " + mainSlot.model.bets[0] + " TO\n" + mainSlot.model.bets[mainSlot.model.bets.length - 1] * mainSlot.model.lineMax + " CREDITS";
         this.showNextAnimation();
         this.intervalID = setInterval(function () { _this.showNextAnimation(); }, 2000);
     };
-    //TO DO я не понимаю какая тут должна воспроизводится анимация, если сюда вставляется только спрайт с текстом
-    //убрал this.curView.gotoAndStop(this.counter);
     PanelInfoMain.prototype.showNextAnimation = function () {
-        //this.curView.gotoAndStop(this.counter);
-        //this.counter++;
-        //if (this.counter > this.curView.totalFrames)
         this.counter = 1;
     };
     PanelInfoMain.prototype.showWin = function (value) {
@@ -1082,7 +1200,7 @@ var PanelInfoGamble = (function (_super) {
             this.curView.visible = false;
         if (this.counter == 1) {
             this.curView = this.mc["double_to"];
-            this.curView["windouble_txt"].text = this.curValue + "?";
+            this.curView["windouble_txt"].text = 'DOUBLE TO ' + this.curValue + "?";
         }
         else {
             this.showMsgText("TAKE OR RISK", 20);

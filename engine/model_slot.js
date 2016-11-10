@@ -5,15 +5,19 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var ModelSlot = (function () {
     function ModelSlot() {
-        //public path_server: string = "http://192.168.10.124:8078/IntermalService.svc/";
         this.path_server = "https://slotsrv.1xbet.org/test/";
+        this.path_server_demo = "https://slotsrv.1xbet.org/testDemo/";
         this.KeyHash = "sdf34g21v";
+        this.BackUrl = 'https://1xslot.com/';
         this.bets = [1, 2, 3, 4];
+        this.lineMax = 9;
         this.balance = 5555;
-        this.modeLine = 1; // количество линий
-        this.typeBet = 0; // номер ставки из bets
+        this.modeLine = 1;
+        this.typeBet = 0;
         this.currentWin = 0;
         this.summInput = 0;
+        this.isAutoMode = false;
+        this.shield = false;
     }
     ModelSlot.prototype.init = function () {
         this.stateSlotManager = mainSlot.slot.getStateSlotManager();
@@ -23,9 +27,9 @@ var ModelSlot = (function () {
         if (this.lastAction && this.lastAction.Action)
             this.stateSlotManager.setModeOnActionID(this.lastAction);
         mainSlot.panel.initPanel();
+        mainSlot.panel.hidePanelLoader();
     };
     Object.defineProperty(ModelSlot.prototype, "amountBet", {
-        // значение ставки
         get: function () {
             return this.bets[this.typeBet];
         },
@@ -33,7 +37,6 @@ var ModelSlot = (function () {
         configurable: true
     });
     Object.defineProperty(ModelSlot.prototype, "totalBet", {
-        // 
         get: function () {
             return Math.round(this.amountBet * this.modeLine * 100) / 100;
         },
@@ -69,18 +72,14 @@ var ModelSlot = (function () {
         this.error = code;
         if (code != 0 && code != 16 && code != 13) {
             console.log("Ошибка: " + code + " " + msg);
-            /*if (stateManager)
-                stateManager.add(new ErrorScene(msg));
-            if (stateSlotManager)
-                stateSlotManager.setCurrentModeSlot(MODE_ERROR);*/
             return true;
         }
         return false;
     };
     ModelSlot.MODE_ERROR = "error";
     ModelSlot.MODE_DEBIT = "debit";
-    ModelSlot.MODE_READY = "ready"; // ждём вращения
-    ModelSlot.MODE_ROUTE = "route"; // вращается
+    ModelSlot.MODE_READY = "ready";
+    ModelSlot.MODE_ROUTE = "route";
     ModelSlot.MODE_ROUTE_WIN = "route_win";
     ModelSlot.MODE_HELP = "help";
     ModelSlot.MODE_GAMBLE = "gamble";
@@ -101,7 +100,6 @@ var ModelSlot = (function () {
     ModelSlot.ID_BONUSSPEC_WIN = 42;
     return ModelSlot;
 }());
-//-------------------------------------------------------------------------------------------
 var BaseVO = (function (_super) {
     __extends(BaseVO, _super);
     function BaseVO() {
@@ -123,10 +121,9 @@ var BaseVO = (function (_super) {
     };
     return BaseVO;
 }(createjs.EventDispatcher));
-//-------------------------------------------------------------------------------------------
 var RollVO = (function () {
     function RollVO() {
-        this.diffIconRoute = 4; // разница в прокрутах
+        this.diffIconRoute = 4;
     }
     RollVO.prototype.getRandomIndex = function () {
         if (this.filterIcon != null)
@@ -136,7 +133,6 @@ var RollVO = (function () {
     };
     return RollVO;
 }());
-//-------------------------------------------------------------------------------------------
 var ActionVO = (function (_super) {
     __extends(ActionVO, _super);
     function ActionVO(data) {
@@ -176,7 +172,12 @@ var ActionVO = (function (_super) {
     };
     return ActionVO;
 }(BaseVO));
-//-------------------------------------------------------------------------------------------
+var AnimIconVO = (function () {
+    function AnimIconVO() {
+        this.anim_speed = 1;
+    }
+    return AnimIconVO;
+}());
 var StateSlotManager = (function (_super) {
     __extends(StateSlotManager, _super);
     function StateSlotManager() {
@@ -197,7 +198,6 @@ var StateSlotManager = (function (_super) {
     };
     StateSlotManager.prototype.setCurrentModeSlot = function (mode, data) {
         if (data === void 0) { data = null; }
-        console.log("Mode state: " + mode);
         this.currentMode = mode;
         if (!this.dictionaryStateSlot[mode]) {
             throw new Error("Режим " + mode + " не добавлен в StateSlotManager");
@@ -218,6 +218,8 @@ var StateSlotManager = (function (_super) {
                 this.setCurrentModeSlot(ModelSlot.MODE_GAMBLE_WIN);
             else if (action.Action == ModelSlot.ID_GAMBLE_START)
                 this.setCurrentModeSlot(ModelSlot.MODE_GAMBLE);
+            else if (action.Action == ModelSlot.ID_BONUS_WIN || action.Action == ModelSlot.ID_BONUS_WIN_SB || action.Action == ModelSlot.ID_BONUS_WIN_SB_NO)
+                this.setCurrentModeSlot(ModelSlot.MODE_BONUS_CHOICE);
             else
                 this.setCurrentModeSlot(ModelSlot.MODE_ROUTE_WIN);
         }
@@ -229,7 +231,6 @@ var StateSlotManager = (function (_super) {
     };
     return StateSlotManager;
 }(createjs.EventDispatcher));
-//-------------------------------------------------------------------------------------------
 var StateSlotManagerDefault = (function (_super) {
     __extends(StateSlotManagerDefault, _super);
     function StateSlotManagerDefault() {
@@ -244,13 +245,9 @@ var StateSlotManagerDefault = (function (_super) {
         this.addStateSlot(ModelSlot.MODE_GAMBLE_CHOICE, new StateSlotGambleChoice());
         this.addStateSlot(ModelSlot.MODE_GAMBLE_WIN, new StateSlotGambleWin);
         this.addStateSlot(ModelSlot.MODE_GAMBLE_LOSE, new StateSlotGambleLoose());
-        this.addStateSlot(ModelSlot.MODE_BONUS, new StateSlotBonus());
-        this.addStateSlot(ModelSlot.MODE_BONUS_CHOICE, new StateSlotBonusChoice());
-        this.addStateSlot(ModelSlot.MODE_SUPERBONUS, new StateSlotSuperbonus());
     };
     return StateSlotManagerDefault;
 }(StateSlotManager));
-//-------------------------------------------------------------------------------------------
 var StateSlot = (function (_super) {
     __extends(StateSlot, _super);
     function StateSlot() {
@@ -263,20 +260,16 @@ var StateSlot = (function (_super) {
     };
     StateSlot.prototype.runStateSlot = function (oldStateSlot) {
     };
-    // нажали take/start
     StateSlot.prototype.downStart = function () {
     };
-    // нажали red/gamble
     StateSlot.prototype.downGamble1 = function () {
     };
-    // нажали black/gamble
     StateSlot.prototype.downGamble2 = function () {
     };
     StateSlot.prototype.downSelectBtn = function (nom) {
     };
     return StateSlot;
 }(createjs.EventDispatcher));
-//-------------------------------------------------------------------------------------------
 var StateSlotError = (function (_super) {
     __extends(StateSlotError, _super);
     function StateSlotError() {
@@ -284,7 +277,6 @@ var StateSlotError = (function (_super) {
     }
     return StateSlotError;
 }(StateSlot));
-//-------------------------------------------------------------------------------------------
 var StateSlotReady = (function (_super) {
     __extends(StateSlotReady, _super);
     function StateSlotReady() {
@@ -294,6 +286,7 @@ var StateSlotReady = (function (_super) {
         mainSlot.bindSetter(this.model, "isAutoMode", function (value) { _this.autoStart(value); });
     }
     StateSlotReady.prototype.autoStart = function (value) {
+        mainSlot.panel.panel.setStateAuto(value);
         if (value && this.main.getCurrent() == this)
             this.downStart();
     };
@@ -306,8 +299,7 @@ var StateSlotReady = (function (_super) {
             this.slotGame.getMainScene().showRollCombination(this.model.combination, null);
             this.isFirst = false;
         }
-        // TODO
-        if (this.model.isAutoMode /*&& this.model.view && this.model.view.stage*/)
+        if (this.model.isAutoMode)
             this.downStart();
     };
     StateSlotReady.prototype.downStart = function () {
@@ -340,7 +332,6 @@ var StateSlotReady = (function (_super) {
     };
     return StateSlotReady;
 }(StateSlot));
-//-------------------------------------------------------------------------------------------
 var StateSlotDebit = (function (_super) {
     __extends(StateSlotDebit, _super);
     function StateSlotDebit() {
@@ -359,7 +350,6 @@ var StateSlotDebit = (function (_super) {
     };
     return StateSlotDebit;
 }(StateSlot));
-//-------------------------------------------------------------------------------------------
 var StateSlotRoute = (function (_super) {
     __extends(StateSlotRoute, _super);
     function StateSlotRoute() {
@@ -387,7 +377,6 @@ var StateSlotRoute = (function (_super) {
     };
     return StateSlotRoute;
 }(StateSlot));
-//-------------------------------------------------------------------------------------------
 var StateSlotRouteWin = (function (_super) {
     __extends(StateSlotRouteWin, _super);
     function StateSlotRouteWin() {
@@ -397,8 +386,7 @@ var StateSlotRouteWin = (function (_super) {
         var _this = this;
         this.mainScene = this.slotGame.getMainScene();
         if (this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN || this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB_NO || this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB) {
-            //this.main.setCurrentModeSlot(ModelSlot.MODE_BONUS);
-            this.main.setCurrentModeSlot(ModelSlot.MODE_SUPERBONUS);
+            this.main.setCurrentModeSlot(ModelSlot.MODE_BONUS);
             this.model.isAutoMode = false;
             this.panel.blockBtnByType(PanelEvent.AUTO);
         }
@@ -409,16 +397,17 @@ var StateSlotRouteWin = (function (_super) {
         }
         else {
             this.panel.blockAll();
+            this.panel.hideAll();
             this.model.currentWin = this.model.lastAction.Summ;
             this.mainScene.showWinLines(this.model.lastAction.WinLines, true, function () { _this.completeShowLines(); });
             this.mainScene.showWin(this.model.lastAction.Summ);
         }
     };
     StateSlotRouteWin.prototype.completeShowLines = function () {
-        var _this = this;
         this.panel.reBlock();
-        if (this.model.isAutoMode)
-            this.tween = createjs.Tween.get(this).wait(2000).call(function () { _this.downStart(); });
+        if (this.model.isAutoMode) {
+            this.downStart();
+        }
     };
     StateSlotRouteWin.prototype.exitStateSlot = function (newStateSlot) {
         this.clearTimeout();
@@ -448,7 +437,6 @@ var StateSlotRouteWin = (function (_super) {
     };
     return StateSlotRouteWin;
 }(StateSlot));
-//-------------------------------------------------------------------------------------------
 var StateSlotGamble = (function (_super) {
     __extends(StateSlotGamble, _super);
     function StateSlotGamble() {
@@ -473,7 +461,6 @@ var StateSlotGamble = (function (_super) {
     };
     return StateSlotGamble;
 }(StateSlot));
-//-------------------------------------------------------------------------------------------
 var StateSlotGambleChoice = (function (_super) {
     __extends(StateSlotGambleChoice, _super);
     function StateSlotGambleChoice() {
@@ -497,7 +484,6 @@ var StateSlotGambleChoice = (function (_super) {
     };
     return StateSlotGambleChoice;
 }(StateSlot));
-//-------------------------------------------------------------------------------------------
 var StateSlotGambleWin = (function (_super) {
     __extends(StateSlotGambleWin, _super);
     function StateSlotGambleWin() {
@@ -527,7 +513,6 @@ var StateSlotGambleWin = (function (_super) {
     };
     return StateSlotGambleWin;
 }(StateSlotGamble));
-//-------------------------------------------------------------------------------------------
 var StateSlotGambleLoose = (function (_super) {
     __extends(StateSlotGambleLoose, _super);
     function StateSlotGambleLoose() {
@@ -548,7 +533,6 @@ var StateSlotGambleLoose = (function (_super) {
     };
     return StateSlotGambleLoose;
 }(StateSlotGamble));
-//-------------------------------------------------------------------------------------------
 var StateSlotBonus = (function (_super) {
     __extends(StateSlotBonus, _super);
     function StateSlotBonus() {
@@ -576,76 +560,5 @@ var StateSlotBonus = (function (_super) {
             this.main.setCurrentModeSlot(ModelSlot.MODE_BONUS_SPEC);
     };
     return StateSlotBonus;
-}(StateSlot));
-//-------------------------------------------------------------------------------------------
-var StateSlotBonusChoice = (function (_super) {
-    __extends(StateSlotBonusChoice, _super);
-    function StateSlotBonusChoice() {
-        _super.apply(this, arguments);
-    }
-    StateSlotBonusChoice.prototype.runStateSlot = function (oldStateSlot) {
-        var _this = this;
-        this.bonus = this.slotGame.getBonusScene();
-        this.model.currentWin = 0;
-        this.panel.setModeComboBet(0);
-        setTimeout(function () {
-            _this.slotGame.showScene(_this.bonus);
-            _this.bonus.resetBonus(_this.model.lastAction.Summ, _this.isSuperbonus, function () { _this.completeBonus(); });
-        }, 10);
-    };
-    Object.defineProperty(StateSlotBonusChoice.prototype, "isSuperbonus", {
-        get: function () {
-            return this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB_NO || this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    StateSlotBonusChoice.prototype.completeBonus = function () {
-        if (this.isSuperbonus)
-            this.main.setCurrentModeSlot(ModelSlot.MODE_SUPERBONUS);
-        else {
-            this.main.setCurrentModeSlot(ModelSlot.MODE_DEBIT, ModelSlot.MODE_READY);
-        }
-    };
-    StateSlotBonusChoice.prototype.exitStateSlot = function (newStateSlot) {
-        this.slotGame.removeScene(this.bonus);
-    };
-    StateSlotBonusChoice.prototype.downSelectBtn = function (nom) {
-        this.bonus.selectBonus(nom);
-    };
-    return StateSlotBonusChoice;
-}(StateSlot));
-//-------------------------------------------------------------------------------------------
-var StateSlotSuperbonus = (function (_super) {
-    __extends(StateSlotSuperbonus, _super);
-    function StateSlotSuperbonus() {
-        _super.apply(this, arguments);
-    }
-    StateSlotSuperbonus.prototype.runStateSlot = function (oldStateSlot) {
-        var _this = this;
-        this.model.currentWin = this.model.lastAction.Summ;
-        this.bonus = this.slotGame.getSuperbonusScene();
-        this.bonus.resetBonus(this.model.lastAction.SummAux, this.isWin, function () { _this.completeBonus(); });
-        this.slotGame.showScene(this.bonus);
-        this.panel.setModeComboBet(0);
-    };
-    StateSlotSuperbonus.prototype.exitStateSlot = function (newStateSlot) {
-        this.slotGame.removeScene(this.bonus);
-    };
-    StateSlotSuperbonus.prototype.completeBonus = function () {
-        this.main.setCurrentModeSlot(ModelSlot.MODE_DEBIT, ModelSlot.MODE_READY);
-    };
-    Object.defineProperty(StateSlotSuperbonus.prototype, "isWin", {
-        get: function () {
-            return this.model.lastAction.Action == ModelSlot.ID_BONUS_WIN_SB;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    StateSlotSuperbonus.prototype.downSelectBtn = function (nom) {
-        this.bonus.selectBonus(nom);
-        this.panel.blockComboBtns();
-    };
-    return StateSlotSuperbonus;
 }(StateSlot));
 //# sourceMappingURL=model_slot.js.map
