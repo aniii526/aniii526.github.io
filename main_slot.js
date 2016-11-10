@@ -117,6 +117,12 @@ var MainSlot = (function () {
         if (this.panel) {
             this.panel.resize(w, h);
         }
+        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
+            document.body.style.height = h + 60 + 'px';
+            setTimeout(function () {
+                document.body.style.width = '100%';
+            }, 100);
+        }
     };
     MainSlot.prototype.completeInitCommad = function () {
         this.panel.panel.getContainer().addChild(this.slot);

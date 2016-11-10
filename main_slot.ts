@@ -199,6 +199,14 @@
             this.panel.resize(w, h);
         }
 
+        // UC ios hack
+        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
+            document.body.style.height = h + 60 + 'px';
+            setTimeout(function () {
+                document.body.style.width = '100%';
+            }, 100);
+        }
+
     }
 
     public completeInitCommad(): void {
