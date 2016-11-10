@@ -56,7 +56,14 @@ var MainSlot = (function () {
             this.resize();
         }
         else {
-            window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
+            if (viewporter.ACTIVE) {
+                window.addEventListener('viewportready', function () { _this.onOrientationChanged(); }, false);
+                window.addEventListener('viewportchange', function () { _this.onOrientationChanged(); }, false);
+                document.body.appendChild(this.stats.domElement);
+            }
+            else {
+                window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
+            }
             this.onOrientationChanged();
         }
         this.animate();

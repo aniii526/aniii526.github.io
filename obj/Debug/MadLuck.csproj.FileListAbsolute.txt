@@ -4,9 +4,3 @@ D:\work\git\WebProject-1xslot\html5\MadLuck\bin\MadLuck.pdb
 D:\work\git\WebProject-1xslot\html5\MadLuck\obj\Debug\MadLuck.csprojResolveAssemblyReference.cache
 D:\work\git\WebProject-1xslot\html5\MadLuck\obj\Debug\MadLuck.dll
 D:\work\git\WebProject-1xslot\html5\MadLuck\obj\Debug\MadLuck.pdb
-D:\work\git\aniii526.github.io\bin\MadLuck.dll.config
-D:\work\git\aniii526.github.io\bin\MadLuck.dll
-D:\work\git\aniii526.github.io\bin\MadLuck.pdb
-D:\work\git\aniii526.github.io\obj\Debug\MadLuck.csprojResolveAssemblyReference.cache
-D:\work\git\aniii526.github.io\obj\Debug\MadLuck.dll
-D:\work\git\aniii526.github.io\obj\Debug\MadLuck.pdb
