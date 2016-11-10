@@ -202,8 +202,10 @@
         // UC ios hack
         if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
             document.body.style.height = h + 60 + 'px';
+            document.body.style.width = w + 60 + 'px';
             setTimeout(function () {
                 document.body.style.width = '100%';
+                document.body.style.height = '100%';
             }, 100);
         }
 
