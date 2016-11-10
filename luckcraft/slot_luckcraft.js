@@ -7,10 +7,10 @@ var SlotLuckCraft = (function (_super) {
     __extends(SlotLuckCraft, _super);
     function SlotLuckCraft() {
         _super.call(this);
-        SlotEnity.NAME_ATLAS_ICON = 'luckcraft/images/img_v2/game/prokrut_main/icon_mainttt.json';
-        SlotEnity.NAME_ATLAS_ICON_ANIM = 'luckcraft/images/img_v2/game/prokrut_main/icon_mainttt.json';
+        SlotEnity.NAME_ATLAS_ICON = 'luckcraft/images/img_v2/game/prokrut_main/icon_main.json';
+        SlotEnity.NAME_ATLAS_ICON_ANIM = 'luckcraft/images/img_v2/game/prokrut_main/icon_main.json';
         SlotEnity.NAME_ATLAS_HELP_SCENE = 'luckcraft/images/img_v2/game/prokrut_main/icon_main.json';
-        SlotEnity.NAME_ATLAS_MAIN_SCENE = 'luckcraft/images/img_v2/game/prokrut_main/icon_mainttt.json';
+        SlotEnity.NAME_ATLAS_MAIN_SCENE = 'luckcraft/images/img_v2/game/prokrut_main/icon_main.json';
         SlotEnity.NAME_ATLAS_GAMBLE_SCENE = 'gnome/images/gamble_card2.json';
         SlotEnity.NAME_ATLAS_RECT = 'gnome/images/rect_mc.json';
         SlotEnity.NAME_ATLAS_ICON_1 = 'luckcraft/images/img_v2/game/anim_main/icon_1.json';
@@ -22,21 +22,21 @@ var SlotLuckCraft = (function (_super) {
     }
     SlotLuckCraft.prototype.getResourseImg = function (callback) {
         this.loader = PIXI.loader
-            .add('mainback', 'luckcraft/images/img_v2/game/mainback_LuckCraft.jpg?3')
-            .add('luckcraft/images/img_v2/game/prokrut_main/icon_mainttt.json')
-            .add('double', 'luckcraft/images/img_v2/gamble/double.jpg?3')
-            .add('help_bg', 'luckcraft/images/img_v2/help/help.jpg?3')
-            .add('help_scene_0', 'luckcraft/images/img_v2/help/help0.jpg?3')
-            .add('help_scene_1', 'luckcraft/images/img_v2/help/help1.jpg?3')
-            .add('help_scene_2', 'luckcraft/images/img_v2/help/help2.jpg?3')
-            .add('mainback_number', 'gnome/images/img_v2/game/mainback_number.png?3')
-            .add('gnome/images/line_mc.json?3')
-            .add('gnome/images/gamble_card2.json?3')
-            .add('luckcraft/images/img_v2/game/anim_main/icon_1.json?3')
-            .add('luckcraft/images/img_v2/game/anim_main/icon_4.json?3')
-            .add('luckcraft/images/img_v2/game/anim_main/icon_6.json?3')
-            .add('luckcraft/images/img_v2/game/anim_main/icon_9.json?3')
-            .add('luckcraft/images/img_v2/game/anim_main/icons.json?3');
+            .add('mainback', 'luckcraft/images/img_v2/game/mainback_LuckCraft.jpg?2')
+            .add('luckcraft/images/img_v2/game/prokrut_main/icon_main.json')
+            .add('double', 'luckcraft/images/img_v2/gamble/double.jpg?1')
+            .add('help_bg', 'luckcraft/images/img_v2/help/help.jpg?1')
+            .add('help_scene_0', 'luckcraft/images/img_v2/help/help0.jpg?1')
+            .add('help_scene_1', 'luckcraft/images/img_v2/help/help1.jpg?1')
+            .add('help_scene_2', 'luckcraft/images/img_v2/help/help2.jpg?1')
+            .add('mainback_number', 'gnome/images/img_v2/game/mainback_number.png?1')
+            .add('gnome/images/line_mc.json')
+            .add('gnome/images/gamble_card2.json')
+            .add('luckcraft/images/img_v2/game/anim_main/icon_1.json')
+            .add('luckcraft/images/img_v2/game/anim_main/icon_4.json')
+            .add('luckcraft/images/img_v2/game/anim_main/icon_6.json')
+            .add('luckcraft/images/img_v2/game/anim_main/icon_9.json')
+            .add('luckcraft/images/img_v2/game/anim_main/icons.json');
         this.loader.once("complete", callback, this);
         this.loader.on('progress', this.onProgressCallback, this);
         this.loader.load();

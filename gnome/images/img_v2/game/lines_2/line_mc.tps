@@ -6,14 +6,14 @@
         <key>texturePackerVersion</key>
         <string>4.2.3</string>
         <key>fileName</key>
-        <string>D:/work/git/aniii526.github.io/gnome/images/img_v2/game/lines_2/line_mc.tps</string>
+        <string>D:/work/git/WebProject-1xslot/html5/BookOfRaDeluxe/gnome/images/img_v2/game/lines_2/line_mc.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>0.5</double>
+                <double>1</double>
                 <key>extension</key>
-                <string>ttt</string>
+                <string></string>
                 <key>spriteFilter</key>
                 <string></string>
                 <key>acceptFractionalValues</key>
@@ -141,7 +141,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../../line_mc{v}.json</filename>
+                <filename>../../../line_mc.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
