@@ -139,16 +139,6 @@
         this.resize();
     }
 
-    public hideAddressBar() {
-        setTimeout(function () {
-            document.body.style.height = window.outerHeight + 'px';
-            setTimeout(function () {
-                window.scrollTo(0, 1);
-            }, 1100);
-        }, 1000);
-        return false;
-    }
-
     private animate() {
         // start the timer for the next animation loop
         requestAnimationFrame(() => this.animate());
@@ -199,17 +189,15 @@
             this.panel.resize(w, h);
         }
 
-        this.hideAddressBar();
-
         // UC ios hack
-        /*if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
+        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
             document.body.style.height = h + 200 + 'px';
-            document.body.style.width = w + 200 + 'px';
+            //document.body.style.width = w + 200 + 'px';
             setTimeout(function () {
                 //document.body.style.width = '100%';
                 //document.body.style.height = '100%';
             }, 100);
-        }*/
+        }
 
     }
 

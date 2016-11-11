@@ -81,15 +81,6 @@ var MainSlot = (function () {
     MainSlot.prototype.onOrientationChanged = function () {
         this.resize();
     };
-    MainSlot.prototype.hideAddressBar = function () {
-        setTimeout(function () {
-            document.body.style.height = window.outerHeight + 'px';
-            setTimeout(function () {
-                window.scrollTo(0, 1);
-            }, 1100);
-        }, 1000);
-        return false;
-    };
     MainSlot.prototype.animate = function () {
         var _this = this;
         requestAnimationFrame(function () { return _this.animate(); });
@@ -116,7 +107,11 @@ var MainSlot = (function () {
         if (this.panel) {
             this.panel.resize(w, h);
         }
-        this.hideAddressBar();
+        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
+            document.body.style.height = h + 200 + 'px';
+            setTimeout(function () {
+            }, 100);
+        }
     };
     MainSlot.prototype.completeInitCommad = function () {
         this.panel.panel.getContainer().addChild(this.slot);
