@@ -91,7 +91,7 @@
             //} else {
                 window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
             //}
-                window.addEventListener('resize', () => { this.resize(); }, false);
+                //window.addEventListener('resize', () => { this.resize(); }, false);
             this.onOrientationChanged();
         }
 

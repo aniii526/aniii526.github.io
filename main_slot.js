@@ -57,7 +57,6 @@ var MainSlot = (function () {
         }
         else {
             window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
-            window.addEventListener('resize', function () { _this.resize(); }, false);
             this.onOrientationChanged();
         }
         this.animate();
