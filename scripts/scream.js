@@ -1,68 +1,247 @@
-import Sister from 'sister';
-import OrientationChangeEnd from 'orientationchangeend';
+/**
+ * @version 2.0.7
+ * @link https://github.com/gajus/scream for the canonical source repository
+ * @license https://github.com/gajus/scream/blob/master/LICENSE BSD 3-Clause
+ */
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+var Event,
+    Sister = require('sister');
 
-const OCE = OrientationChangeEnd();
+Event = function Event (config) {
+    var event,
+        lastEnd,
+        eventEmitter;
 
-type ConfigType = {
-    width: {
-        portrait: ?number,
-        landscape: ?number
+    if (!(this instanceof Event)) {
+        return new Event(config);
     }
-};
 
-export default (config: ConfigType = {}): Object => {
-    const scream = {};
-    const eventEmitter = Sister();
+    eventEmitter = Sister();
+
+    event = this;
+    event.on = eventEmitter.on;
+
+    config = config || {};
+
+    /**
+     * @var {Number} Number of iterations the subject of interval inspection must not mutate to fire "orientationchangeend".
+     */
+    config.noChangeCountToEnd = config.noChangeCountToEnd || 100;
+    /**
+     * @var {Number} Number of milliseconds after which fire the "orientationchangeend" if interval inspection did not do it before.
+     */
+    config.noEndTimeout = 1000 || config.noEndTimeout;
+    /**
+     * @var {Boolean} Enables logging of the events.
+     */
+    config.debug = config.debug || false;
+
+    global
+        .addEventListener('orientationchange', function () {
+            var interval,
+                timeout,
+                end,
+                lastInnerWidth,
+                lastInnerHeight,
+                noChangeCount;
+
+            end = function (dispatchEvent) {
+                clearInterval(interval);
+                clearTimeout(timeout);
+
+                interval = null;
+                timeout = null;
+
+                if (dispatchEvent) {
+                    eventEmitter.trigger('orientationchangeend');
+                }
+            };
+
+            // If there is a series of orientationchange events fired one after another,
+            // where n event orientationchangeend event has not been fired before the n+2 orientationchange,
+            // then orientationchangeend will fire only for the last orientationchange event in the series.
+            if (lastEnd) {
+                lastEnd(false);
+            }
+
+            lastEnd = end;
+
+            interval = setInterval(function () {
+                if (global.innerWidth === lastInnerWidth && global.innerHeight === lastInnerHeight) {
+                    noChangeCount++;
+
+                    if (noChangeCount === config.noChangeCountToEnd) {
+                        if (config.debug) {
+                            console.debug('setInterval');
+                        }
+
+                        end(true);
+                    }
+                } else {
+                    lastInnerWidth = global.innerWidth;
+                    lastInnerHeight = global.innerHeight;
+                    noChangeCount = 0;
+                }
+            });
+            timeout = setTimeout(function () {
+                if (config.debug) {
+                    console.debug('setTimeout');
+                }
+
+                end(true);
+            }, config.noEndTimeout);
+        });
+}
+
+global.gajus = global.gajus || {};
+global.gajus.orientationchangeend = Event;
+
+module.exports = Event;
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"sister":2}],2:[function(require,module,exports){
+(function (global){
+/**
+* @link https://github.com/gajus/sister for the canonical source repository
+* @license https://github.com/gajus/sister/blob/master/LICENSE BSD 3-Clause
+*/
+function Sister () {
+    var sister = {},
+        events = {};
+
+    /**
+     * @name handler
+     * @function
+     * @param {Object} data Event data.
+     */
+
+    /**
+     * @param {String} name Event name.
+     * @param {handler} handler
+     * @return {listener}
+     */
+    sister.on = function (name, handler) {
+        var listener = {name: name, handler: handler};
+        events[name] = events[name] || [];
+        events[name].unshift(listener);
+        return listener;
+    };
+
+    /**
+     * @param {listener}
+     */
+    sister.off = function (listener) {
+        var index = events[listener.name].indexOf(listener);
+
+        if (index != -1) {
+            events[listener.name].splice(index, 1);
+        }
+    };
+
+    /**
+     * @param {String} name Event name.
+     * @param {Object} data Event data.
+     */
+    sister.trigger = function (name, data) {
+        var listeners = events[name],
+            i;
+
+        if (listeners) {
+            i = listeners.length;
+            while (i--) {
+                listeners[i].handler(data);
+            }
+        }
+    };
+
+    return sister;
+}
+
+global.gajus = global.gajus || {};
+global.gajus.Sister = Sister;
+
+module.exports = Sister;
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],3:[function(require,module,exports){
+(function (global){
+var Scream,
+    Sister = require('sister'),
+    OCE = require('orientationchangeend')();
+    
+Scream = function Scream (config) {
+    var scream,
+        eventEmitter;
+
+    if (!(this instanceof Scream)) {
+        return new Scream(config);
+    }
+
+    scream = this;
+
+    eventEmitter = Sister();
+
+    config = config || {};
 
     config.width = config.width || {};
 
     if (!config.width.portrait) {
-        config.width.portrait = window.screen.width;
+        config.width.portrait = global.screen.width;
     }
 
     if (!config.width.landscape) {
-        config.width.landscape = window.screen.width;
+        config.width.landscape = global.screen.width;
     }
 
     /**
      * Viewport width relative to the device orientation.
+     *
+     * @return {Number}
      */
-    scream.getViewportWidth = (): number => {
+    scream.getViewportWidth = function () {
         return config.width[scream.getOrientation()];
     };
 
     /**
      * Viewport height relative to the device orientation and to scale with the viewport width.
+     *
+     * @return {Number}
      */
-    scream.getViewportHeight = (): number => {
+    scream.getViewportHeight = function () {
         return Math.round(scream.getScreenHeight() / scream.getScale());
     };
 
     /**
      * The ratio between screen width and viewport width.
+     *
+     * @return {Number}
      */
-    scream.getScale = (): number => {
-        return scream.getScreenWidth() / scream.getViewportWidth();
+    scream.getScale = function () {
+        return scream.getScreenWidth()/scream.getViewportWidth();
     };
 
-    const OrientationType = 'portrait' | 'landscape';
-
-    scream.getOrientation = (): OrientationType => {
-        return window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape';
+    /**
+     * @return {String} portrait|landscape
+     */
+    scream.getOrientation = function () {
+        return global.orientation === 0 ? 'portrait' : 'landscape';
     };
 
     /**
      * Screen width relative to the device orientation.
+     * 
+     * @return {Number}
      */
-    scream.getScreenWidth = (): number => {
-        return window.screen[scream.getOrientation() === 'portrait' ? 'width' : 'height'];
+    scream.getScreenWidth = function () {
+        return global.screen[scream.getOrientation() === 'portrait' ? 'width' : 'height'];
     };
 
     /**
      * Screen width relative to the device orientation.
+     * 
+     * @return {Number}
      */
-    scream.getScreenHeight = (): number => {
-        return window.screen[scream.getOrientation() === 'portrait' ? 'height' : 'width'];
+    scream.getScreenHeight = function () {
+        return global.screen[scream.getOrientation() === 'portrait' ? 'height' : 'width'];
     };
 
     /**
@@ -71,124 +250,110 @@ export default (config: ConfigType = {}): Object => {
      *
      * Appends the tag to the document.head and removes the preceding additions.
      */
-    scream.updateViewport = () => {
-        const width = scream.getViewportWidth();
-        const scale = scream.getScale();
+    scream._updateViewport = function () {
+        var oldViewport,
+            viewport,
+            width,
+            scale,
+            content;
 
-        const content =
+        width = scream.getViewportWidth();
+        scale = scream.getScale();
+
+        content = 
              'width=' + width +
             ', initial-scale=' + scale +
             ', minimum-scale=' + scale +
             ', maximum-scale=' + scale +
             ', user-scalable=0';
-
-        const viewport = document.createElement('meta');
-
+        
+        viewport = document.createElement('meta');
         viewport.name = 'viewport';
         viewport.content = content;
 
-        const oldViewport = window.document.head.querySelector('meta[name="viewport"]');
+        oldViewport = global.document.head.querySelector('meta[name="viewport"]');
 
         if (oldViewport) {
             oldViewport.parentNode.removeChild(oldViewport);
         }
 
-        window.document.head.appendChild(viewport);
-    };
-
-    /**
-     * @property 0 window.innerWidth when device is in a portrait orientation, scale 0.25 and page is the minimal view
-     * @property 1 window.innerHeight when device is in a portrait orientation, scale 0.25 and page is the minimal view
-     * @property 2 window.innerWidth when device is in a landscape orientation, scale 0.25 and page is the minimal view
-     * @property 3 window.innerHeight when device is in a landscape orientation, scale 0.25 and page is the minimal view
-     * @property 4 screen.width
-     * @property 5 screen.height
-     * @property 6 devicePixelRatio
-     * @property 7 name
-     */
-    type SpecType = Array;
-
-    /**
-     * Uses static device environment variables (screen.width, screen.height, devicePixelRatio) to recognize device spec.
-     */
-    scream.deviceSpec = (): SpecType => {
-        let index,
-            spec;
-
-        const specs = [
-            [1280, 1762, 1920, 1280, 320, 480, 2, 'iPhone 4'],
-            [1280, 2114, 2272, 1280, 320, 568, 2, 'iPhone 5 or 5s'],
-
-            [1500, 2510, 2668, 1500, 375, 667, 2, 'iPhone 6'],
-            // Equivalent to iPhone 5
-            // [1280, 2114, 2272, 1280, 320, 568, 2, 'iPhone 6 (Zoomed)'],
-
-            [1656, 2785, 2944, 1656, 414, 736, 3, 'iPhone 6 plus'],
-            [1500, 2509, 2668, 1500, 375, 667, 3, 'iPhone 6 plus (Zoomed)'],
-
-            [3072, 3936, 4096, 2912, 768, 1024, 1, 'iPad 2'],
-            [3072, 3938, 4096, 2914, 768, 1024, 2, 'iPad Air or Retina'],
-
-            [4096, 5306, 5464, 3938, 1024, 1366, 2, 'iPad Pro']
-        ];
-
-        index = specs.length;
-
-        while (index--) {
-            if (window.screen.width === specs[index][4] &&
-                window.screen.height === specs[index][5] &&
-                window.devicePixelRatio === specs[index][6]) {
-                spec = specs[index];
-
-                break;
-            }
-        }
-
-        return spec;
+        global.document.head.appendChild(viewport);
     };
 
     /**
      * Returns height of the usable viewport in the minimal view relative to the current viewport width.
-     *
-     * This method will work with iOS8 only.
-     *
+     * 
      * @see http://stackoverflow.com/questions/26827822/how-is-the-window-innerheight-derived-of-the-minimal-view/26827842
      * @see http://stackoverflow.com/questions/26801943/how-to-get-the-window-size-of-fullscream-view-when-not-in-fullscream
+     * @return {Number}
      */
-    scream.getMinimalViewHeight = (): number => {
-        let height;
+    scream._getMinimalViewHeight = function () {
+        var specs,
+            spec,
+            i,
+            height,
+            orientation = scream.getOrientation();
 
-        const orientation = scream.getOrientation();
-        const spec = scream.deviceSpec();
+        specs = [
+            // @see ./.spec/
+            // [
+            //  window.innerWidth when device is in a portrait orientation, scale 0.25 and page is the minimal view,
+            //  window.innerHeight when device is in a portrait orientation, scale 0.25 and page is the minimal view,
+            //  window.innerWidth when device is in a landscape orientation, scale 0.25 and page is the minimal view,
+            //  window.innerHeight when device is in a landscape orientation, scale 0.25 and page is the minimal view,
+            //  screen.width,
+            //  screen.height,
+            //  devicePixelRatio,
+            //  name
+            // ]
+            [1280, 1762, 1920, 1280, 320, 480, 2, 'iPhone 4'],
+            [1280, 2114, 2272, 1280, 320, 568, 2, 'iPhone 5 or 5s'],
+            [1500, 2510, 2668, 1500, 375, 667, 2, 'iPhone 6'],
+            [1656, 2785, 2944, 1656, 414, 736, 3, 'iPhone 6 plus'],
+            [3072, 3936, 4096, 2912, 768, 1024, 1, 'iPad 2'],
+            [3072, 3938, 4096, 2914, 768, 1024, 2, 'iPad Air or Retina']
+        ];
+
+        i = specs.length;
+
+        while (i--) {
+            if (global.screen.width === specs[i][4] &&
+                global.screen.height === specs[i][5] &&
+                global.devicePixelRatio === specs[i][6]) {
+
+                spec = specs[i];
+
+                break;
+            }
+        }
 
         if (!spec) {
             throw new Error('Not a known iOS device. If you are using an iOS device, report it to https://github.com/gajus/scream/issues/1.');
         }
 
         if (orientation === 'portrait') {
-            height = Math.round(scream.getViewportWidth() * spec[1] / spec[0]);
+            height = Math.round((scream.getViewportWidth() * spec[1]) / spec[0]);
         } else {
-            height = Math.round(scream.getViewportWidth() * spec[3] / spec[2]);
+            height = Math.round((scream.getViewportWidth() * spec[3]) / spec[2]);
         }
 
         return height;
     };
 
-    type DimensionsType = {
-        width: number,
-        height: number
-    };
-
     /**
      * Returns dimensions of the usable viewport in the minimal view relative to the current viewport width and orientation.
+     * 
+     * @return {Object} dimensions
+     * @return {Number} dimensions.width
+     * @return {Number} dimensions.height
      */
-    scream.getMinimalViewSize = (): DimensionsType => {
-        const width = scream.getViewportWidth();
-        const height = scream.getMinimalViewHeight();
+    scream.getMinimalViewSize = function () {
+        var width = scream.getViewportWidth(),
+            height = scream._getMinimalViewHeight();
 
         return {
-            height,
-            width
+            width: width,
+            height: height
         };
     };
 
@@ -201,88 +366,83 @@ export default (config: ConfigType = {}): Object => {
      *
      * In case of orientation change, the state of the view can be accurately
      * determined only after orientationchangeend event.
+     * 
+     * @return {Boolean}
      */
-    scream.isMinimalView = (): boolean => {
+    scream.isMinimalView = function () {
         // It is enough to check the height, because the viewport is based on width.
-        return window.innerHeight === scream.getMinimalViewSize().height;
+        return global.innerHeight == scream.getMinimalViewSize().height;
     };
 
     /**
-     * Detect when view changes from full to minimal and vice-versa.
+     * 
      */
-    scream.detectViewChange = () => {
-        let lastView;
+    scream._detectViewChange = (function () {
+        var lastView;
 
-        // This method will only with iOS 8.
-        // Overwrite the event handler to prevent an error.
-        if (!scream.deviceSpec()) {
-            /* eslint-disable no-console */
-            console.log('View change detection has been disabled. Unrecognized device. If you are using an iOS device, report it to https://github.com/gajus/scream/issues/1.');
-            /* eslint-enable */
+        return function () {
+            var currentView = scream.isMinimalView() ? 'minimal' : 'full';
 
-            return () => {};
-        }
-
-        return () => {
-            const currentView = scream.isMinimalView() ? 'minimal' : 'full';
-
-            if (lastView !== currentView) {
+            if (lastView != currentView) {
                 eventEmitter.trigger('viewchange', {
                     viewName: currentView
                 });
 
                 lastView = currentView;
             }
-        };
-    };
+        }
+    } ());
 
-    scream.detectViewChange = scream.detectViewChange();
-
-    scream.setupDOMEventListeners = () => {
-        let isOrientationChanging;
+    scream._setupDOMEventListeners = function () {
+        var isOrientationChanging;
 
         // Media matcher is the first to pick up the orientation change.
-        window
+        global
             .matchMedia('(orientation: portrait)')
-            .addListener(() => {
+            .addListener(function (m) {
                 isOrientationChanging = true;
             });
 
-        OCE.on('orientationchangeend', () => {
+        OCE.on('orientationchangeend', function () {
             isOrientationChanging = false;
 
-            scream.updateViewport();
-            scream.detectViewChange();
+            scream._updateViewport();
+            scream._detectViewChange();
 
             eventEmitter.trigger('orientationchangeend');
         });
 
-        window.addEventListener('orientationchange', () => {
-            scream.updateViewport();
+        global.addEventListener('orientationchange', function () {
+            scream._updateViewport();
         });
 
-        window.addEventListener('resize', () => {
+        global.addEventListener('resize', function () {
             if (!isOrientationChanging) {
-                scream.detectViewChange();
+                scream._detectViewChange();
             }
         });
 
         // iPhone 6 plus does not trigger resize event when leaving the minimal-ui in the landscape orientation.
-        window.addEventListener('scroll', () => {
+        global.addEventListener('scroll', function () {
             if (!isOrientationChanging) {
-                scream.detectViewChange();
+                scream._detectViewChange();
             }
         });
 
-        setTimeout(() => {
-            scream.detectViewChange();
+        setTimeout(function () {
+            scream._detectViewChange();
         });
     };
 
-    scream.updateViewport();
-    scream.setupDOMEventListeners();
+    scream._updateViewport();
+    scream._setupDOMEventListeners();
 
     scream.on = eventEmitter.on;
-
-    return scream;
 };
+
+global.gajus = global.gajus || {};
+global.gajus.Scream = Scream;
+
+module.exports = Scream;
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"orientationchangeend":1,"sister":2}]},{},[3])

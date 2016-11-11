@@ -15,9 +15,11 @@
     <!--<meta name="viewport" content="target-densitydpi=device-dpi, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height, minimal-ui">-->
     <title>MadLuck</title>
     <link rel="stylesheet" href="panel/font/stylesheet.css" type="text/css" charset="utf-8" />
+    
     <script src="scripts/platform.js"></script>
     <script src="scripts/scream.js"></script>
     <script src="scripts/brim.js"></script>
+    
     <!--<script src="scripts/viewporter.js"></script>-->    
     <script src="scripts/stats.min.js"></script>
     <script src="scripts/pixi.min.js"></script>
@@ -101,6 +103,9 @@
         <div id="viewporter">
         </div>
     </div>
+    <div id="not-ios-8">
+        <p>This demo has been designed for iOS 8.</p>
+    </div>
         <script>
 
         if (getparam('GameId') !== "")
@@ -158,22 +163,23 @@
         //    }, false);
             //}
 
-        var scream,
-         brim;
         if (platform.os.family == 'iOS' && parseInt(platform.os.version, 10) > 8 || platform.ua.indexOf('like Mac OS X') != -1) {
-            scream = gajus.Scream({
+            scream = gajus.Scream(/*{
                 width: {
                     portrait: 320,
                     landscape: 568
                 }
-            });
+            }*/);
+
             brim = gajus.Brim({
                 viewport: scream
             });
+
             brim.on('viewchange', function (e) {
                 document.body.className = e.viewName;
             });
         } else {
+            //document.querySelector('#not-ios-8').style.display = 'block';
             console.log("((((((((((");
         }
 
