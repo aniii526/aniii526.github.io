@@ -16,7 +16,7 @@
     <title>MadLuck</title>
     <link rel="stylesheet" href="panel/font/stylesheet.css" type="text/css" charset="utf-8" />
     
-    <script src="scripts/platform.js"></script>
+    <!--<script src="scripts/platform.js"></script>-->
     <!--<script src="scripts/scream.js"></script>-->
     <!--<script src="scripts/brim.js"></script>-->
     
@@ -70,13 +70,13 @@
             right: 0;
         }
 
-        html, body, p {
+        /*html, body, p {
             margin: 0;
             padding: 0;
         }
 
         #brim-mask, #brim-main {
-            /*display: none;*/
+            /*display: none;
         }
 
         #brim-mask {
@@ -86,7 +86,7 @@
 
         #brim-main {
             background: #1E824C;
-        }
+        }*/
 
     </style>
 </head>
@@ -94,11 +94,8 @@
 <body>
     <!--<body onLoad="setTimeout(function() {window.scrollTo(0, 1)}, 100);">-->
     <img name="preloader" src="cube.gif" class="Absolute-Center">
-    <div id="brim-main">
-        <!-- Content displayed to the user when in minimal view.  -->
         <div id="viewporter">
         </div>
-    </div>
     <!--<div id="brim-mask">-->
         <!-- Content displayed to the user when in full view. -->
     <!--</div>-->
@@ -109,7 +106,6 @@
         else
             // вернуть демо на 1
             mainSlot.startSlot(22, 1, "USD", "56", 1);
-            //mainSlot.startSlot(13, 1, "USD", "56", 0);
 
         //TODO переместить позже
         function toggleFullScreen() {
@@ -160,7 +156,7 @@
             //}
 
         //if (platform.os.family == 'iOS' && parseInt(platform.os.version, 10) > 8 || platform.ua.indexOf('like Mac OS X') != -1) {
-        if (platform.os.family == 'iOS') {
+        /*if (platform.os.family == 'iOS') {
             console.log('iOS');
         } else {
             //document.querySelector('#not-ios-8').style.display = 'block';
@@ -184,8 +180,8 @@
                         window.scrollTo(0, 0);
                     }, 0);
                 });
-            }*/
-        }
+            }
+        }*/
 
         //return window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape';
 

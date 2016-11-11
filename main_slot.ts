@@ -189,15 +189,15 @@
             this.panel.resize(w, h);
         }
 
-        // UC ios hack
-        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
-            //document.body.style.height = h * 2 + 'px';
-            //document.body.style.width = w * 2 + 'px';
-            //setTimeout(function () {
-                //document.body.style.width = '100%';
-                //document.body.style.height = '100%';
-            //}, 100);
-        }
+        //// UC ios hack
+        //if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
+        //    //document.body.style.height = h * 2 + 'px';
+        //    //document.body.style.width = w * 2 + 'px';
+        //    //setTimeout(function () {
+        //        //document.body.style.width = '100%';
+        //        //document.body.style.height = '100%';
+        //    //}, 100);
+        //}
 
     }
 

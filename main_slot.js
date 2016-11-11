@@ -107,8 +107,6 @@ var MainSlot = (function () {
         if (this.panel) {
             this.panel.resize(w, h);
         }
-        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
-        }
     };
     MainSlot.prototype.completeInitCommad = function () {
         this.panel.panel.getContainer().addChild(this.slot);
