@@ -61,9 +61,9 @@
         this.renderer.view.style.left = '50%';
         this.renderer.view.style.top = '50%';
         this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';*/
-        this.renderer.backgroundColor = 0x000000;
+        this.renderer.backgroundColor = 0xffffff;
         //this.renderer
-        document.body.children["brim-main"].children["viewporter"].appendChild(this.renderer.view);
+        document.body.children["viewporter"].appendChild(this.renderer.view);
 
         //this.renderer.resolution = window.devicePixelRatio || 2;
         //уродский хак, чтобы маска работала на мобильном устройстве
