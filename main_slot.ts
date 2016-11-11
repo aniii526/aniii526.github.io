@@ -57,8 +57,8 @@
 
         this.ratio = size[0] / size[1];
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
-        /*this.renderer.view.style.position = 'absolute';
-        this.renderer.view.style.left = '50%';
+        this.renderer.view.style.position = 'fixed';
+        /*this.renderer.view.style.left = '50%';
         this.renderer.view.style.top = '50%';
         this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';*/
         this.renderer.backgroundColor = 0x000000;
