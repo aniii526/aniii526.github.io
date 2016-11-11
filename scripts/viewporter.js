@@ -28,9 +28,9 @@ var viewporter;
 			}
 
 			// iPad's don't allow you to scroll away the UI of the browser
-			if((/ipad/i).test(navigator.userAgent)) {
-				return false;
-			}
+			//if((/ipad/i).test(navigator.userAgent)) {
+			//	return false;
+			//}
 
 			// WebOS has no touch events, but definitely the need for viewport normalization
 			if((/webos/i).test(navigator.userAgent)) {
