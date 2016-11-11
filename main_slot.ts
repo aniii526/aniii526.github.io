@@ -84,13 +84,13 @@
             window.addEventListener('resize', () => { this.resize(); }, false);
             this.resize();
         } else {
-            //if (viewporter.ACTIVE) {
-            //    window.addEventListener('viewportready', () => { this.onOrientationChanged(); }, false);
-            //    window.addEventListener('viewportchange', () => { this.onOrientationChanged(); }, false);
-            //    document.body.appendChild(this.stats.domElement);
-            //} else {
+            if (viewporter.ACTIVE) {
+                window.addEventListener('viewportready', () => { this.onOrientationChanged(); }, false);
+                window.addEventListener('viewportchange', () => { this.onOrientationChanged(); }, false);
+                document.body.appendChild(this.stats.domElement);
+            } else {
                 window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
-            //}
+            }
                 //window.addEventListener('resize', () => { this.resize(); }, false);
             this.onOrientationChanged();
         }
