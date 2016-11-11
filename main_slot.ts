@@ -199,6 +199,8 @@
             this.panel.resize(w, h);
         }
 
+        this.hideAddressBar();
+
         // UC ios hack
         /*if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
             document.body.style.height = h + 200 + 'px';

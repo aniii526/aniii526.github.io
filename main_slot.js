@@ -116,6 +116,7 @@ var MainSlot = (function () {
         if (this.panel) {
             this.panel.resize(w, h);
         }
+        this.hideAddressBar();
     };
     MainSlot.prototype.completeInitCommad = function () {
         this.panel.panel.getContainer().addChild(this.slot);
