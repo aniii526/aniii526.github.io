@@ -84,15 +84,15 @@
             window.addEventListener('resize', () => { this.resize(); }, false);
             this.resize();
         } else {
-            /*if (viewporter.ACTIVE) {
+            if (viewporter.ACTIVE) {
                 window.addEventListener('viewportready', () => { this.onOrientationChanged(); }, false);
                 window.addEventListener('viewportchange', () => { this.onOrientationChanged(); }, false);
                 document.body.appendChild(this.stats.domElement);
             } else {
                 window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
-            }*/
-            window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
-            this.onOrientationChanged();
+            }
+            //window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
+            //this.onOrientationChanged();
         }
 
         //document.body.appendChild(this.stats.domElement);

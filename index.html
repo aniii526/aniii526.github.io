@@ -11,16 +11,16 @@
     <!--<meta name="viewport" content="height=device-height,width=device-width" />-->
     <!--width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no-->
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">-->
-    <!--<meta name="viewport" content="height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">-->
+    <meta name="viewport" content="height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
     <!--<meta name="viewport" content="target-densitydpi=device-dpi, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height, minimal-ui">-->
     <title>MadLuck</title>
     <link rel="stylesheet" href="panel/font/stylesheet.css" type="text/css" charset="utf-8" />
     
     <script src="scripts/platform.js"></script>
-    <script src="scripts/scream.js"></script>
-    <script src="scripts/brim.js"></script>
+    <!--<script src="scripts/scream.js"></script>-->
+    <!--<script src="scripts/brim.js"></script>-->
     
-    <!--<script src="scripts/viewporter.js"></script>-->    
+    <script src="scripts/viewporter.js"></script>    
     <script src="scripts/stats.min.js"></script>
     <script src="scripts/pixi.min.js"></script>
     <!--<script src="scripts/jquery-3.1.0.min.js"></script>--> 
@@ -77,12 +77,12 @@
 
         #brim-mask, #brim-main {
             color: #fff;
-            pointer-events: none;
             display: none;
         }
 
         #brim-mask {
             background: #663399;
+            pointer-events: none;
         }
 
         #brim-main {
@@ -102,9 +102,6 @@
         <!-- Content displayed to the user when in minimal view.  -->
         <div id="viewporter">
         </div>
-    </div>
-    <div id="not-ios-8">
-        <p>This demo has been designed for iOS 8.</p>
     </div>
         <script>
 
@@ -163,27 +160,35 @@
         //    }, false);
             //}
 
-        if (platform.os.family == 'iOS' && parseInt(platform.os.version, 10) > 8 || platform.ua.indexOf('like Mac OS X') != -1) {
-            scream = gajus.Scream({
-                width: {
-                    landscape: 1800
-                },
-                height: {
-                    landscape: 900
-                }
-            });
-
-            brim = gajus.Brim({
-                viewport: scream
-            });
-
-            brim.on('viewchange', function (e) {
-                document.body.className = e.viewName;
-            });
+        //if (platform.os.family == 'iOS' && parseInt(platform.os.version, 10) > 8 || platform.ua.indexOf('like Mac OS X') != -1) {
+        if (platform.os.family == 'iOS') {
+            console.log('iOS');
         } else {
             //document.querySelector('#not-ios-8').style.display = 'block';
-            console.log("((((((((((");
+            console.log(' НЕ iOS');
         }
+
+        if (platform.os.family == 'iOS') {
+            if (!window.location.hash && window.addEventListener) {
+                window.addEventListener("load", function () {
+                    setTimeout(function () {
+                        window.scrollTo(0, 0);
+                    }, 0);
+                });
+                window.addEventListener("orientationchange", function () {
+                    setTimeout(function () {
+                        window.scrollTo(0, 0);
+                    }, 0);
+                });
+                window.addEventListener("touchstart", function () {
+                    setTimeout(function () {
+                        window.scrollTo(0, 0);
+                    }, 0);
+                });
+            }
+        }
+
+        //return window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape';
 
         </script>
 
