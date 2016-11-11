@@ -63,7 +63,7 @@
         this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';*/
         this.renderer.backgroundColor = 0x000000;
         //this.renderer
-        document.body.children["viewporter"].appendChild(this.renderer.view);
+        document.body.children["brim-main"].children["viewporter"].appendChild(this.renderer.view);
 
         //this.renderer.resolution = window.devicePixelRatio || 2;
         //уродский хак, чтобы маска работала на мобильном устройстве
@@ -84,14 +84,14 @@
             window.addEventListener('resize', () => { this.resize(); }, false);
             this.resize();
         } else {
-            if (viewporter.ACTIVE) {
+            /*if (viewporter.ACTIVE) {
                 window.addEventListener('viewportready', () => { this.onOrientationChanged(); }, false);
                 window.addEventListener('viewportchange', () => { this.onOrientationChanged(); }, false);
                 document.body.appendChild(this.stats.domElement);
             } else {
                 window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
-            }
-
+            }*/
+            window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
             this.onOrientationChanged();
         }
 
@@ -200,14 +200,14 @@
         }
 
         // UC ios hack
-        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
+        /*if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
             document.body.style.height = h + 200 + 'px';
             document.body.style.width = w + 200 + 'px';
             setTimeout(function () {
                 //document.body.style.width = '100%';
                 //document.body.style.height = '100%';
             }, 100);
-        }
+        }*/
 
     }
 

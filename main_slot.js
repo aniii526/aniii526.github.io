@@ -43,7 +43,7 @@ var MainSlot = (function () {
         this.ratio = size[0] / size[1];
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
         this.renderer.backgroundColor = 0x000000;
-        document.body.children["viewporter"].appendChild(this.renderer.view);
+        document.body.children["brim-main"].children["viewporter"].appendChild(this.renderer.view);
         if (this.renderer.maskManager)
             this.renderer.maskManager.enableScissor = false;
         this.mainStage = new PIXI.Container();
@@ -56,14 +56,7 @@ var MainSlot = (function () {
             this.resize();
         }
         else {
-            if (viewporter.ACTIVE) {
-                window.addEventListener('viewportready', function () { _this.onOrientationChanged(); }, false);
-                window.addEventListener('viewportchange', function () { _this.onOrientationChanged(); }, false);
-                document.body.appendChild(this.stats.domElement);
-            }
-            else {
-                window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
-            }
+            window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
             this.onOrientationChanged();
         }
         this.animate();
@@ -116,12 +109,6 @@ var MainSlot = (function () {
         this.renderer.resize(w, h);
         if (this.panel) {
             this.panel.resize(w, h);
-        }
-        if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
-            document.body.style.height = h + 200 + 'px';
-            document.body.style.width = w + 200 + 'px';
-            setTimeout(function () {
-            }, 100);
         }
     };
     MainSlot.prototype.completeInitCommad = function () {

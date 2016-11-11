@@ -31,11 +31,14 @@
     <Content Include="JavaScript.js" />
     <Content Include="JavaScript1.js" />
     <Content Include="JavaScript2.js" />
+    <Content Include="scripts\brim.js" />
     <Content Include="scripts\jquery-3.1.0.js" />
     <Content Include="scripts\jquery-3.1.0.min.js" />
     <Content Include="scripts\jquery-3.1.0.slim.js" />
     <Content Include="scripts\jquery-3.1.0.slim.min.js" />
     <Content Include="scripts\pixi.min.js" />
+    <Content Include="scripts\platform.js" />
+    <Content Include="scripts\scream.js" />
     <Content Include="scripts\stats.min.js" />
     <Content Include="scripts\viewporter.js" />
     <Content Include="web.config" />
