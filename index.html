@@ -10,17 +10,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <!--<meta name="viewport" content="height=device-height,width=device-width" />-->
     <!--width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-    <!--<meta name="viewport" content="height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">-->
-    <!--<meta name="viewport" content="target-densitydpi=device-dpi, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height, minimal-ui">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">-->
+    <meta name="viewport" content="height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
     <title>MadLuck</title>
     <link rel="stylesheet" href="panel/font/stylesheet.css" type="text/css" charset="utf-8" />
-    
-    <!--<script src="scripts/platform.js"></script>-->
-    <!--<script src="scripts/scream.js"></script>-->
-    <!--<script src="scripts/brim.js"></script>-->
-    
-    <script src="scripts/viewporter.js"></script>    
+    <script src="scripts/viewporter.js"></script>
     <script src="scripts/stats.min.js"></script>
     <script src="scripts/pixi.min.js"></script>
     <!--<script src="scripts/jquery-3.1.0.min.js"></script>--> 
@@ -30,25 +24,26 @@
     <script src="engine/commands_slot.js"></script>
     <script src="engine/model_slot.js"></script>
     <script src="main_slot.js"></script>
-    <script src="scripts/screenfull.min.js"></script>
     <style>
         canvas {
-            display: block;
+          display: block;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
+            margin:0; 
+            padding:0;
+            background-color:#000;
+
             font-family: 'heliosblackcregular','ImpactRegular';
-            -webkit-tap-highlight-color: rgba(0,0,0,0);
-            -webkit-touch-callout: none;
-            -webkit-text-size-adjust: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0); 
+            -webkit-touch-callout: none;                
+            -webkit-text-size-adjust: none;             
             -webkit-user-select: none;
+
             -moz-user-select: none;
-            -khtml-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+	        -khtml-user-select: none;
+	        -ms-user-select: none;
+	        user-select: none;
             /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkJBN0I2QTQ1M0NBQjExRTQ5RThBOTRENkVBQjQ3NzM2IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkJBN0I2QTQ2M0NBQjExRTQ5RThBOTRENkVBQjQ3NzM2Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QkE3QjZBNDMzQ0FCMTFFNDlFOEE5NEQ2RUFCNDc3MzYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QkE3QjZBNDQzQ0FCMTFFNDlFOEE5NEQ2RUFCNDc3MzYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5jCaiLAAAAk0lEQVR42uzTsQnDMBCGUZAagQq1ThcvoAW0/0gqHOQQgRdIe/Ca46v/4+Uxxve+X8dRSum9h+vcWsspzTlrrWutcJ0+17XrfZ77Ruy8vxB0+6dT3O2fZoABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGPijfwIMAKYWZQwHkBbxAAAAAElFTkSuQmCC); background-repeat: repeat;*/
         }
 
@@ -69,26 +64,8 @@
             bottom: 0;
             right: 0;
         }
-
-        /*html, body, p {
-            margin: 0;
-            padding: 0;
-        }
-
-        #brim-mask, #brim-main {
-            /*display: none;
-        }
-
-        #brim-mask {
-            background: rgba(0, 0, 0, .5);
-            pointer-events: none;
-        }
-
-        #brim-main {
-            background: #1E824C;
-        }*/
-
     </style>
+
 </head>
 
 <body>
@@ -96,9 +73,7 @@
     <img name="preloader" src="cube.gif" class="Absolute-Center">
         <div id="viewporter">
         </div>
-    <!--<div id="brim-mask">-->
-        <!-- Content displayed to the user when in full view. -->
-    <!--</div>-->
+
         <script>
 
         if (getparam('GameId') !== "")
@@ -106,6 +81,7 @@
         else
             // вернуть демо на 1
             mainSlot.startSlot(22, 1, "USD", "56", 1);
+            //mainSlot.startSlot(13, 1, "USD", "56", 0);
 
         //TODO переместить позже
         function toggleFullScreen() {
@@ -138,12 +114,6 @@
             else return results[1];
         }
 
-        //$('[name="tap"]').on('click', () => {
-        //    if (screenfull.enabled) {
-        //        screenfull.request();
-        //    }
-        //});
-
         //if (document.body.webkitRequestFullScreen) {
         //    window.addEventListener('click', function (e) {
         //        if (e.target.type != 'text' && e.target.type != 'password') {
@@ -153,44 +123,7 @@
         //            }, 500);
         //        }
         //    }, false);
-            //}
-
-        //if (platform.os.family == 'iOS' && parseInt(platform.os.version, 10) > 8 || platform.ua.indexOf('like Mac OS X') != -1) {
-        /*if (platform.os.family == 'iOS') {
-            console.log('iOS');
-        } else {
-            //document.querySelector('#not-ios-8').style.display = 'block';
-            console.log(' НЕ iOS');
-        }
-
-        if (platform.os.family == 'iOS') {
-            /*if (!window.location.hash && window.addEventListener) {
-                window.addEventListener("load", function () {
-                    setTimeout(function () {
-                        window.scrollTo(0, 0);
-                    }, 0);
-                });
-                window.addEventListener("orientationchange", function () {
-                    setTimeout(function () {
-                        window.scrollTo(0, 0);
-                    }, 0);
-                });
-                window.addEventListener("touchstart", function () {
-                    setTimeout(function () {
-                        window.scrollTo(0, 0);
-                    }, 0);
-                });
-            }
-        }*/
-
-        //return window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape';
-
+        //}
         </script>
-
-   <!-- <div id="hand_move">
-        <img name="tap" src="tap.jpg">
-        <!--<img name="tap" src="tap.jpg" class="Absolute-Center">
-    </div>-->
-
     </body>
 </html>

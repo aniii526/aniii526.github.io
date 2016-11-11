@@ -42,7 +42,7 @@ var MainSlot = (function () {
         var size = (this.isMobile) ? [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT] : [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT];
         this.ratio = size[0] / size[1];
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
-        this.renderer.backgroundColor = 0xffffff;
+        this.renderer.backgroundColor = 0x000000;
         document.body.children["viewporter"].appendChild(this.renderer.view);
         if (this.renderer.maskManager)
             this.renderer.maskManager.enableScissor = false;
@@ -64,6 +64,7 @@ var MainSlot = (function () {
             else {
                 window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
             }
+            this.onOrientationChanged();
         }
         this.animate();
         var qc = new InitCommand();
@@ -80,6 +81,15 @@ var MainSlot = (function () {
     };
     MainSlot.prototype.onOrientationChanged = function () {
         this.resize();
+    };
+    MainSlot.prototype.hideAddressBar = function () {
+        setTimeout(function () {
+            document.body.style.height = window.outerHeight + 'px';
+            setTimeout(function () {
+                window.scrollTo(0, 1);
+            }, 1100);
+        }, 1000);
+        return false;
     };
     MainSlot.prototype.animate = function () {
         var _this = this;

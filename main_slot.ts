@@ -61,7 +61,7 @@
         this.renderer.view.style.left = '50%';
         this.renderer.view.style.top = '50%';
         this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';*/
-        this.renderer.backgroundColor = 0xffffff;
+        this.renderer.backgroundColor = 0x000000;
         //this.renderer
         document.body.children["viewporter"].appendChild(this.renderer.view);
 
@@ -91,8 +91,8 @@
             } else {
                 window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
             }
-            //window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
-            //this.onOrientationChanged();
+
+            this.onOrientationChanged();
         }
 
         //document.body.appendChild(this.stats.domElement);
@@ -137,6 +137,16 @@
     public onOrientationChanged() {
         //this.hideAddressBar();
         this.resize();
+    }
+
+    public hideAddressBar() {
+        setTimeout(function () {
+            document.body.style.height = window.outerHeight + 'px';
+            setTimeout(function () {
+                window.scrollTo(0, 1);
+            }, 1100);
+        }, 1000);
+        return false;
     }
 
     private animate() {
@@ -188,16 +198,6 @@
         if (this.panel) {
             this.panel.resize(w, h);
         }
-
-        //// UC ios hack
-        //if (!!/iPad|iPhone|iPod/i.exec(navigator.userAgent)) {
-        //    //document.body.style.height = h * 2 + 'px';
-        //    //document.body.style.width = w * 2 + 'px';
-        //    //setTimeout(function () {
-        //        //document.body.style.width = '100%';
-        //        //document.body.style.height = '100%';
-        //    //}, 100);
-        //}
 
     }
 
