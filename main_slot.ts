@@ -65,7 +65,7 @@
         //this.renderer
         document.body.children["viewporter"].appendChild(this.renderer.view);
 
-        //this.renderer.resolution = window.devicePixelRatio || 2;
+        this.renderer.resolution = window.devicePixelRatio || 1;
         //уродский хак, чтобы маска работала на мобильном устройстве
         if (this.renderer.maskManager as PIXI.MaskManager)
         (this.renderer.maskManager as PIXI.MaskManager).enableScissor = false;
