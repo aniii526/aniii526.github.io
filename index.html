@@ -59,6 +59,19 @@
             bottom: 0;
             right: 0;
         }
+
+        .TextClass {
+            overflow: auto;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            color: #ff0000;
+            font-size:60px;
+        }
+
     </style>
 
 </head>
@@ -72,7 +85,9 @@
         <!--<img src="mainback.jpg" />
         <img src="mainback.jpg" />-->
     </div>
+    <div id="text" class="TextClass">
 
+    </div>
     <script>
         //if (document.body.webkitRequestFullScreen) {
         //    window.addEventListener('click', function (e) {
@@ -97,7 +112,9 @@
             }
 
             // maximize the document element's height to be able to scroll away the url bar
-            document.documentElement.style.minHeight = '5000px';
+            //document.documentElement.style.minHeight = '5000px';
+
+            document.getElementById('text').innerHTML = window.innerHeight;
         }, false);
 
     </script>
