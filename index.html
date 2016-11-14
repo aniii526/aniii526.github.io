@@ -69,8 +69,8 @@
 
     <div id="mask">
         <img src="mainback.jpg" />
-        <img src="mainback.jpg" />
-        <img src="mainback.jpg" />
+        <!--<img src="mainback.jpg" />
+        <img src="mainback.jpg" />-->
     </div>
 
     <script>
@@ -91,7 +91,13 @@
         }, false);
 
         document.body.addEventListener("touchstart", function (event) {
-            event.preventDefault();
+            // if we're running in webapp mode (iOS), there's nothing to scroll away
+            if (navigator.standalone) {
+                return this.postProcess();
+            }
+
+            // maximize the document element's height to be able to scroll away the url bar
+            document.documentElement.style.minHeight = '5000px';
         }, false);
 
     </script>
