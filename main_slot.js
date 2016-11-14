@@ -44,7 +44,6 @@ var MainSlot = (function () {
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
         this.renderer.backgroundColor = 0x000000;
         document.body.children["viewporter"].appendChild(this.renderer.view);
-        this.renderer.resolution = window.devicePixelRatio || 1;
         if (this.renderer.maskManager)
             this.renderer.maskManager.enableScissor = false;
         this.mainStage = new PIXI.Container();

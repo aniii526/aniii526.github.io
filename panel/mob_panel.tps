@@ -6,14 +6,14 @@
         <key>texturePackerVersion</key>
         <string>4.2.3</string>
         <key>fileName</key>
-        <string>D:/work/git/WebProject-1xslot/html5/MadLuck/panel/mob_panel.tps</string>
+        <string>D:/work/git/aniii526.github.io/panel/mob_panel.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>1</double>
+                <double>0.5</double>
                 <key>extension</key>
-                <string></string>
+                <string>ttt</string>
                 <key>spriteFilter</key>
                 <string></string>
                 <key>acceptFractionalValues</key>
@@ -141,7 +141,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>mob_panel.json</filename>
+                <filename>mob_panel{v}.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -200,9 +200,11 @@
             <key type="filename">мобильная версия/btn_9lines_mobile.png</key>
             <key type="filename">мобильная версия/btn_autostart_down_mobile.png</key>
             <key type="filename">мобильная версия/btn_autostart_mobile.png</key>
+            <key type="filename">мобильная версия/btn_back.png</key>
             <key type="filename">мобильная версия/btn_betone_mobile.png</key>
             <key type="filename">мобильная версия/btn_home.png</key>
             <key type="filename">мобильная версия/btn_info_mobile.png</key>
+            <key type="filename">мобильная версия/btn_left.png</key>
             <key type="filename">мобильная версия/btn_maxbet_mobile.png</key>
             <key type="filename">мобильная версия/btn_menu.png</key>
             <key type="filename">мобильная версия/btn_start_mobile.png</key>
@@ -234,8 +236,6 @@
             <key type="filename">мобильная версия/preloader_mc7.png</key>
             <key type="filename">мобильная версия/preloader_mc8.png</key>
             <key type="filename">мобильная версия/preloader_mc9.png</key>
-            <key type="filename">../../../new_art/mad luck/mobile/btn_back.png</key>
-            <key type="filename">../../../new_art/mad luck/mobile/btn_left.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -289,8 +289,8 @@
             <filename>мобильная версия/btn_x2.png</filename>
             <filename>мобильная версия/main_back_mobile.png</filename>
             <filename>мобильная версия/mainback_screen_mobile.png</filename>
-            <filename>../../../new_art/mad luck/mobile/btn_left.png</filename>
-            <filename>../../../new_art/mad luck/mobile/btn_back.png</filename>
+            <filename>мобильная версия/btn_left.png</filename>
+            <filename>мобильная версия/btn_back.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
