@@ -19,6 +19,26 @@
     <link rel="stylesheet" href="panel/font/stylesheet.css" type="text/css" charset="utf-8" />
     <!--<script src="scripts/viewporter.js"></script>-->
     <style>
+        * {
+            -ms-touch-action: none;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            padding: 0;
+            margin: 0;
+            outline: none;
+            cursor: default;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         canvas {
             display: block;
         }
@@ -36,10 +56,8 @@
             -khtml-user-select: none;
             -ms-user-select: none;
             user-select: none;
-
             /*блокирует слой*/
-            /*overflow: hidden;*/
-
+            overflow: hidden;
             /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkJBN0I2QTQ1M0NBQjExRTQ5RThBOTRENkVBQjQ3NzM2IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkJBN0I2QTQ2M0NBQjExRTQ5RThBOTRENkVBQjQ3NzM2Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QkE3QjZBNDMzQ0FCMTFFNDlFOEE5NEQ2RUFCNDc3MzYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QkE3QjZBNDQzQ0FCMTFFNDlFOEE5NEQ2RUFCNDc3MzYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5jCaiLAAAAk0lEQVR42uzTsQnDMBCGUZAagQq1ThcvoAW0/0gqHOQQgRdIe/Ca46v/4+Uxxve+X8dRSum9h+vcWsspzTlrrWutcJ0+17XrfZ77Ruy8vxB0+6dT3O2fZoABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGPijfwIMAKYWZQwHkBbxAAAAAElFTkSuQmCC); background-repeat: repeat;*/
         }
 
@@ -70,9 +88,8 @@
             bottom: 0;
             right: 0;
             color: #ff0000;
-            font-size:60px;
+            font-size: 60px;
         }
-
     </style>
 
 </head>
@@ -87,7 +104,7 @@
         <!--<img src="mainback.jpg" />-->
     </div>
     <div id="text" class="TextClass">
-        qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+        qqqqqqqqqqqqqqqqqqqq
     </div>
     <script>
         //if (document.body.webkitRequestFullScreen) {
