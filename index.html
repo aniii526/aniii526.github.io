@@ -105,7 +105,7 @@
             event.preventDefault();
         }, false);*/
 
-        document.body.addEventListener("touchstart", function (event) {
+        document.body.addEventListener("touchend", function (event) {
             // if we're running in webapp mode (iOS), there's nothing to scroll away
             if (navigator.standalone) {
                 return this.postProcess();
