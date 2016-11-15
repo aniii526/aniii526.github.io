@@ -52,7 +52,6 @@
 
         soundManager = new SoundManager();
 
-        //let size = [1280, 720];
         let size: number[] = (this.isMobile) ? [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT] : [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT];
 
         this.ratio = size[0] / size[1];
@@ -100,9 +99,9 @@
         this.animate();
         //this.resize();
 
-        var qc: InitCommand = new InitCommand();
+        /*var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
-        qc.execute();
+        qc.execute();*/
     }
 
     public callback(): void {

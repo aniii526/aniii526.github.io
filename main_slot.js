@@ -67,9 +67,6 @@ var MainSlot = (function () {
             this.onOrientationChanged();
         }
         this.animate();
-        var qc = new InitCommand();
-        qc.addEventListener(EVENT_COMPLETE, function () { _this.completeInitCommad(); });
-        qc.execute();
     };
     MainSlot.prototype.callback = function () {
         var sp = new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture);

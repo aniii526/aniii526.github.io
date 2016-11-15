@@ -64,14 +64,28 @@
             bottom: 0;
             right: 0;
         }
+        .TextClass {
+            overflow: auto;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            color: #ff0000;
+            font-size:60px;
+        }
     </style>
 
 </head>
 
 <body>
     <!--<body onLoad="setTimeout(function() {window.scrollTo(0, 1)}, 100);">-->
-    <img name="preloader" src="cube.gif" class="Absolute-Center">
+    <!--<img name="preloader" src="cube.gif" class="Absolute-Center">-->
         <div id="viewporter">
+        </div>
+        <div id="textc" class="TextClass">
+
         </div>
 
         <script>
@@ -113,6 +127,19 @@
             if (results == null) return "";
             else return results[1];
         }
+
+        document.body.addEventListener("touchstart", function (event) {
+            // if we're running in webapp mode (iOS), there's nothing to scroll away
+            /*if (navigator.standalone) {
+                return this.postProcess();
+            }*/
+
+            // maximize the document element's height to be able to scroll away the url bar
+            //document.documentElement.style.minHeight = '5000px';
+            var srt = "innerHeight : " + window.innerHeight + "<br>";
+            srt += "innerWidth : " + window.innerWidth;
+            document.getElementById('textc').innerHTML = srt;
+        }, false);
 
         //if (document.body.webkitRequestFullScreen) {
         //    window.addEventListener('click', function (e) {
