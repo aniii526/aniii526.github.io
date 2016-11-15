@@ -137,7 +137,9 @@
             // maximize the document element's height to be able to scroll away the url bar
             //document.documentElement.style.minHeight = '5000px';
             var srt = "innerHeight : " + window.innerHeight + "<br>";
-            srt += "innerWidth : " + window.innerWidth;
+            srt += "innerWidth : " + window.innerWidth + "<br>";
+            srt += "clientHeight : " + document.documentElement.clientHeight + "<br>";
+            srt += "clientWidth : " + document.documentElement.clientWidth;
             document.getElementById('textc').innerHTML = srt;
         }, false);
 
