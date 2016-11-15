@@ -611,7 +611,7 @@ class PanelSlotMob extends PanelSlotWeb {
         this.addChild(this._txt_bet);
 
         let graphics: PIXI.Graphics = new PIXI.Graphics();
-        graphics.beginFill(0x02274A);
+        graphics.beginFill(0x000000);
         graphics.drawRect(-300, 820, 1800, 80);
         graphics.endFill();
         this.addChild(graphics);
