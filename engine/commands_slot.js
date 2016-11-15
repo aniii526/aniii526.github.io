@@ -432,7 +432,6 @@ var LoadSlot = (function (_super) {
     LoadSlot.prototype.execInternal = function () {
         var _this = this;
         var id_game = mainSlot.model.gameId + '';
-        id_game = GameList.LUCK_CRAFT;
         switch (id_game) {
             case GameList.MAD_LUCK:
                 loadJS("gnome/slot_gnome.js", function () { _this.completeLoadSlotJS(); });
@@ -445,6 +444,12 @@ var LoadSlot = (function (_super) {
                 break;
             case GameList.LUCK_CRAFT:
                 loadJS("luckcraft/slot_luckcraft.js", function () { _this.completeLoadSlotJS(); });
+                break;
+            case GameList.GRIM_GANG:
+                loadJS("grimgang/slot_grimgang.js", function () { _this.completeLoadSlotJS(); });
+                break;
+            case GameList.LORD_OF_LUCK:
+                loadJS("lordofluck/slot_lordofluck.js", function () { _this.completeLoadSlotJS(); });
                 break;
         }
         return;
@@ -465,6 +470,8 @@ var GameList = (function () {
     GameList.REVENGERS = "13";
     GameList.SMITHERS = "28";
     GameList.LUCK_CRAFT = "25";
+    GameList.GRIM_GANG = "37";
+    GameList.LORD_OF_LUCK = "47";
     return GameList;
 }());
 var InitCommand = (function (_super) {

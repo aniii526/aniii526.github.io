@@ -57,14 +57,15 @@
 
         this.ratio = size[0] / size[1];
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
-        //this.renderer.view.style.position = 'fixed';
-        /*this.renderer.view.style.left = '50%';
+        /*this.renderer.view.style.position = 'absolute';
+        this.renderer.view.style.left = '50%';
         this.renderer.view.style.top = '50%';
         this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';*/
         this.renderer.backgroundColor = 0x000000;
         //this.renderer
         document.body.children["viewporter"].appendChild(this.renderer.view);
 
+        //this.renderer.resolution = window.devicePixelRatio || 2;
         //уродский хак, чтобы маска работала на мобильном устройстве
         if (this.renderer.maskManager as PIXI.MaskManager)
         (this.renderer.maskManager as PIXI.MaskManager).enableScissor = false;
@@ -90,7 +91,7 @@
             } else {
                 window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
             }
-                //window.addEventListener('resize', () => { this.resize(); }, false);
+
             this.onOrientationChanged();
         }
 

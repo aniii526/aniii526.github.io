@@ -515,7 +515,7 @@ class LoadSlot extends Command {
         //loadJS("gnome/slot_gnome.js", () => { this.completeLoadSlotJS(); });
         let id_game: string = mainSlot.model.gameId + '';
 
-        id_game = GameList.LUCK_CRAFT;
+        //id_game = GameList.LORD_OF_LUCK;
 
         switch (id_game) {
             case GameList.MAD_LUCK:
@@ -529,6 +529,12 @@ class LoadSlot extends Command {
                 break;
             case GameList.LUCK_CRAFT:
                 loadJS("luckcraft/slot_luckcraft.js", () => { this.completeLoadSlotJS(); });
+                break;
+            case GameList.GRIM_GANG:
+                loadJS("grimgang/slot_grimgang.js", () => { this.completeLoadSlotJS(); });
+                break;
+            case GameList.LORD_OF_LUCK:
+                loadJS("lordofluck/slot_lordofluck.js", () => { this.completeLoadSlotJS(); });
                 break;
         }
         return;
@@ -549,6 +555,8 @@ class GameList {
     public static REVENGERS: string = "13";
     public static SMITHERS: string = "28";
     public static LUCK_CRAFT: string = "25";
+    public static GRIM_GANG: string = "37";
+    public static LORD_OF_LUCK: string = "47";
 }
 
 class InitCommand extends QueueCommand {

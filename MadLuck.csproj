@@ -49,6 +49,8 @@
     <TypeScriptCompile Include="engine\panel_adapter.ts" />
     <TypeScriptCompile Include="engine\slot_enity.ts" />
     <TypeScriptCompile Include="gnome\slot_gnome.ts" />
+    <TypeScriptCompile Include="grimgang\slot_grimgang.ts" />
+    <TypeScriptCompile Include="lordofluck\slot_lordofluck.ts" />
     <TypeScriptCompile Include="luckcraft\slot_luckcraft.ts" />
     <TypeScriptCompile Include="main_slot.ts" />
     <TypeScriptCompile Include="panel\panel_slot_web.ts" />
