@@ -99,9 +99,9 @@
         this.animate();
         //this.resize();
 
-        /*var qc: InitCommand = new InitCommand();
+        var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
-        qc.execute();*/
+        qc.execute();
     }
 
     public callback(): void {
