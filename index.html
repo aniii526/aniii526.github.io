@@ -73,7 +73,7 @@
             bottom: 0;
             right: 0;
             color: #ff0000;
-            font-size:60px;
+            font-size:40px;
             width: 100%;
             height:100%;
         }
@@ -92,7 +92,7 @@
 
         <script>
 
-            ///ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ УРА, НАКОНЕЦ Я СМОГ ПОЛУЧИТЬ ЕЁ 1 ШАГ В СТОРОНУ ИДЕАЛЬНОГО БИЛДА
+            ///ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ УРА, НАКОНЕЦ Я СМОГ ПОЛУЧИТЬ ЕЩЁ 1 ШАГ В СТОРОНУ ИДЕАЛЬНОГО БИЛДА
 
         if (getparam('GameId') !== "")
             mainSlot.startSlot(getparam('GameId'), getparam('PartnerId'), getparam('Currency'), getparam('UserId'), getparam('Demo'), getparam('Token'), getparam('BackUrl'));
@@ -146,6 +146,10 @@
             srt += "screen.availHeight : " + screen.availHeight + "<br>";
             srt += "window.outerHeight : " + window.outerHeight + "<br>"; 
             srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
+            srt += "this.scrollTop : " + this.scrollTop + "<br>";
+            srt += "this.scrollHeight : " + this.scrollHeight + "<br>";
+            srt += "this.clientHeight : " + this.clientHeight + "<br>";
+            srt += "document.body.clientHeight : " + document.body.clientHeight + "<br>";
             document.getElementById('textc').innerHTML = srt;
         }, false);
 
