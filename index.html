@@ -155,7 +155,12 @@
         }, false);
 
         document.body.addEventListener("touchend", function (event) {
+            //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
             window.viewporter.refresh();
+        }, false);
+
+        document.body.addEventListener("touchmove", function (event) {
+            document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
         }, false);
 
             /*
