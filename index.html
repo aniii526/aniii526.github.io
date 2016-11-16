@@ -92,6 +92,8 @@
 
         <script>
 
+            var mainInnerHeight = 0;
+            var mainIterator = 0;
             ///ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ УРА, НАКОНЕЦ Я СМОГ ПОЛУЧИТЬ ЕЩЁ 1 ШАГ В СТОРОНУ ИДЕАЛЬНОГО БИЛДА
 
         if (getparam('GameId') !== "")
@@ -160,9 +162,16 @@
         }, false);
 
         document.body.addEventListener("touchmove", function (event) {
+            if (mainInnerHeight != window.innerHeight) {
+                mainInnerHeight = window.innerHeight;
+                mainIterator = 0;
+            } else {
+                mainIterator++;
+                if (mainIterator >= 10) {
+                    document.getElementById('textc').innerHTML = "УРА";
+                }
+            }
             //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
-            var srt = "window.screenY : " + window.screenY + "<br>";
-            document.getElementById('textc').innerHTML = srt;
         }, false);
 
             /*
