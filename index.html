@@ -160,7 +160,12 @@
         }, false);
 
         document.body.addEventListener("touchmove", function (event) {
-            document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
+            //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
+            var srt = "clientTop : " + document.getElementById('textc').clientTop + "<br>";
+            srt += "offsetTop : " + document.getElementById('textc').offsetTop + "<br>";
+            srt += "scrollTop : " + document.getElementById('textc').scrollTop + "<br>";
+            srt += "offsetHeight : " + document.getElementById('textc').offsetHeight + "<br>";
+            document.getElementById('textc').innerHTML = srt;
         }, false);
 
             /*
