@@ -192,12 +192,16 @@
         }, false);
 
         function show(name) {
-            document.getElementById(name).style.display = 'block';
-            document.getElementById(name).style.visibility = 'visible';
+            document.getElementById('textc').style.display = 'block';
+            document.getElementById('textc').style.visibility = 'visible';
+            document.getElementById('viewporter').style.display = 'none';
+            document.getElementById('viewporter').style.visibility = 'hidden';
         }
         function hide(name) {
-            document.getElementById(name).style.display = 'none';
-            document.getElementById(name).style.visibility = 'hidden';
+            document.getElementById('viewporter').style.display = 'block';
+            document.getElementById('viewporter').style.visibility = 'visible';
+            document.getElementById('textc').style.display = 'none';
+            document.getElementById('textc').style.visibility = 'hidden';
         };
 
         document.body.addEventListener("touchend", function (event) {
@@ -209,7 +213,7 @@
             }
 
             timeout = setTimeout(function () {
-                hide('textc');
+                hide();
             }, 400);
         }, false);
 
@@ -228,6 +232,8 @@
             //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
         }, false);
         var timeout;
+        //скрываю игру
+        show();
         /*
         var timeout;
 
