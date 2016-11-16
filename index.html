@@ -142,7 +142,7 @@
 
             // maximize the document element's height to be able to scroll away the url bar
             //document.documentElement.style.minHeight = '5000px';
-            var srt = "innerHeight : " + window.innerHeight + "<br>";
+            /*var srt = "innerHeight : " + window.innerHeight + "<br>";
             srt += "clientHeight : " + document.documentElement.clientHeight + "<br>";
             srt += "screen.height : " + screen.width + "<br>";
             srt += "screen.availHeight : " + screen.availHeight + "<br>";
@@ -153,7 +153,7 @@
             srt += "this.clientHeight : " + this.clientHeight + "<br>";
             srt += "document.body.clientHeight : " + document.body.clientHeight + "<br>";
             srt += "window.devicePixelRatio : " + window.devicePixelRatio + "<br>";
-            document.getElementById('textc').innerHTML = srt;
+            document.getElementById('textc').innerHTML = srt;*/
         }, false);
 
         document.body.addEventListener("touchend", function (event) {
@@ -165,6 +165,7 @@
             if (mainInnerHeight != window.innerHeight) {
                 mainInnerHeight = window.innerHeight;
                 mainIterator = 0;
+                document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
             } else {
                 mainIterator++;
                 if (mainIterator >= 10) {
