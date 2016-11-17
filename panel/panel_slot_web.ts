@@ -79,6 +79,12 @@
         //    document["preloader"].style.visibility = 'hidden';
         //},5000);
 
+        if (mainSlot.isMobile) {
+            //показать картинку, но написать в нее мобильник это или нет.
+            show();
+            document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
+        }
+
         this.uniqueShow();
 
         if (this.txt_fon)

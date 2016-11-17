@@ -73,10 +73,10 @@
 
         this.mainStage = new PIXI.Container();
 
-        this.stats = new Stats();
+        /*this.stats = new Stats();
         this.stats.setMode(0);
         this.stats.domElement.style.position = "fixed";
-        this.stats.domElement.style.top = "0px";
+        this.stats.domElement.style.top = "0px";*/
 
         // тут ! правильно стоит
         if (!this.isMobile) {
@@ -86,7 +86,7 @@
             if (viewporter.ACTIVE) {
                 window.addEventListener('viewportready', () => { this.onOrientationChanged(); }, false);
                 window.addEventListener('viewportchange', () => { this.onOrientationChanged(); }, false);
-                document.body.appendChild(this.stats.domElement);
+                //document.body.appendChild(this.stats.domElement);
             } else {
                 window.addEventListener('orientationchange', () => { this.onOrientationChanged(); }, false);
             }
@@ -155,7 +155,7 @@
         // this is the main render call that makes pixi draw your container and its children.
         this.renderer.render(this.mainStage);
 
-        this.stats.update();
+        //this.stats.update();
     }
 
     public getTexturesForName(atlasName: string, nameTextures: string, countTextures: number, nameResolution: string = '.png'): PIXI.Texture[] {

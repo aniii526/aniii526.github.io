@@ -45,6 +45,10 @@ var PanelSlotWeb = (function (_super) {
     PanelSlotWeb.prototype.hideLoader = function () {
         if (document["preloader"])
             document["preloader"].style.display = 'none';
+        if (mainSlot.isMobile) {
+            show();
+            document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
+        }
         this.uniqueShow();
         if (this.txt_fon)
             this.txt_fon.visible = true;

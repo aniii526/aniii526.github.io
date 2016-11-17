@@ -47,10 +47,6 @@ var MainSlot = (function () {
         if (this.renderer.maskManager)
             this.renderer.maskManager.enableScissor = false;
         this.mainStage = new PIXI.Container();
-        this.stats = new Stats();
-        this.stats.setMode(0);
-        this.stats.domElement.style.position = "fixed";
-        this.stats.domElement.style.top = "0px";
         if (!this.isMobile) {
             window.addEventListener('resize', function () { _this.resize(); }, false);
             this.resize();
@@ -59,7 +55,6 @@ var MainSlot = (function () {
             if (viewporter.ACTIVE) {
                 window.addEventListener('viewportready', function () { _this.onOrientationChanged(); }, false);
                 window.addEventListener('viewportchange', function () { _this.onOrientationChanged(); }, false);
-                document.body.appendChild(this.stats.domElement);
             }
             else {
                 window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
@@ -95,7 +90,6 @@ var MainSlot = (function () {
         var _this = this;
         requestAnimationFrame(function () { return _this.animate(); });
         this.renderer.render(this.mainStage);
-        this.stats.update();
     };
     MainSlot.prototype.getTexturesForName = function (atlasName, nameTextures, countTextures, nameResolution) {
         if (nameResolution === void 0) { nameResolution = '.png'; }

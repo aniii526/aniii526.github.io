@@ -16,4 +16,6 @@ declare var lib: any;
 declare var images: Object;
 declare var ss: Object;
 declare var toggleFullScreen: () => void;
+declare var hide: () => void;
+declare var show: () => void;
 
