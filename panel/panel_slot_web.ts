@@ -73,7 +73,11 @@
        //if (this.preloader)
        //     this.preloader.visible = false;
         if (document["preloader"])
-        document["preloader"].style.display = 'none';
+            document["preloader"].style.display = 'none';
+            //document["preloader"].style.visibility = 'hidden';
+        //setTimeout(() => {
+        //    document["preloader"].style.visibility = 'hidden';
+        //},5000);
 
         this.uniqueShow();
 

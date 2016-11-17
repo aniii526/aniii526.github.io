@@ -176,7 +176,7 @@ var viewporter;
 			window.scrollTo(0, that.IS_ANDROID ? 1 : 0); // Android needs to scroll by at least 1px
 
 			// start the checker loop
-			var iterations = 40;
+			var iterations = 10;
 			var check = window.setInterval(function() {
 
 				// retry scrolling
@@ -208,7 +208,7 @@ var viewporter;
 
 				}
 
-			}, 10);
+			}, 100);
 
 		},
 
