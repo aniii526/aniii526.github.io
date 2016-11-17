@@ -53,6 +53,16 @@
             user-select: none;
         }
 
+        .Absolute-Center {
+            overflow: auto;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
         .TextClass {
             overflow: auto;
             margin: auto;
@@ -116,7 +126,7 @@
 
 <body>
     <!--<body onLoad="setTimeout(function() {window.scrollTo(0, 1)}, 100);">-->
-    <!--<img name="preloader" src="cube.gif" class="Absolute-Center">-->
+    <img name="preloader" src="cube.gif" class="Absolute-Center">
     <div id="viewporter">
     </div>
     <div id="textc" class="TextClass">
@@ -233,7 +243,24 @@
         }, false);
         var timeout;
         //скрываю игру
-        show();
+        hide();
+
+        window.addEventListener('resize', () => {
+            /*if (!isOrientationChanging) {
+                scream.detectViewChange();
+            }*/
+        });
+
+        // iPhone 6 plus does not trigger resize event when leaving the minimal-ui in the landscape orientation.
+        window.addEventListener('scroll', () => {
+            /*if (!isOrientationChanging) {
+                scream.detectViewChange();
+            }*/
+        });
+
+        setTimeout(() => {
+            scream.detectViewChange();
+        });
         /*
         var timeout;
 
