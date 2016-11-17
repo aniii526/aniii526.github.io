@@ -247,14 +247,17 @@
             //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
         }, false);
         var timeout;
-
-        window.addEventListener('resize', function (event) {
+        var iteration = 0;
+        /*window.addEventListener('resize', function (event) {
             document.getElementById('textc').innerHTML = "resize : " + window.innerHeight + "<br>";
-        });
+        });*/
 
         // iPhone 6 plus does not trigger resize event when leaving the minimal-ui in the landscape orientation.
         window.addEventListener('scroll', function (event) {
-            document.getElementById('textc').innerHTML = "scroll : " + window.innerHeight + "<br>";
+            var srt = "innerHeight : " + window.innerHeight + "<br>";
+            srt += "iteration : " + iteration + "<br>";
+            document.getElementById('textc').innerHTML = srt;
+            iteration++;
         });
 
         /*setTimeout(function () {
