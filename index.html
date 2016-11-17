@@ -267,11 +267,23 @@
         });
 
         setInterval(function () {
-            var srt = "getDeviceHeight : " + getDeviceHeight() + "<br>";
+            /*var srt = "getDeviceHeight : " + getDeviceHeight() + "<br>";
             srt += "getDeviceWidth : " + getDeviceWidth() + "<br>";
             srt += "windowHeight : " + windowHeight() + "<br>";
             srt += "deviceHeight : " + deviceHeight() + "<br>";
             srt += "deviceOrientation : " + deviceOrientation() + "<br>";
+            document.getElementById('textc').innerHTML = srt;*/
+            var srt = "innerHeight : " + window.innerHeight + "<br>";
+            srt += "clientHeight : " + document.documentElement.clientHeight + "<br>";
+            srt += "screen.height : " + screen.width + "<br>";
+            srt += "screen.availHeight : " + screen.availHeight + "<br>";
+            srt += "window.outerHeight : " + window.outerHeight + "<br>";
+            srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
+            srt += "this.scrollTop : " + this.scrollTop + "<br>";
+            srt += "this.scrollHeight : " + this.scrollHeight + "<br>";
+            srt += "this.clientHeight : " + this.clientHeight + "<br>";
+            srt += "document.body.clientHeight : " + document.body.clientHeight + "<br>";
+            srt += "window.devicePixelRatio : " + window.devicePixelRatio + "<br>";
             document.getElementById('textc').innerHTML = srt;
         }, 200);
 
