@@ -459,7 +459,7 @@ class PanelSlotMob extends PanelSlotWeb {
         this.preloader.position.x = Math.round(1170 / 2);
         this.preloader.position.y = Math.round(623 / 2);
         this.preloader.play();
-        this.addChild(this.preloader);
+        //this.addChild(this.preloader);
 
         this.containerGame = new PIXI.Sprite();
         this.addChild(this.containerGame);
