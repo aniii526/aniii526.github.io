@@ -96,12 +96,20 @@
 
         //document.body.appendChild(this.stats.domElement);
 
-        this.animate();
-        //this.resize();
+        //this.animate();
 
-        var qc: InitCommand = new InitCommand();
+        /*var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
-        qc.execute();
+        qc.execute();*/
+        if (document["preloader"])
+            document["preloader"].style.display = 'none';
+        if (mainSlot.isMobile) {
+            //показать картинку, но написать в нее мобильник это или нет.
+            show();
+            document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
+        } else {
+            hide();
+        }
     }
 
     public callback(): void {
