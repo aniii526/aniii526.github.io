@@ -71,7 +71,7 @@ var viewporter;
 
 			// prevent page scroll if `preventPageScroll` option was set to `true`
 			document.body.addEventListener('touchmove', function(event) {
-				event.preventDefault();
+				//event.preventDefault();
 			}, false);
 
 			// reset page scroll if `preventPageScroll` option was set to `true`
@@ -166,7 +166,8 @@ var viewporter;
 			}
 
 			// maximize the document element's height to be able to scroll away the url bar
-			document.documentElement.style.minHeight = '5000px';
+			//document.documentElement.style.minHeight = '5000px';
+			document.documentElement.style.minHeight = (window.innerHeight+100)+"px";
 
 			var startHeight = window.innerHeight;
 			var deviceProfile = this.getProfile();
