@@ -167,13 +167,13 @@
                     document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
                 }
             } else {
-                if (document.cancelFullScreen) {
+                /*if (document.cancelFullScreen) {
                     document.cancelFullScreen();
                 } else if (document.mozCancelFullScreen) {
                     document.mozCancelFullScreen();
                 } else if (document.webkitCancelFullScreen) {
                     document.webkitCancelFullScreen();
-                }
+                }*/
             }
         }
 
@@ -224,15 +224,14 @@
 
         document.body.addEventListener("touchend", function (event) {
             //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
-            window.viewporter.refresh();
-            //if(maxHeight)
+            /*window.viewporter.refresh();
             if (timeout) {
                 clearTimeout(timeout);
             }
 
             timeout = setTimeout(function () {
                 //hide();
-            }, 400);
+            }, 400);*/
         }, false);
 
         document.body.addEventListener("touchmove", function (event) {
@@ -285,7 +284,7 @@
             srt += "document.body.clientHeight : " + document.body.clientHeight + "<br>";
             srt += "window.devicePixelRatio : " + window.devicePixelRatio + "<br>"; viewporter
             srt += "viewporter.style.height : " + document.body.children['viewporter'].style.height + "<br>";
-            document.getElementById('textc').innerHTML = srt;
+            //document.getElementById('textc').innerHTML = srt;
         }, 200);
 
         var data = {};

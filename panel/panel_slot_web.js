@@ -46,8 +46,7 @@ var PanelSlotWeb = (function (_super) {
         if (document["preloader"])
             document["preloader"].style.display = 'none';
         if (mainSlot.isMobile) {
-            show();
-            document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
+            hide();
         }
         else {
             hide();
