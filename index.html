@@ -12,7 +12,7 @@
     <!--<meta name="viewport" content="height=device-height,width=device-width" />-->
     <!--width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no-->
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">-->
-    <meta name="viewport" content="height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="viewport" content="height=device-height, initial-scale=0.5, maximum-scale=0.5, user-scalable=no, minimal-ui">
     <title>MadLuck</title>
     <link rel="stylesheet" href="panel/font/stylesheet.css" type="text/css" charset="utf-8" />
     <script src="scripts/viewporter.js"></script>
@@ -207,7 +207,7 @@
             srt += "document.body.clientHeight : " + document.body.clientHeight + "<br>";
             srt += "window.devicePixelRatio : " + window.devicePixelRatio + "<br>";
             document.getElementById('textc').innerHTML = srt;*/
-            toggleFullScreen();
+            //toggleFullScreen();
         }, false);
 
         function show() {
@@ -234,7 +234,7 @@
                 //hide();
             }, 400);*/
 
-            window.viewporter.refresh();
+            //window.viewporter.refresh();
         }, false);
 
         document.body.addEventListener("touchmove", function (event) {
