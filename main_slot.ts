@@ -96,7 +96,7 @@
 
         //document.body.appendChild(this.stats.domElement);
 
-        this.animate();
+        //this.animate();
 
         //var qc: InitCommand = new InitCommand();
         //qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });

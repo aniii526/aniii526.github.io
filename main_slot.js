@@ -61,7 +61,6 @@ var MainSlot = (function () {
             }
             this.onOrientationChanged();
         }
-        this.animate();
         if (document["preloader"])
             document["preloader"].style.display = 'none';
         if (mainSlot.isMobile) {
