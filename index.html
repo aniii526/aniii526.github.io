@@ -206,17 +206,18 @@
 
         saveHeight = objFullScreen[deviceOrientation()].height = window.innerHeight;
 
-        //setInterval(function () {
+        setInterval(function () {
             var srt = "innerHeight : " + window.innerHeight + "<br>";
             srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
             document.getElementById('tick').innerHTML = srt;
 
-            currentHeight = window.innerHeight;
-            saveHeight = objFullScreen[deviceOrientation()].height;
-            if (currentHeight < saveHeight) {
-
+            //currentHeight = window.innerHeight;
+            //saveHeight = objFullScreen[deviceOrientation()].height;
+            if (window.pageYOffset > 20) {
+                document.getElementById('tick').innerHTML = "Full Screen";
+                hide();
             }
-        //    }, 200);
+        }, 200);
         function deviceOrientation() {
             var t = 90 === Math.abs(window.orientation) ? "landscape" : "portrait";
             return t;
