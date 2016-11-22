@@ -101,6 +101,10 @@
         if (document["preloader"])
             document["preloader"].style.display = 'none';
 
+        if (this.isMobile) {
+            show();
+        }
+
         /*var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
         qc.execute();*/

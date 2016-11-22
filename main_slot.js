@@ -64,6 +64,9 @@ var MainSlot = (function () {
         this.animate();
         if (document["preloader"])
             document["preloader"].style.display = 'none';
+        if (this.isMobile) {
+            show();
+        }
     };
     MainSlot.prototype.callback = function () {
         var sp = new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture);
