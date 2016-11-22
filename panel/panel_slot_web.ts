@@ -84,6 +84,7 @@
             show();
             //document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
             //hide();
+            document.documentElement.style.minHeight = '5000px';
         } else {
             hide();
         }

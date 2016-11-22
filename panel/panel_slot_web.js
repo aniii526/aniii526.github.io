@@ -47,6 +47,7 @@ var PanelSlotWeb = (function (_super) {
             document["preloader"].style.display = 'none';
         if (mainSlot.isMobile) {
             show();
+            document.documentElement.style.minHeight = '5000px';
         }
         else {
             hide();
