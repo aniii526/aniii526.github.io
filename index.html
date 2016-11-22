@@ -15,8 +15,7 @@
     <meta name="viewport" content="height=device-height, initial-scale=0.5, maximum-scale=0.5, user-scalable=no, minimal-ui">
     <title>MadLuck</title>
     <link rel="stylesheet" href="panel/font/stylesheet.css" type="text/css" charset="utf-8" />
-    <script src="scripts/viewporter.js"></script>
-    <script src="scripts/stats.min.js"></script>
+    <!--<script src="scripts/viewporter.js"></script>-->
     <script src="scripts/pixi.min.js"></script>
     <!--<script src="scripts/jquery-3.1.0.min.js"></script>-->
     <script src="scripts/libs_js.js"></script>
@@ -187,29 +186,6 @@
             else return results[1];
         }
 
-        document.body.addEventListener("touchstart", function (event) {
-            // if we're running in webapp mode (iOS), there's nothing to scroll away
-            /*if (navigator.standalone) {
-                return this.postProcess();
-            }*/
-
-            // maximize the document element's height to be able to scroll away the url bar
-            //document.documentElement.style.minHeight = '5000px';
-            /*var srt = "innerHeight : " + window.innerHeight + "<br>";
-            srt += "clientHeight : " + document.documentElement.clientHeight + "<br>";
-            srt += "screen.height : " + screen.width + "<br>";
-            srt += "screen.availHeight : " + screen.availHeight + "<br>";
-            srt += "window.outerHeight : " + window.outerHeight + "<br>";
-            srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
-            srt += "this.scrollTop : " + this.scrollTop + "<br>";
-            srt += "this.scrollHeight : " + this.scrollHeight + "<br>";
-            srt += "this.clientHeight : " + this.clientHeight + "<br>";
-            srt += "document.body.clientHeight : " + document.body.clientHeight + "<br>";
-            srt += "window.devicePixelRatio : " + window.devicePixelRatio + "<br>";
-            document.getElementById('textc').innerHTML = srt;*/
-            //toggleFullScreen();
-        }, false);
-
         function show() {
             document.getElementById('textc').style.display = 'block';
             document.getElementById('textc').style.visibility = 'visible';
@@ -224,60 +200,23 @@
         };
 
         document.body.addEventListener("touchend", function (event) {
-            //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
-            /*window.viewporter.refresh();
-            if (timeout) {
-                clearTimeout(timeout);
-            }
-
-            timeout = setTimeout(function () {
-                //hide();
-            }, 400);*/
-
-            //window.viewporter.refresh();
             event.stopPropagation();
             event.preventDefault();
         }, false);
 
         document.body.addEventListener("touchmove", function (event) {
-            if (mainInnerHeight != window.innerHeight) {
-                mainInnerHeight = window.innerHeight;
-                maxHeight = mainInnerHeight;
-                mainIterator = 0;
-                //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
-            } else {
-                mainIterator++;
-                if (mainIterator >= 10) {
-                    //document.getElementById('textc').innerHTML = "УРА! УРА! УРА! УРА! УРА! УРА! УРА! УРА!";
-                }
-            }
-            //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
             event.stopPropagation();
             event.preventDefault();
         }, false);
+
         var timeout;
         var iteration = 0;
-        window.addEventListener('resize', function (event) {
-            //document.getElementById('textc').innerHTML = "resize : " + window.innerHeight + "<br>";
-            iteration = 0;
-        });
 
-        // iPhone 6 plus does not trigger resize event when leaving the minimal-ui in the landscape orientation.
-        window.addEventListener('scroll', function (event) {
-            var srt = "innerHeight : " + window.innerHeight + "<br>";
-            srt += "iteration : " + iteration + "<br>";
-            //document.getElementById('textc').innerHTML = srt;
-            iteration++;
-            if (iteration >= 15) {
-                //document.getElementById('textc').innerHTML = "УРА УРА УРА УРА";
-            }
-        });
-
-        setInterval(function () {
+        /*setInterval(function () {
             var srt = "innerHeight : " + window.innerHeight + "<br>";
             srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
             document.getElementById('textc').innerHTML = srt;
-        }, 200);
+        }, 200);*/
 
         var data = {};
 

@@ -65,7 +65,7 @@ var MainSlot = (function () {
         if (document["preloader"])
             document["preloader"].style.display = 'none';
         if (mainSlot.isMobile) {
-            hide();
+            show();
             document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
         }
         else {

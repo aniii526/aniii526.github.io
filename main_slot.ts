@@ -105,8 +105,8 @@
             document["preloader"].style.display = 'none';
         if (mainSlot.isMobile) {
             //показать картинку, но написать в нее мобильник это или нет.
-            //show();
-            hide();
+            show();
+            //hide();
             document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
         } else {
             hide();
