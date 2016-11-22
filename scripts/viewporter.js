@@ -71,7 +71,7 @@ var viewporter;
 
 			// prevent page scroll if `preventPageScroll` option was set to `true`
 			document.body.addEventListener('touchmove', function(event) {
-				event.preventDefault();
+				//event.preventDefault();
 			}, false);
 
 			// reset page scroll if `preventPageScroll` option was set to `true`
