@@ -216,6 +216,7 @@
             //saveHeight = objFullScreen[deviceOrientation()].height;
             if (window.pageYOffset > 20 && fullScreenBool == false) {
                 fullScreenBool = true;
+                document.documentElement.scrollTop = 0;
                 document.getElementById('tick').innerHTML = "Full Screen";
                 hide();
                 window.viewporter.refresh();
