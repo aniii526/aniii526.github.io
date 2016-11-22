@@ -187,15 +187,40 @@
             document.documentElement.style.minHeight = window.innerHeight + 'px';
         }; 
         function orientationchange() {
-            var srt = "innerHeight : " + window.innerHeight + "<br>";
-            srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
-            document.getElementById('tick').innerHTML = srt;
+            //var srt = "innerHeight : " + window.innerHeight + "<br>";
+            //srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
+            //document.getElementById('tick').innerHTML = srt;
         };
-        setInterval(function () {
+
+        var objFullScreen = {
+            portrait: {
+                height:0
+            },
+            landscape: {
+                height: 0
+            }
+        };
+
+        var currentHeight = 0;
+        var saveHeight = 0;
+
+        saveHeight = objFullScreen[deviceOrientation()].height = window.innerHeight;
+
+        //setInterval(function () {
             var srt = "innerHeight : " + window.innerHeight + "<br>";
             srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
             document.getElementById('tick').innerHTML = srt;
-        }, 200);
+
+            currentHeight = window.innerHeight;
+            saveHeight = objFullScreen[deviceOrientation()].height;
+            if (currentHeight < saveHeight) {
+
+            }
+        //    }, 200);
+        function deviceOrientation() {
+            var t = 90 === Math.abs(window.orientation) ? "landscape" : "portrait";
+            return t;
+        }
     </script>
 </body>
 </html>

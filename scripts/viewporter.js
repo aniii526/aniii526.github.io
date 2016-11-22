@@ -111,7 +111,7 @@ var viewporter;
 				if(window.orientation !== cachedOrientation) {
 					that.prepareVisualViewport();
 					cachedOrientation = window.orientation;
-					orientationchange();
+					//orientationchange();
 				}
 			}, false);
 			
