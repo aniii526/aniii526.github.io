@@ -81,10 +81,10 @@
 
         if (mainSlot.isMobile) {
             //показать картинку, но написать в нее мобильник это или нет.
-            show();
+            //show();
             //document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
-            //hide();
-            document.documentElement.style.minHeight = '5000px';
+            hide();
+            //document.documentElement.style.minHeight = '5000px';
         } else {
             hide();
         }
