@@ -217,15 +217,17 @@
             if (window.pageYOffset > 20 && fullScreenBool == false) {
                 fullScreenBool = true;
                 objFullScreen[deviceOrientation()].height = window.innerHeight;
-                document.documentElement.scrollTop = 0;
-                document.getElementById('tick').innerHTML = "Full Screen";
-                hide();
+                window.scrollTo(0, 0);
+                document.body.style.overflow = 'hidden';
                 window.viewporter.refresh();
+                hide();
             }
 
             if (fullScreenBool == true) {
                 if (objFullScreen[deviceOrientation()].height != window.innerHeight) {
                     fullScreenBool = false;
+                    window.scrollTo(0, 0);
+                    document.body.style.overflow = '';
                     show();
                 }
             }
