@@ -235,6 +235,8 @@
             }, 400);*/
 
             //window.viewporter.refresh();
+            event.stopPropagation();
+            event.preventDefault();
         }, false);
 
         document.body.addEventListener("touchmove", function (event) {
@@ -250,6 +252,8 @@
                 }
             }
             //document.getElementById('textc').innerHTML = "innerHeight : " + window.innerHeight + "<br>";
+            event.stopPropagation();
+            event.preventDefault();
         }, false);
         var timeout;
         var iteration = 0;
@@ -270,23 +274,8 @@
         });
 
         setInterval(function () {
-            var srt = "getDeviceHeight : " + getDeviceHeight() + "<br>";
-            srt += "getDeviceWidth : " + getDeviceWidth() + "<br>";
-            srt += "windowHeight : " + windowHeight() + "<br>";
-            srt += "deviceHeight : " + deviceHeight() + "<br>";
-            srt += "deviceOrientation : " + deviceOrientation() + "<br>";
-            srt += "innerHeight : " + window.innerHeight + "<br>";
-            srt += "clientHeight : " + document.documentElement.clientHeight + "<br>";
-            srt += "screen.height : " + screen.width + "<br>";
-            srt += "screen.availHeight : " + screen.availHeight + "<br>";
-            srt += "window.outerHeight : " + window.outerHeight + "<br>";
+            var srt = "innerHeight : " + window.innerHeight + "<br>";
             srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
-            srt += "this.scrollTop : " + this.scrollTop + "<br>";
-            srt += "this.scrollHeight : " + this.scrollHeight + "<br>";
-            srt += "this.clientHeight : " + this.clientHeight + "<br>";
-            srt += "document.body.clientHeight : " + document.body.clientHeight + "<br>";
-            srt += "window.devicePixelRatio : " + window.devicePixelRatio + "<br>"; viewporter
-            srt += "viewporter.style.height : " + document.body.children['viewporter'].style.height + "<br>";
             document.getElementById('textc').innerHTML = srt;
         }, 200);
 
@@ -313,85 +302,6 @@
             var t = 90 === Math.abs(window.orientation) ? "landscape" : "portrait";
             return t;
         }
-        /*
-var t = this.config.fps, e = Math.round(t / 2), i, n = (new Date).getTime(), s = 1e3 / t, o, a = function ()
-    {
-
-}
-        */
-
-        /*setTimeout(function () {
-            //scream.detectViewChange();
-        });*/
-        /*
-        var timeout;
-
-    window.addEventListener('scroll', function(ev) {
-
-        if (timeout) {
-            clearTimeout(timeout);
-        }
-
-        timeout = setTimeout(function() {
-
-            if (window.scrollY > 0) {
-                var cover = document.querySelector('div.cover');
-                cover.style.display = 'none';
-            }
-
-        }, 200);
-
-    });
-        */
-        /*if (document.body.webkitRequestFullScreen) {
-            window.addEventListener('click', function (e) {
-                if (e.target.type != 'text' && e.target.type != 'password') {
-                    document.body.webkitRequestFullScreen();
-                    //window.setTimeout(function () {
-                    //    document.webkitCancelFullScreen();
-                    //}, 500);
-                }
-            }, false);
-        }*/
-
-        /*function initLoop() {
-            var t = this.config.fps;
-            var e = Math.round(t / 2);
-            var i;
-            var n = (new Date).getTime();
-            var s = 1e3 / t;
-            var o;
-            a = function () {
-                this.loop = window.requestAnimFrame(a, window.element);
-                i = (new Date).getTime();
-                o = i - n;
-                this.data.maxHeight = Math.max(this.windowHeight(), this.data.maxHeight);
-                if (o > s) {
-                    this.data.i++;
-                    this.data.times++;
-                    this.data.currentHeight = this.windowHeight();
-                    this.data.sizesPortrait = this.sizes.portrait.height;
-                    this.data.sizesLandscape = this.sizes.landscape.height;
-                    this.sizes[this.data.orientation].height[0] = Math.min(this.sizes[this.data.orientation].height[0], this.windowHeight());
-                    this.sizes[this.data.orientation].height[1] = Math.max(this.sizes[this.data.orientation].height[1], this.windowHeight());
-                    if ($(document).scrollTop() > 20 && this.data.maxHeight === this.data.startH) {
-                        this.data.fullscreen = false,
-                        this.triggerMode(),
-                        this.initFail()
-                    };
-                    if (true) {
-                        this.data.currentHeight === this.data.tempHeight ? this.data.times < e ? this.data.times++ : (
-                        this.windowHeight() > this.sizes[this.data.orientation].height[0] && this.sizes[this.data.orientation].height[1] !== this.sizes[this.data.orientation].height[0] ? (this.data.fullscreen || (this.data.fullscreen = true, this.triggerMode()), this.data.mmm = "1") : this.windowHeight() < this.sizes[this.data.orientation].height[1] && this.sizes[this.data.orientation].height[1] !== this.sizes[this.data.orientation].height[0] && (this.data.fullscreen && (this.data.fullscreen = false, this.triggerMode()), this.data.mmm = "2"), this.data.times = 0)
-                        : (this.getDeviceHeight() === this.data.currentHeight ? this.data.fullscreen || (this.data.fullscreen = true, this.triggerMode()) : this.data.fullscreen && (this.data.fullscreen = false, this.triggerMode()), this.data.times = 0),
-                        this.data.tempHeight = this.data.currentHeight,
-                        n = i - o % s
-                    }
-                };
-                this.debugWrite();
-            }.bind(this);
-            this.data.timesForWatch = e;
-            a();
-        }*/
     </script>
 </body>
 </html>

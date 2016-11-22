@@ -46,7 +46,7 @@ var PanelSlotWeb = (function (_super) {
         if (document["preloader"])
             document["preloader"].style.display = 'none';
         if (mainSlot.isMobile) {
-            hide();
+            show();
         }
         else {
             hide();

@@ -61,15 +61,10 @@ var MainSlot = (function () {
             }
             this.onOrientationChanged();
         }
-        if (document["preloader"])
-            document["preloader"].style.display = 'none';
-        if (mainSlot.isMobile) {
-            show();
-            document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
-        }
-        else {
-            hide();
-        }
+        this.animate();
+        var qc = new InitCommand();
+        qc.addEventListener(EVENT_COMPLETE, function () { _this.completeInitCommad(); });
+        qc.execute();
     };
     MainSlot.prototype.callback = function () {
         var sp = new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture);
