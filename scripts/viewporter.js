@@ -166,7 +166,7 @@ var viewporter;
 			}
 
 			// maximize the document element's height to be able to scroll away the url bar
-		    document.documentElement.style.minHeight = '5000px';
+		    //document.documentElement.style.minHeight = '5000px';
 
 			var startHeight = window.innerHeight;
 			var deviceProfile = this.getProfile();
@@ -195,7 +195,7 @@ var viewporter;
 				if ( (that.IS_ANDROID ? androidProfileCheck() : iosInnerHeightCheck()) || iterations < 0) {
 
 					// set minimum height of content to new window height
-					document.documentElement.style.minHeight = window.innerHeight + 'px';
+					//document.documentElement.style.minHeight = window.innerHeight + 'px';
 
 					// set the right height for the body wrapper to allow bottom positioned elements
 					document.getElementById('viewporter').style.position = 'relative';
