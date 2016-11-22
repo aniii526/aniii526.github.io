@@ -203,6 +203,7 @@
 
         var currentHeight = 0;
         var saveHeight = 0;
+        var fullScreenBool = false;
 
         saveHeight = objFullScreen[deviceOrientation()].height = window.innerHeight;
 
@@ -213,9 +214,11 @@
 
             //currentHeight = window.innerHeight;
             //saveHeight = objFullScreen[deviceOrientation()].height;
-            if (window.pageYOffset > 20) {
+            if (window.pageYOffset > 20 && fullScreenBool == false) {
+                fullScreenBool = true;
                 document.getElementById('tick').innerHTML = "Full Screen";
                 hide();
+                window.viewporter.refresh();
             }
         }, 200);
         function deviceOrientation() {
