@@ -185,12 +185,17 @@
             document.getElementById('tick').style.visibility = 'hidden';
 
             document.documentElement.style.minHeight = window.innerHeight + 'px';
-        };
-        setInterval(function () {
+        }; 
+        function orientationchange() {
             var srt = "innerHeight : " + window.innerHeight + "<br>";
             srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
             document.getElementById('tick').innerHTML = srt;
-        }, 200);
+        };
+        /*setInterval(function () {
+            var srt = "innerHeight : " + window.innerHeight + "<br>";
+            srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
+            document.getElementById('tick').innerHTML = srt;
+        }, 200);*/
     </script>
 </body>
 </html>
