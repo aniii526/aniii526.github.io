@@ -237,6 +237,12 @@
             var t = 90 === Math.abs(window.orientation) ? "landscape" : "portrait";
             return t;
         }
+
+        // prevent page scroll if `preventPageScroll` option was set to `true`
+        document.body.addEventListener('touchmove', function (event) {
+            event.preventDefault();
+        });
+
     </script>
 </body>
 </html>
