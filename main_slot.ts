@@ -60,7 +60,7 @@
         this.renderer.view.style.left = '50%';
         this.renderer.view.style.top = '50%';
         this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';*/
-        this.renderer.backgroundColor = 0x000000;
+        this.renderer.backgroundColor = 0xffffff;
         //this.renderer
         document.body.children["viewporter"].appendChild(this.renderer.view);
 
@@ -98,9 +98,12 @@
 
         this.animate();
 
-        var qc: InitCommand = new InitCommand();
+        if (document["preloader"])
+            document["preloader"].style.display = 'none';
+
+        /*var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
-        qc.execute();
+        qc.execute();*/
     }
 
     public callback(): void {
