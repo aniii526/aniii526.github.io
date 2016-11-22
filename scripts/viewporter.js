@@ -166,7 +166,7 @@ var viewporter;
 			}
 
 			// maximize the document element's height to be able to scroll away the url bar
-		    //document.documentElement.style.minHeight = '5000px';
+		    document.documentElement.style.minHeight = '5000px';
 
 			var startHeight = window.innerHeight;
 			var deviceProfile = this.getProfile();

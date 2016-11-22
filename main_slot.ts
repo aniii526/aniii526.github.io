@@ -98,19 +98,9 @@
 
         this.animate();
 
-        /*var qc: InitCommand = new InitCommand();
+        var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
-        qc.execute();*/
-        if (document["preloader"])
-            document["preloader"].style.display = 'none';
-        if (mainSlot.isMobile) {
-            //показать картинку, но написать в нее мобильник это или нет.
-            show();
-            //hide();
-            document.getElementById('textc').innerHTML = "mainSlot.isMobile : " + (window.orientation === 0 || window.orientation === 180 ? 'portrait' : 'landscape') + "<br>";
-        } else {
-            hide();
-        }
+        qc.execute();
     }
 
     public callback(): void {

@@ -124,9 +124,9 @@
             }
         }
 
-        .viewporter {
+        /*.viewporter {
             visibility: hidden;
-        }
+        }*/
     </style>
 
 </head>
@@ -153,30 +153,7 @@
         else
             // вернуть демо на 1
             mainSlot.startSlot(22, 1, "USD", "56", 1);
-        //mainSlot.startSlot(13, 1, "USD", "56", 0);
-
-        //TODO переместить позже
-        function toggleFullScreen() {
-            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
-            (!document.mozFullScreen && !document.webkitIsFullScreen)) {
-                if (document.documentElement.requestFullScreen) {
-                    document.documentElement.requestFullScreen();
-                } else if (document.documentElement.mozRequestFullScreen) {
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullScreen) {
-                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-                }
-            } else {
-                /*if (document.cancelFullScreen) {
-                    document.cancelFullScreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitCancelFullScreen) {
-                    document.webkitCancelFullScreen();
-                }*/
-            }
-        }
-
+        
         function getparam(name) {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
             var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -184,62 +161,6 @@
             var results = regex.exec(window.location.href);
             if (results == null) return "";
             else return results[1];
-        }
-
-        function show() {
-            document.getElementById('textc').style.display = 'block';
-            document.getElementById('textc').style.visibility = 'visible';
-            ////document.getElementById('viewporter').style.display = 'none';
-            document.getElementById('viewporter').style.visibility = 'hidden';
-        }
-        function hide() {
-            ////document.getElementById('viewporter').style.display = 'block';
-            document.getElementById('viewporter').style.visibility = 'visible';
-            document.getElementById('textc').style.display = 'none';
-            document.getElementById('textc').style.visibility = 'hidden';
-        };
-
-        document.body.addEventListener("touchend", function (event) {
-            event.stopPropagation();
-            event.preventDefault();
-        }, false);
-
-        document.body.addEventListener("touchmove", function (event) {
-            event.stopPropagation();
-            event.preventDefault();
-        }, false);
-
-        var timeout;
-        var iteration = 0;
-
-        setInterval(function () {
-            var srt = "innerHeight : " + window.innerHeight + "<br>";
-            srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
-            document.getElementById('textc').innerHTML = srt;
-        }, 200);
-
-        var data = {};
-
-        function getDeviceHeight() {
-            return "landscape" === deviceOrientation() ? data.deviceHeight = Math.min(window.screen.availWidth,
-            window.screen.availHeight) : data.deviceHeight = Math.max(window.screen.availWidth, window.screen.availHeight),
-            data.deviceHeight;
-        }
-        function getDeviceWidth() {
-            return this.data.deviceWidth = "landscape" === deviceOrientation() ? Math.max(window.screen.availWidth,
-            window.screen.availHeight) : Math.min(window.screen.availWidth, window.screen.availHeight), data.deviceWidth;
-        }
-        function windowHeight() {
-            return this.data.windowHeight = "landscape" === deviceOrientation() ? Math.min(window.innerHeight || document.documentElement.clientHeight,
-            window.innerWidth || document.documentElement.clientWidth) : Math.max(window.innerHeight || document.documentElement.clientHeight,
-            window.innerWidth || document.documentElement.clientWidth), data.windowHeight;
-        }
-        function deviceHeight() {
-            return 90 === Math.abs(window.orientation) ? window.screen.height : window.screen.width;
-        }
-        function deviceOrientation() {
-            var t = 90 === Math.abs(window.orientation) ? "landscape" : "portrait";
-            return t;
         }
     </script>
 </body>
