@@ -212,13 +212,19 @@
             srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
             document.getElementById('tick').innerHTML = srt;
 
+            console.log(srt);
+
             //currentHeight = window.innerHeight;
             //saveHeight = objFullScreen[deviceOrientation()].height;
             if (window.pageYOffset > 20 && fullScreenBool == false) {
                 fullScreenBool = true;
                 objFullScreen[deviceOrientation()].height = window.innerHeight;
-                window.scrollTo(0, 0);
-                //document.body.style.overflow = 'hidden';
+                setTimeout(function () {
+                    window.scrollBy(0, -window.pageYOffset);
+                    document.body.style.overflow = 'hidden';
+                    console.log("НО ПО ФАКТУ Я НЕ РАБОТАЮ БЛЯДЬ");
+                    document.documentElement.style.minHeight = window.innerHeight + 'px';
+                },100);
                 //window.viewporter.refresh();
                 hide();
                 return;
