@@ -70,13 +70,18 @@
 
         var ball = function (e) {
             console.log(e);
-            return Bodies.circle(e.clientX, e.clientY, 10, {
+            //var xPos = e.originalEvent.touches[0].pageX;
+            return Bodies.circle(e.originalEvent.touches[0].pageX, e.originalEvent.touches[0].pageY, 10, {
             },25);
         }
 
-        $('body').on('touchstart click', function (e) {
+        /*$('body').on('touchstart', function (e) {
             World.add(world, ball(e));
-        })
+        })*/
+
+        $(document).on('touchstart', 'body', function (e) {
+            World.add(world, ball(e));
+        });
     });
 
     var renderOptions = render.options;
