@@ -1,0 +1,6 @@
+D:\work\git\WebProject-1xslot\html5\Pachinko\bin\Pachinko.dll
+D:\work\git\WebProject-1xslot\html5\Pachinko\bin\Pachinko.pdb
+D:\work\git\WebProject-1xslot\html5\Pachinko\obj\Debug\Pachinko.csprojResolveAssemblyReference.cache
+D:\work\git\WebProject-1xslot\html5\Pachinko\obj\Debug\Pachinko.dll
+D:\work\git\WebProject-1xslot\html5\Pachinko\obj\Debug\Pachinko.pdb
+D:\work\git\WebProject-1xslot\html5\Pachinko\bin\Pachinko.dll.config
