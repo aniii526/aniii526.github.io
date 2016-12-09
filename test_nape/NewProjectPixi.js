@@ -124,12 +124,19 @@ Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 	_init: function() {
 		this.backgroundColor = 6724095;
 		this.autoResize = false;
-		this.width = 800;
-		this.height = 700;
+		this.width = window.innerWidth;
+		this.height = window.innerHeight;
 		pixi_plugins_app_Application.prototype.start.call(this);
 		this._balls = [];
 		this._pballs = [];
 		this._setUpPhysics();
+		var fon = new PIXI.Sprite(PIXI.Texture.fromImage("assets/nape/pachinko_main_2.jpg"));
+		fon.anchor.set(0,0);
+		fon.position.set(-445,-122);
+		fon.interactive = true;
+		fon.on("mousedown",$bind(this,this._onEvent));
+		fon.on("touchstart",$bind(this,this._onEvent));
+		this.stage.addChild(fon);
 		this.test = new Test();
 		this.ground = this.test.body;
 		this.ground.set_type((function($this) {
@@ -142,25 +149,26 @@ Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 			$r = zpp_$nape_util_ZPP_$Flags.BodyType_STATIC;
 			return $r;
 		}(this)));
-		this.ground.get_position().setxy(332.,325.);
-		this.ground.get_userData().graphic = this.fig;
+		this.ground.get_position().setxy(0,0);
 		this.ground.set_space(this._space);
-		var fon = new PIXI.Graphics();
-		fon.beginFill(3355392);
-		fon.drawRect(0,0,800,700);
-		fon.endFill();
-		fon.interactive = true;
-		fon.on("mousedown",$bind(this,this._onEvent));
-		fon.on("touchstart",$bind(this,this._onEvent));
-		this.stage.addChild(fon);
-		this.fig = new PIXI.Sprite(PIXI.Texture.fromImage("assets/nape/sss.png"));
-		this.fig.anchor.set(0.5,0.5);
-		this.stage.addChild(this.fig);
+		this.fig = new PIXI.Sprite(PIXI.Texture.fromImage("assets/nape/ssss.png"));
+		this.fig.anchor.set(0,0);
 		this.onUpdate = $bind(this,this._onUpdate);
 	}
 	,_onEvent: function(target) {
-		console.log(target.data.global.x);
-		this._addBall(target.data.global.x,target.data.global.y);
+		var bd = this._addBall(target.data.global.x,target.data.global.y);
+		bd.zpp_inner.immutable_midstep("Body::" + "false");
+		if(!bd.zpp_inner.norotate != false) {
+			bd.zpp_inner.norotate = true;
+			bd.zpp_inner.invalidate_inertia();
+		}
+		!bd.zpp_inner.norotate;
+		((function($this) {
+			var $r;
+			if(bd.zpp_inner.wrap_vel == null) bd.zpp_inner.setupVelocity();
+			$r = bd.zpp_inner.wrap_vel;
+			return $r;
+		}(this))).set_y(-800);
 	}
 	,_onUpdate: function(elapsedTime) {
 		this._space.step(0.016666666666666666);
@@ -172,8 +180,8 @@ Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 			this._balls[i].position.y = this._pballs[i].get_position().get_y();
 			this._balls[i].rotation = this._pballs[i].zpp_inner.rot;
 		}
-		this.fig.x = this.ground.get_position().get_x() - 7;
-		this.fig.y = this.ground.get_position().get_y() + 30;
+		this.fig.x = this.ground.get_position().get_x();
+		this.fig.y = this.ground.get_position().get_y();
 		this.fig.rotation = this.ground.zpp_inner.rot;
 	}
 	,_setUpPhysics: function() {
@@ -183,6 +191,7 @@ Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 	,_addBall: function(_x,_y) {
 		var ball = new PIXI.Sprite(PIXI.Texture.fromImage("assets/nape/ball.png"));
 		ball.anchor.set(0.5,0.5);
+		ball.scale.set(0.8,0.8);
 		this._balls.push(ball);
 		this.stage.addChild(ball);
 		var pball = new nape_phys_Body((function($this) {
@@ -195,7 +204,7 @@ Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 			$r = zpp_$nape_util_ZPP_$Flags.BodyType_DYNAMIC;
 			return $r;
 		}(this)));
-		pball.zpp_inner.wrap_shapes.add(new nape_shape_Circle(10));
+		pball.zpp_inner.wrap_shapes.add(new nape_shape_Circle(8));
 		((function($this) {
 			var $r;
 			if(pball.zpp_inner.wrap_pos == null) pball.zpp_inner.setupPosition();
@@ -215,10 +224,10 @@ Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 			pball.zpp_inner.invalidate_inertia();
 		}
 		!pball.zpp_inner.norotate;
-		pball.setShapeMaterials(nape_phys_Material.rubber());
+		pball.setShapeMaterials(nape_phys_Material.wood());
 		pball.set_space(this._space);
 		this._pballs.push(pball);
-		this.tempBall++;
+		return pball;
 	}
 	,__class__: Main
 });
@@ -478,9 +487,14 @@ Test.prototype = {
 	init: function() {
 		this.body = new nape_phys_Body();
 		var mat = new nape_phys_Material();
+		if(0.01 != mat.zpp_inner.dynamicFriction) {
+			mat.zpp_inner.dynamicFriction = 0.01;
+			mat.zpp_inner.invalidate(zpp_$nape_phys_ZPP_$Material.WAKE | zpp_$nape_phys_ZPP_$Material.ANGDRAG | zpp_$nape_phys_ZPP_$Material.ARBITERS);
+		}
+		mat.zpp_inner.dynamicFriction;
 		var filt = new nape_dynamics_InteractionFilter();
 		var prop = new nape_phys_FluidProperties();
-		var s = new nape_shape_Polygon([nape_geom_Vec2.get(456.5,631,true),nape_geom_Vec2.get(455.5,648,true),nape_geom_Vec2.get(482,619.5,true)],mat,filt);
+		var s = new nape_shape_Polygon([nape_geom_Vec2.get(227,651.5,true),nape_geom_Vec2.get(184,629.5,true),nape_geom_Vec2.get(0,694.5,true),nape_geom_Vec2.get(227.5,694,true)],mat,filt);
 		s.set_body(this.body);
 		s.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s.zpp_inner.sensorEnabled = false;
@@ -495,7 +509,7 @@ Test.prototype = {
 		s.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s.zpp_inner.fluidProperties == null) s.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s.zpp_inner.fluidProperties.wrapper();
-		var s1 = new nape_shape_Polygon([nape_geom_Vec2.get(207,631.5,true),nape_geom_Vec2.get(167,611.5,true),nape_geom_Vec2.get(0,649.5,true),nape_geom_Vec2.get(207.5,649,true)],mat,filt);
+		var s1 = new nape_shape_Polygon([nape_geom_Vec2.get(475.5,652,true),nape_geom_Vec2.get(476,694.5,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(505,637.5,true)],mat,filt);
 		s1.set_body(this.body);
 		s1.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s1.zpp_inner.sensorEnabled = false;
@@ -510,7 +524,7 @@ Test.prototype = {
 		s1.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s1.zpp_inner.fluidProperties == null) s1.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s1.zpp_inner.fluidProperties.wrapper();
-		var s2 = new nape_shape_Polygon([nape_geom_Vec2.get(167,611.5,true),nape_geom_Vec2.get(143,595.5,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s2 = new nape_shape_Polygon([nape_geom_Vec2.get(184,629.5,true),nape_geom_Vec2.get(158,611.5,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s2.set_body(this.body);
 		s2.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s2.zpp_inner.sensorEnabled = false;
@@ -525,7 +539,7 @@ Test.prototype = {
 		s2.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s2.zpp_inner.fluidProperties == null) s2.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s2.zpp_inner.fluidProperties.wrapper();
-		var s3 = new nape_shape_Polygon([nape_geom_Vec2.get(143,595.5,true),nape_geom_Vec2.get(123,579.5,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s3 = new nape_shape_Polygon([nape_geom_Vec2.get(158,611.5,true),nape_geom_Vec2.get(128.5,586,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s3.set_body(this.body);
 		s3.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s3.zpp_inner.sensorEnabled = false;
@@ -540,7 +554,7 @@ Test.prototype = {
 		s3.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s3.zpp_inner.fluidProperties == null) s3.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s3.zpp_inner.fluidProperties.wrapper();
-		var s4 = new nape_shape_Polygon([nape_geom_Vec2.get(123,579.5,true),nape_geom_Vec2.get(94.5,552,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s4 = new nape_shape_Polygon([nape_geom_Vec2.get(128.5,586,true),nape_geom_Vec2.get(106.5,563,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s4.set_body(this.body);
 		s4.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s4.zpp_inner.sensorEnabled = false;
@@ -555,7 +569,7 @@ Test.prototype = {
 		s4.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s4.zpp_inner.fluidProperties == null) s4.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s4.zpp_inner.fluidProperties.wrapper();
-		var s5 = new nape_shape_Polygon([nape_geom_Vec2.get(94.5,552,true),nape_geom_Vec2.get(79.5,535,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s5 = new nape_shape_Polygon([nape_geom_Vec2.get(106.5,563,true),nape_geom_Vec2.get(86.5,538,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s5.set_body(this.body);
 		s5.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s5.zpp_inner.sensorEnabled = false;
@@ -570,7 +584,7 @@ Test.prototype = {
 		s5.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s5.zpp_inner.fluidProperties == null) s5.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s5.zpp_inner.fluidProperties.wrapper();
-		var s6 = new nape_shape_Polygon([nape_geom_Vec2.get(79.5,535,true),nape_geom_Vec2.get(63.5,514,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s6 = new nape_shape_Polygon([nape_geom_Vec2.get(505,637.5,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(534,619.5,true)],mat,filt);
 		s6.set_body(this.body);
 		s6.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s6.zpp_inner.sensorEnabled = false;
@@ -585,7 +599,7 @@ Test.prototype = {
 		s6.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s6.zpp_inner.fluidProperties == null) s6.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s6.zpp_inner.fluidProperties.wrapper();
-		var s7 = new nape_shape_Polygon([nape_geom_Vec2.get(63.5,514,true),nape_geom_Vec2.get(46.5,487,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s7 = new nape_shape_Polygon([nape_geom_Vec2.get(534,619.5,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(556,602.5,true)],mat,filt);
 		s7.set_body(this.body);
 		s7.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s7.zpp_inner.sensorEnabled = false;
@@ -600,7 +614,7 @@ Test.prototype = {
 		s7.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s7.zpp_inner.fluidProperties == null) s7.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s7.zpp_inner.fluidProperties.wrapper();
-		var s8 = new nape_shape_Polygon([nape_geom_Vec2.get(46.5,487,true),nape_geom_Vec2.get(26.5,443,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s8 = new nape_shape_Polygon([nape_geom_Vec2.get(556,602.5,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(577,583.5,true)],mat,filt);
 		s8.set_body(this.body);
 		s8.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s8.zpp_inner.sensorEnabled = false;
@@ -615,7 +629,7 @@ Test.prototype = {
 		s8.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s8.zpp_inner.fluidProperties == null) s8.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s8.zpp_inner.fluidProperties.wrapper();
-		var s9 = new nape_shape_Polygon([nape_geom_Vec2.get(482,619.5,true),nape_geom_Vec2.get(455.5,648,true),nape_geom_Vec2.get(456,649.5,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(517,597.5,true)],mat,filt);
+		var s9 = new nape_shape_Polygon([nape_geom_Vec2.get(577,583.5,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(595.5,564,true)],mat,filt);
 		s9.set_body(this.body);
 		s9.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s9.zpp_inner.sensorEnabled = false;
@@ -630,7 +644,7 @@ Test.prototype = {
 		s9.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s9.zpp_inner.fluidProperties == null) s9.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s9.zpp_inner.fluidProperties.wrapper();
-		var s10 = new nape_shape_Polygon([nape_geom_Vec2.get(1,-0.5,true),nape_geom_Vec2.get(-0.5,0,true),nape_geom_Vec2.get(0,649.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s10 = new nape_shape_Polygon([nape_geom_Vec2.get(595.5,564,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(620.5,532,true)],mat,filt);
 		s10.set_body(this.body);
 		s10.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s10.zpp_inner.sensorEnabled = false;
@@ -645,7 +659,7 @@ Test.prototype = {
 		s10.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s10.zpp_inner.fluidProperties == null) s10.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s10.zpp_inner.fluidProperties.wrapper();
-		var s11 = new nape_shape_Polygon([nape_geom_Vec2.get(26.5,443,true),nape_geom_Vec2.get(16.5,409,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s11 = new nape_shape_Polygon([nape_geom_Vec2.get(86.5,538,true),nape_geom_Vec2.get(70.5,514,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s11.set_body(this.body);
 		s11.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s11.zpp_inner.sensorEnabled = false;
@@ -660,7 +674,7 @@ Test.prototype = {
 		s11.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s11.zpp_inner.fluidProperties == null) s11.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s11.zpp_inner.fluidProperties.wrapper();
-		var s12 = new nape_shape_Polygon([nape_geom_Vec2.get(16.5,409,true),nape_geom_Vec2.get(11.5,383,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s12 = new nape_shape_Polygon([nape_geom_Vec2.get(620.5,532,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(636.5,506,true)],mat,filt);
 		s12.set_body(this.body);
 		s12.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s12.zpp_inner.sensorEnabled = false;
@@ -675,7 +689,7 @@ Test.prototype = {
 		s12.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s12.zpp_inner.fluidProperties == null) s12.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s12.zpp_inner.fluidProperties.wrapper();
-		var s13 = new nape_shape_Polygon([nape_geom_Vec2.get(517,597.5,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(551,569.5,true)],mat,filt);
+		var s13 = new nape_shape_Polygon([nape_geom_Vec2.get(1,-0.5,true),nape_geom_Vec2.get(-0.5,0,true),nape_geom_Vec2.get(289,33.5,true),nape_geom_Vec2.get(336,28.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
 		s13.set_body(this.body);
 		s13.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s13.zpp_inner.sensorEnabled = false;
@@ -690,7 +704,7 @@ Test.prototype = {
 		s13.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s13.zpp_inner.fluidProperties == null) s13.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s13.zpp_inner.fluidProperties.wrapper();
-		var s14 = new nape_shape_Polygon([nape_geom_Vec2.get(551,569.5,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(576.5,543,true)],mat,filt);
+		var s14 = new nape_shape_Polygon([nape_geom_Vec2.get(70.5,514,true),nape_geom_Vec2.get(54.5,483,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s14.set_body(this.body);
 		s14.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s14.zpp_inner.sensorEnabled = false;
@@ -705,7 +719,7 @@ Test.prototype = {
 		s14.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s14.zpp_inner.fluidProperties == null) s14.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s14.zpp_inner.fluidProperties.wrapper();
-		var s15 = new nape_shape_Polygon([nape_geom_Vec2.get(576.5,543,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(598.5,515,true)],mat,filt);
+		var s15 = new nape_shape_Polygon([nape_geom_Vec2.get(54.5,483,true),nape_geom_Vec2.get(41.5,448,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s15.set_body(this.body);
 		s15.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s15.zpp_inner.sensorEnabled = false;
@@ -720,7 +734,7 @@ Test.prototype = {
 		s15.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s15.zpp_inner.fluidProperties == null) s15.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s15.zpp_inner.fluidProperties.wrapper();
-		var s16 = new nape_shape_Polygon([nape_geom_Vec2.get(598.5,515,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(614.5,490,true)],mat,filt);
+		var s16 = new nape_shape_Polygon([nape_geom_Vec2.get(636.5,506,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(647.5,484,true)],mat,filt);
 		s16.set_body(this.body);
 		s16.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s16.zpp_inner.sensorEnabled = false;
@@ -735,7 +749,7 @@ Test.prototype = {
 		s16.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s16.zpp_inner.fluidProperties == null) s16.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s16.zpp_inner.fluidProperties.wrapper();
-		var s17 = new nape_shape_Polygon([nape_geom_Vec2.get(614.5,490,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(628.5,462,true)],mat,filt);
+		var s17 = new nape_shape_Polygon([nape_geom_Vec2.get(647.5,484,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(662.5,443,true)],mat,filt);
 		s17.set_body(this.body);
 		s17.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s17.zpp_inner.sensorEnabled = false;
@@ -750,7 +764,7 @@ Test.prototype = {
 		s17.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s17.zpp_inner.fluidProperties == null) s17.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s17.zpp_inner.fluidProperties.wrapper();
-		var s18 = new nape_shape_Polygon([nape_geom_Vec2.get(628.5,462,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(636.5,442,true)],mat,filt);
+		var s18 = new nape_shape_Polygon([nape_geom_Vec2.get(41.5,448,true),nape_geom_Vec2.get(31.5,403,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s18.set_body(this.body);
 		s18.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s18.zpp_inner.sensorEnabled = false;
@@ -765,7 +779,7 @@ Test.prototype = {
 		s18.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s18.zpp_inner.fluidProperties == null) s18.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s18.zpp_inner.fluidProperties.wrapper();
-		var s19 = new nape_shape_Polygon([nape_geom_Vec2.get(636.5,442,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(645.5,412,true)],mat,filt);
+		var s19 = new nape_shape_Polygon([nape_geom_Vec2.get(662.5,443,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(669.5,413,true)],mat,filt);
 		s19.set_body(this.body);
 		s19.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s19.zpp_inner.sensorEnabled = false;
@@ -780,7 +794,7 @@ Test.prototype = {
 		s19.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s19.zpp_inner.fluidProperties == null) s19.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s19.zpp_inner.fluidProperties.wrapper();
-		var s20 = new nape_shape_Polygon([nape_geom_Vec2.get(645.5,412,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(652.5,374,true)],mat,filt);
+		var s20 = new nape_shape_Polygon([nape_geom_Vec2.get(669.5,413,true),nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(673.5,384,true)],mat,filt);
 		s20.set_body(this.body);
 		s20.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s20.zpp_inner.sensorEnabled = false;
@@ -795,7 +809,7 @@ Test.prototype = {
 		s20.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s20.zpp_inner.fluidProperties == null) s20.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s20.zpp_inner.fluidProperties.wrapper();
-		var s21 = new nape_shape_Polygon([nape_geom_Vec2.get(11.5,383,true),nape_geom_Vec2.get(8.5,354,true),nape_geom_Vec2.get(0,649.5,true)],mat,filt);
+		var s21 = new nape_shape_Polygon([nape_geom_Vec2.get(704.5,694,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(674.5,331,true),nape_geom_Vec2.get(673.5,384,true)],mat,filt);
 		s21.set_body(this.body);
 		s21.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s21.zpp_inner.sensorEnabled = false;
@@ -810,7 +824,7 @@ Test.prototype = {
 		s21.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s21.zpp_inner.fluidProperties == null) s21.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s21.zpp_inner.fluidProperties.wrapper();
-		var s22 = new nape_shape_Polygon([nape_geom_Vec2.get(652.5,374,true),nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(654.5,352,true)],mat,filt);
+		var s22 = new nape_shape_Polygon([nape_geom_Vec2.get(31.5,403,true),nape_geom_Vec2.get(28.5,374,true),nape_geom_Vec2.get(0,694.5,true)],mat,filt);
 		s22.set_body(this.body);
 		s22.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s22.zpp_inner.sensorEnabled = false;
@@ -825,7 +839,7 @@ Test.prototype = {
 		s22.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s22.zpp_inner.fluidProperties == null) s22.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s22.zpp_inner.fluidProperties.wrapper();
-		var s23 = new nape_shape_Polygon([nape_geom_Vec2.get(663.5,649,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(654.5,352,true)],mat,filt);
+		var s23 = new nape_shape_Polygon([nape_geom_Vec2.get(0,694.5,true),nape_geom_Vec2.get(28.5,374,true),nape_geom_Vec2.get(28.5,331,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s23.set_body(this.body);
 		s23.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s23.zpp_inner.sensorEnabled = false;
@@ -840,7 +854,7 @@ Test.prototype = {
 		s23.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s23.zpp_inner.fluidProperties == null) s23.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s23.zpp_inner.fluidProperties.wrapper();
-		var s24 = new nape_shape_Polygon([nape_geom_Vec2.get(654.5,311,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(651.5,281,true)],mat,filt);
+		var s24 = new nape_shape_Polygon([nape_geom_Vec2.get(28.5,331,true),nape_geom_Vec2.get(31.5,301,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s24.set_body(this.body);
 		s24.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s24.zpp_inner.sensorEnabled = false;
@@ -855,7 +869,7 @@ Test.prototype = {
 		s24.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s24.zpp_inner.fluidProperties == null) s24.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s24.zpp_inner.fluidProperties.wrapper();
-		var s25 = new nape_shape_Polygon([nape_geom_Vec2.get(651.5,281,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(643.5,243,true)],mat,filt);
+		var s25 = new nape_shape_Polygon([nape_geom_Vec2.get(31.5,301,true),nape_geom_Vec2.get(35.5,279,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s25.set_body(this.body);
 		s25.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s25.zpp_inner.sensorEnabled = false;
@@ -870,7 +884,7 @@ Test.prototype = {
 		s25.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s25.zpp_inner.fluidProperties == null) s25.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s25.zpp_inner.fluidProperties.wrapper();
-		var s26 = new nape_shape_Polygon([nape_geom_Vec2.get(643.5,243,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(633.5,213,true)],mat,filt);
+		var s26 = new nape_shape_Polygon([nape_geom_Vec2.get(35.5,279,true),nape_geom_Vec2.get(45.5,243,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s26.set_body(this.body);
 		s26.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s26.zpp_inner.sensorEnabled = false;
@@ -885,7 +899,7 @@ Test.prototype = {
 		s26.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s26.zpp_inner.fluidProperties == null) s26.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s26.zpp_inner.fluidProperties.wrapper();
-		var s27 = new nape_shape_Polygon([nape_geom_Vec2.get(633.5,213,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(617.5,179,true)],mat,filt);
+		var s27 = new nape_shape_Polygon([nape_geom_Vec2.get(45.5,243,true),nape_geom_Vec2.get(52.5,225,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s27.set_body(this.body);
 		s27.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s27.zpp_inner.sensorEnabled = false;
@@ -900,7 +914,7 @@ Test.prototype = {
 		s27.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s27.zpp_inner.fluidProperties == null) s27.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s27.zpp_inner.fluidProperties.wrapper();
-		var s28 = new nape_shape_Polygon([nape_geom_Vec2.get(617.5,179,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(597.5,147,true)],mat,filt);
+		var s28 = new nape_shape_Polygon([nape_geom_Vec2.get(52.5,225,true),nape_geom_Vec2.get(67.5,195,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s28.set_body(this.body);
 		s28.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s28.zpp_inner.sensorEnabled = false;
@@ -915,7 +929,7 @@ Test.prototype = {
 		s28.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s28.zpp_inner.fluidProperties == null) s28.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s28.zpp_inner.fluidProperties.wrapper();
-		var s29 = new nape_shape_Polygon([nape_geom_Vec2.get(597.5,147,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(570.5,114,true)],mat,filt);
+		var s29 = new nape_shape_Polygon([nape_geom_Vec2.get(67.5,195,true),nape_geom_Vec2.get(82.5,171,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s29.set_body(this.body);
 		s29.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s29.zpp_inner.sensorEnabled = false;
@@ -930,7 +944,7 @@ Test.prototype = {
 		s29.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s29.zpp_inner.fluidProperties == null) s29.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s29.zpp_inner.fluidProperties.wrapper();
-		var s30 = new nape_shape_Polygon([nape_geom_Vec2.get(570.5,114,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(534,79.5,true)],mat,filt);
+		var s30 = new nape_shape_Polygon([nape_geom_Vec2.get(82.5,171,true),nape_geom_Vec2.get(97.5,151,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s30.set_body(this.body);
 		s30.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s30.zpp_inner.sensorEnabled = false;
@@ -945,7 +959,7 @@ Test.prototype = {
 		s30.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s30.zpp_inner.fluidProperties == null) s30.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s30.zpp_inner.fluidProperties.wrapper();
-		var s31 = new nape_shape_Polygon([nape_geom_Vec2.get(534,79.5,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(517,66.5,true)],mat,filt);
+		var s31 = new nape_shape_Polygon([nape_geom_Vec2.get(97.5,151,true),nape_geom_Vec2.get(136,110.5,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s31.set_body(this.body);
 		s31.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s31.zpp_inner.sensorEnabled = false;
@@ -960,7 +974,7 @@ Test.prototype = {
 		s31.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s31.zpp_inner.fluidProperties == null) s31.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s31.zpp_inner.fluidProperties.wrapper();
-		var s32 = new nape_shape_Polygon([nape_geom_Vec2.get(517,66.5,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(489,48.5,true)],mat,filt);
+		var s32 = new nape_shape_Polygon([nape_geom_Vec2.get(136,110.5,true),nape_geom_Vec2.get(156,93.5,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s32.set_body(this.body);
 		s32.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s32.zpp_inner.sensorEnabled = false;
@@ -975,7 +989,7 @@ Test.prototype = {
 		s32.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s32.zpp_inner.fluidProperties == null) s32.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s32.zpp_inner.fluidProperties.wrapper();
-		var s33 = new nape_shape_Polygon([nape_geom_Vec2.get(489,48.5,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(447,28.5,true)],mat,filt);
+		var s33 = new nape_shape_Polygon([nape_geom_Vec2.get(156,93.5,true),nape_geom_Vec2.get(183,74.5,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s33.set_body(this.body);
 		s33.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s33.zpp_inner.sensorEnabled = false;
@@ -990,7 +1004,7 @@ Test.prototype = {
 		s33.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s33.zpp_inner.fluidProperties == null) s33.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s33.zpp_inner.fluidProperties.wrapper();
-		var s34 = new nape_shape_Polygon([nape_geom_Vec2.get(447,28.5,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(407,16.5,true)],mat,filt);
+		var s34 = new nape_shape_Polygon([nape_geom_Vec2.get(183,74.5,true),nape_geom_Vec2.get(233,49.5,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s34.set_body(this.body);
 		s34.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s34.zpp_inner.sensorEnabled = false;
@@ -1005,7 +1019,7 @@ Test.prototype = {
 		s34.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s34.zpp_inner.fluidProperties == null) s34.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s34.zpp_inner.fluidProperties.wrapper();
-		var s35 = new nape_shape_Polygon([nape_geom_Vec2.get(407,16.5,true),nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(363,9.5,true)],mat,filt);
+		var s35 = new nape_shape_Polygon([nape_geom_Vec2.get(233,49.5,true),nape_geom_Vec2.get(267,38.5,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s35.set_body(this.body);
 		s35.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s35.zpp_inner.sensorEnabled = false;
@@ -1020,7 +1034,7 @@ Test.prototype = {
 		s35.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s35.zpp_inner.fluidProperties == null) s35.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s35.zpp_inner.fluidProperties.wrapper();
-		var s36 = new nape_shape_Polygon([nape_geom_Vec2.get(663,-0.5,true),nape_geom_Vec2.get(2,-0.5,true),nape_geom_Vec2.get(363,9.5,true)],mat,filt);
+		var s36 = new nape_shape_Polygon([nape_geom_Vec2.get(267,38.5,true),nape_geom_Vec2.get(289,33.5,true),nape_geom_Vec2.get(-0.5,0,true)],mat,filt);
 		s36.set_body(this.body);
 		s36.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s36.zpp_inner.sensorEnabled = false;
@@ -1035,7 +1049,7 @@ Test.prototype = {
 		s36.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s36.zpp_inner.fluidProperties == null) s36.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s36.zpp_inner.fluidProperties.wrapper();
-		var s37 = new nape_shape_Polygon([nape_geom_Vec2.get(8.5,311,true),nape_geom_Vec2.get(13.5,269,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s37 = new nape_shape_Polygon([nape_geom_Vec2.get(674.5,331,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(671.5,301,true)],mat,filt);
 		s37.set_body(this.body);
 		s37.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s37.zpp_inner.sensorEnabled = false;
@@ -1050,7 +1064,7 @@ Test.prototype = {
 		s37.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s37.zpp_inner.fluidProperties == null) s37.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s37.zpp_inner.fluidProperties.wrapper();
-		var s38 = new nape_shape_Polygon([nape_geom_Vec2.get(13.5,269,true),nape_geom_Vec2.get(20.5,239,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s38 = new nape_shape_Polygon([nape_geom_Vec2.get(671.5,301,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(667.5,279,true)],mat,filt);
 		s38.set_body(this.body);
 		s38.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s38.zpp_inner.sensorEnabled = false;
@@ -1065,7 +1079,7 @@ Test.prototype = {
 		s38.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s38.zpp_inner.fluidProperties == null) s38.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s38.zpp_inner.fluidProperties.wrapper();
-		var s39 = new nape_shape_Polygon([nape_geom_Vec2.get(20.5,239,true),nape_geom_Vec2.get(28.5,215,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s39 = new nape_shape_Polygon([nape_geom_Vec2.get(667.5,279,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(653.5,233,true)],mat,filt);
 		s39.set_body(this.body);
 		s39.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s39.zpp_inner.sensorEnabled = false;
@@ -1080,7 +1094,7 @@ Test.prototype = {
 		s39.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s39.zpp_inner.fluidProperties == null) s39.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s39.zpp_inner.fluidProperties.wrapper();
-		var s40 = new nape_shape_Polygon([nape_geom_Vec2.get(28.5,215,true),nape_geom_Vec2.get(38.5,192,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s40 = new nape_shape_Polygon([nape_geom_Vec2.get(653.5,233,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(637.5,199,true)],mat,filt);
 		s40.set_body(this.body);
 		s40.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s40.zpp_inner.sensorEnabled = false;
@@ -1095,7 +1109,7 @@ Test.prototype = {
 		s40.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s40.zpp_inner.fluidProperties == null) s40.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s40.zpp_inner.fluidProperties.wrapper();
-		var s41 = new nape_shape_Polygon([nape_geom_Vec2.get(38.5,192,true),nape_geom_Vec2.get(51.5,168,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s41 = new nape_shape_Polygon([nape_geom_Vec2.get(637.5,199,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(627.5,182,true)],mat,filt);
 		s41.set_body(this.body);
 		s41.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s41.zpp_inner.sensorEnabled = false;
@@ -1110,7 +1124,7 @@ Test.prototype = {
 		s41.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s41.zpp_inner.fluidProperties == null) s41.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s41.zpp_inner.fluidProperties.wrapper();
-		var s42 = new nape_shape_Polygon([nape_geom_Vec2.get(51.5,168,true),nape_geom_Vec2.get(67.5,144,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s42 = new nape_shape_Polygon([nape_geom_Vec2.get(627.5,182,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(608.5,155,true)],mat,filt);
 		s42.set_body(this.body);
 		s42.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s42.zpp_inner.sensorEnabled = false;
@@ -1125,7 +1139,7 @@ Test.prototype = {
 		s42.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s42.zpp_inner.fluidProperties == null) s42.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s42.zpp_inner.fluidProperties.wrapper();
-		var s43 = new nape_shape_Polygon([nape_geom_Vec2.get(67.5,144,true),nape_geom_Vec2.get(83.5,124,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s43 = new nape_shape_Polygon([nape_geom_Vec2.get(608.5,155,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(590.5,134,true)],mat,filt);
 		s43.set_body(this.body);
 		s43.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s43.zpp_inner.sensorEnabled = false;
@@ -1140,7 +1154,7 @@ Test.prototype = {
 		s43.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s43.zpp_inner.fluidProperties == null) s43.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s43.zpp_inner.fluidProperties.wrapper();
-		var s44 = new nape_shape_Polygon([nape_geom_Vec2.get(83.5,124,true),nape_geom_Vec2.get(124,83.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s44 = new nape_shape_Polygon([nape_geom_Vec2.get(590.5,134,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(570.5,114,true)],mat,filt);
 		s44.set_body(this.body);
 		s44.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s44.zpp_inner.sensorEnabled = false;
@@ -1155,7 +1169,7 @@ Test.prototype = {
 		s44.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s44.zpp_inner.fluidProperties == null) s44.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s44.zpp_inner.fluidProperties.wrapper();
-		var s45 = new nape_shape_Polygon([nape_geom_Vec2.get(124,83.5,true),nape_geom_Vec2.get(163,54.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s45 = new nape_shape_Polygon([nape_geom_Vec2.get(570.5,114,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(549,95.5,true)],mat,filt);
 		s45.set_body(this.body);
 		s45.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s45.zpp_inner.sensorEnabled = false;
@@ -1170,7 +1184,7 @@ Test.prototype = {
 		s45.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s45.zpp_inner.fluidProperties == null) s45.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s45.zpp_inner.fluidProperties.wrapper();
-		var s46 = new nape_shape_Polygon([nape_geom_Vec2.get(163,54.5,true),nape_geom_Vec2.get(213,29.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s46 = new nape_shape_Polygon([nape_geom_Vec2.get(549,95.5,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(519,74.5,true)],mat,filt);
 		s46.set_body(this.body);
 		s46.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s46.zpp_inner.sensorEnabled = false;
@@ -1185,7 +1199,7 @@ Test.prototype = {
 		s46.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s46.zpp_inner.fluidProperties == null) s46.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s46.zpp_inner.fluidProperties.wrapper();
-		var s47 = new nape_shape_Polygon([nape_geom_Vec2.get(213,29.5,true),nape_geom_Vec2.get(247,18.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s47 = new nape_shape_Polygon([nape_geom_Vec2.get(519,74.5,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(500,63.5,true)],mat,filt);
 		s47.set_body(this.body);
 		s47.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s47.zpp_inner.sensorEnabled = false;
@@ -1200,7 +1214,7 @@ Test.prototype = {
 		s47.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s47.zpp_inner.fluidProperties == null) s47.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s47.zpp_inner.fluidProperties.wrapper();
-		var s48 = new nape_shape_Polygon([nape_geom_Vec2.get(247,18.5,true),nape_geom_Vec2.get(269,13.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s48 = new nape_shape_Polygon([nape_geom_Vec2.get(500,63.5,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(472,50.5,true)],mat,filt);
 		s48.set_body(this.body);
 		s48.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s48.zpp_inner.sensorEnabled = false;
@@ -1215,7 +1229,7 @@ Test.prototype = {
 		s48.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s48.zpp_inner.fluidProperties == null) s48.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s48.zpp_inner.fluidProperties.wrapper();
-		var s49 = new nape_shape_Polygon([nape_geom_Vec2.get(269,13.5,true),nape_geom_Vec2.get(316,8.5,true),nape_geom_Vec2.get(2,-0.5,true)],mat,filt);
+		var s49 = new nape_shape_Polygon([nape_geom_Vec2.get(472,50.5,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(443,40.5,true)],mat,filt);
 		s49.set_body(this.body);
 		s49.zpp_inner.immutable_midstep("Shape::sensorEnabled");
 		s49.zpp_inner.sensorEnabled = false;
@@ -1230,20 +1244,52 @@ Test.prototype = {
 		s49.zpp_inner.immutable_midstep("Shape::fluidProperties");
 		if(s49.zpp_inner.fluidProperties == null) s49.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
 		s49.zpp_inner.fluidProperties.wrapper();
+		var s50 = new nape_shape_Polygon([nape_geom_Vec2.get(443,40.5,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(412,33.5,true)],mat,filt);
+		s50.set_body(this.body);
+		s50.zpp_inner.immutable_midstep("Shape::sensorEnabled");
+		s50.zpp_inner.sensorEnabled = false;
+		s50.zpp_inner.wake();
+		s50.zpp_inner.sensorEnabled;
+		s50.zpp_inner.immutable_midstep("Shape::fluidEnabled");
+		s50.zpp_inner.fluidEnabled = false;
+		s50.zpp_inner.wake();
+		s50.zpp_inner.fluidEnabled;
+		if(prop == null) throw new js__$Boot_HaxeError("Error: Cannot assign null as Shape fluidProperties, disable fluids by setting fluidEnabled to false");
+		s50.zpp_inner.setFluid(prop.zpp_inner);
+		s50.zpp_inner.immutable_midstep("Shape::fluidProperties");
+		if(s50.zpp_inner.fluidProperties == null) s50.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
+		s50.zpp_inner.fluidProperties.wrapper();
+		var s51 = new nape_shape_Polygon([nape_geom_Vec2.get(412,33.5,true),nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(383,29.5,true)],mat,filt);
+		s51.set_body(this.body);
+		s51.zpp_inner.immutable_midstep("Shape::sensorEnabled");
+		s51.zpp_inner.sensorEnabled = false;
+		s51.zpp_inner.wake();
+		s51.zpp_inner.sensorEnabled;
+		s51.zpp_inner.immutable_midstep("Shape::fluidEnabled");
+		s51.zpp_inner.fluidEnabled = false;
+		s51.zpp_inner.wake();
+		s51.zpp_inner.fluidEnabled;
+		if(prop == null) throw new js__$Boot_HaxeError("Error: Cannot assign null as Shape fluidProperties, disable fluids by setting fluidEnabled to false");
+		s51.zpp_inner.setFluid(prop.zpp_inner);
+		s51.zpp_inner.immutable_midstep("Shape::fluidProperties");
+		if(s51.zpp_inner.fluidProperties == null) s51.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
+		s51.zpp_inner.fluidProperties.wrapper();
+		var s52 = new nape_shape_Polygon([nape_geom_Vec2.get(704,-0.5,true),nape_geom_Vec2.get(2,-0.5,true),nape_geom_Vec2.get(336,28.5,true),nape_geom_Vec2.get(383,29.5,true)],mat,filt);
+		s52.set_body(this.body);
+		s52.zpp_inner.immutable_midstep("Shape::sensorEnabled");
+		s52.zpp_inner.sensorEnabled = false;
+		s52.zpp_inner.wake();
+		s52.zpp_inner.sensorEnabled;
+		s52.zpp_inner.immutable_midstep("Shape::fluidEnabled");
+		s52.zpp_inner.fluidEnabled = false;
+		s52.zpp_inner.wake();
+		s52.zpp_inner.fluidEnabled;
+		if(prop == null) throw new js__$Boot_HaxeError("Error: Cannot assign null as Shape fluidProperties, disable fluids by setting fluidEnabled to false");
+		s52.zpp_inner.setFluid(prop.zpp_inner);
+		s52.zpp_inner.immutable_midstep("Shape::fluidProperties");
+		if(s52.zpp_inner.fluidProperties == null) s52.zpp_inner.setFluid(new nape_phys_FluidProperties().zpp_inner);
+		s52.zpp_inner.fluidProperties.wrapper();
 		var anchor = this.body.get_localCOM().copy(null);
-		this.body.translateShapes(nape_geom_Vec2.weak(-(function($this) {
-			var $r;
-			if(anchor != null && anchor.zpp_disp) throw new js__$Boot_HaxeError("Error: " + "Vec2" + " has been disposed and cannot be used!");
-			anchor.zpp_inner.validate();
-			$r = anchor.zpp_inner.x;
-			return $r;
-		}(this)),-(function($this) {
-			var $r;
-			if(anchor != null && anchor.zpp_disp) throw new js__$Boot_HaxeError("Error: " + "Vec2" + " has been disposed and cannot be used!");
-			anchor.zpp_inner.validate();
-			$r = anchor.zpp_inner.y;
-			return $r;
-		}(this))));
 		this.body.get_position().setxy(0,0);
 	}
 	,__class__: Test
@@ -57644,5 +57690,3 @@ zpp_$nape_util_ZPP_$ArbiterList.internal = false;
 zpp_$nape_util_ZPP_$ContactList.internal = false;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}}, typeof window != "undefined" ? window : exports, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
-
-//# sourceMappingURL=NewProjectPixi.js.map
