@@ -154,15 +154,41 @@
             a += B("!1:               %d\n", m);
             document.getElementById('tick').innerText = a;
 
-            if(90 == b && 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight))){
+            if(90 == b1 && 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight))){
                 m = true;
                 document.getElementById('tick').style.width = B("%dpx", a1); 
                 document.getElementById('tick').style.height = B("%dpx", e + 100);
             }
-            m ? (document.body.style.height = 90 == b ? B("%dpx", e + 1E3) : B("%dpx", a + 100), this.md.style.display = "block") : (document.body.style.height = 90 == b ? B("%dpx",
-            e) : B("%dpx", a), this.md.style.display = "none", this.fH());
-        };
 
+            if(m){
+                document.body.style.height = 90;
+                if(90 == b1){
+                    document.body.style.height = B("%dpx", e + 1E3); 
+                }else{
+                    document.body.style.height = B("%dpx", a + 100);
+                    document.getElementById('tick').style.display = "block";
+                }
+
+            }else{
+                document.body.style.height = 90;
+                if(90 == b1){
+                    document.body.style.height = B("%dpx", e); 
+                }else{
+                    document.body.style.height = B("%dpx", a);
+                    document.getElementById('tick').style.display = "none";
+                    this.fH();
+                }
+            } 
+
+     
+        };
+        //window.scrollTo(0, 0);
+        /*d && (d.appendChild(this.eb), document.addEventListener("touchmove", function (a) {
+            sd || (a.preventDefault(), a.stopPropagation(), a.stopImmediatePropagation())
+        },
+        !1), this.wj(), this.timeStamp = Date.now(), a.addEventListener("touchend", function () {
+            window.scrollTo(0, 0)
+        }))*/
         function B(b, e) {
             for (var a = arguments[0].split(/(%[sdf])/), f = "", d = 1, g = 0; g < a.length; ++g) {
                 f = a[g].match(/(%[sdf])/) ? f + arguments[d++] : f + a[g];
