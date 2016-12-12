@@ -189,6 +189,9 @@
         !1), this.wj(), this.timeStamp = Date.now(), a.addEventListener("touchend", function () {
             window.scrollTo(0, 0)
         }))*/
+        document.getElementById('tick').addEventListener("touchend", function () {
+            window.scrollTo(0, 0);
+        });
         function B(b, e) {
             for (var a = arguments[0].split(/(%[sdf])/), f = "", d = 1, g = 0; g < a.length; ++g) {
                 f = a[g].match(/(%[sdf])/) ? f + arguments[d++] : f + a[g];
