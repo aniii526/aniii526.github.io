@@ -102,8 +102,14 @@
             document["preloader"].style.display = 'none';
 
         if (this.isMobile) {
-            show();
+            //show();
         }
+
+        var sp = new PIXI.Graphics();
+        sp.beginFill(0x000000);
+        sp.drawRect(0, 0, 100, 100);
+        sp.endFill();
+        this.mainStage.addChild(sp);
 
         /*var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
