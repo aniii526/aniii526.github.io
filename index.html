@@ -148,6 +148,7 @@
 
             a += B("90 == b               %d\n", 90 == b1);
             a += B("0 < Math               %d\n", (0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight))));
+            //m = !0;
             a += B("!0               %d\n", m);
             a += B("this.md.style.width               %d\n", a1);
             a += B("this.md.style.height               %d\n", e + 100);
@@ -159,7 +160,7 @@
             if(90 == b1 && 0 < (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)))){
                 m = true;
                 document.getElementById('tick').style.width = B("%dpx", a1); 
-                document.getElementById('tick').style.height = B("%dpx", e + 200);
+                document.getElementById('tick').style.height = B("%dpx", e + 100);
             }
 
             /*if(m){
@@ -194,7 +195,7 @@
         !1), this.wj(), this.timeStamp = Date.now(), a.addEventListener("touchend", function () {
             window.scrollTo(0, 0)
         }))*/
-        document.body.addEventListener("touchend", function () {
+        document.getElementById('tick').addEventListener("touchend", function () {
             window.scrollTo(0, 0);
         });
         function B(b, e) {
