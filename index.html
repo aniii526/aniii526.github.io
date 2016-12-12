@@ -129,7 +129,7 @@
                 height: 0
             }
         };
-        document.getElementById('tick').style.minHeight = window.screen.availHeight + 'px';
+        //document.getElementById('tick').style.minHeight = window.screen.availHeight + 'px';
         info();
 
         function info() {
@@ -139,11 +139,6 @@
             a += B("window.screen.availWidth:  %d\n", window.screen.availWidth);
             a += B("window.innerWidth:         %d\n", window.innerWidth);
             a += B("orientation:               %d\n", 1111);
-            a += B("orientation:               %d\n", 1111);
-            a += B("orientation:               %d\n", 1111);
-            a += B("orientation:               %d\n", 1111);
-            a += B("orientation:               %d\n", 1111);
-            a += B("orientation:               %d\n", 1111);
             //document.getElementById('tick').innerText = a;
 
             var a0 = window.screen.width;
@@ -151,13 +146,14 @@
             var e = Math.min(a0, b0);
             var a1 = Math.max(a0, b0);
             var b1 = Math.abs(window.orientation);
-            var m = !1;
+            var m = false;
 
-            a += B("window.screen.width:               %d\n", a0);
-            a += B("window.screen.height:               %d\n", b0);
-            a += B("Math.min(:               %d\n", e);
-            a += B("Math.max(:               %d\n", a1);
-            a += B("Math.abs(:               %d\n", b1);
+            a += B("90 == b               %d\n", 90 == b);
+            a += B("0 < Math               %d\n", 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)));
+            m = !0;
+            a += B("!0               %d\n", m);
+            a += B("this.md.style.width               %d\n", B("%dpx", a));
+            a += B("this.md.style.height               %d\n", B("%dpx", e + 100));
             a += B("!1:               %d\n", m);
             document.getElementById('tick').innerText = a;
 
