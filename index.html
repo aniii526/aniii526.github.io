@@ -144,7 +144,27 @@
             a += B("orientation:               %d\n", 1111);
             a += B("orientation:               %d\n", 1111);
             a += B("orientation:               %d\n", 1111);
+            //document.getElementById('tick').innerText = a;
+
+            var a0 = window.screen.width;
+            var b0 = window.screen.height;
+            var e = Math.min(a0, b0);
+            var a1 = Math.max(a0, b0);
+            var b1 = Math.abs(window.orientation);
+            var m = !1;
+
+            a += B("window.screen.width:               %d\n", a0);
+            a += B("window.screen.height:               %d\n", b0);
+            a += B("Math.min(:               %d\n", e);
+            a += B("Math.max(:               %d\n", a1);
+            a += B("Math.abs(:               %d\n", b1);
+            a += B("!1:               %d\n", m);
             document.getElementById('tick').innerText = a;
+
+            /*90 == b && 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)) && (m = !0,
+            this.md.style.width = B("%dpx", a), this.md.style.height = B("%dpx", e + 100));
+            m ? (document.body.style.height = 90 == b ? B("%dpx", e + 1E3) : B("%dpx", a + 100), this.md.style.display = "block") : (document.body.style.height = 90 == b ? B("%dpx",
+            e) : B("%dpx", a), this.md.style.display = "none", this.fH());*/
         };
 
         function B(b, e) {
