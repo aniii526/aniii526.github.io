@@ -142,25 +142,27 @@
             var b0 = window.screen.height;
             var e = Math.min(a0, b0);
             var a1 = Math.max(a0, b0);
-            var b1 = Math.abs(window.orientation);
+            //var b1 = Math.abs(window.orientation);
+            var b1 = 90;
             var m = false;
 
             a += B("90 == b               %d\n", 90 == b1);
             a += B("0 < Math               %d\n", (0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight))));
-            m = !0;
             a += B("!0               %d\n", m);
             a += B("this.md.style.width               %d\n", a1);
             a += B("this.md.style.height               %d\n", e + 100);
             a += B("!1:               %d\n", m);
             document.getElementById('tick').innerText = a;
 
-            if(90 == b1 && 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight))){
+            console.log(0 < (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight))));
+
+            if(90 == b1 && 0 < (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)))){
                 m = true;
                 document.getElementById('tick').style.width = B("%dpx", a1); 
                 document.getElementById('tick').style.height = B("%dpx", e + 100);
             }
 
-            if(m){
+            /*if(m){
                 if(90 == b1){
                     document.body.style.height = B("%dpx", e + 1E3); 
                 }else{
@@ -175,7 +177,13 @@
                     document.getElementById('tick').style.display = "none";
                     //this.fH();
                 }
-            } 
+            }*/
+
+            if(m){
+                document.getElementById('tick').style.display = "block";
+            }else{
+                document.getElementById('tick').style.display = "none";
+            }
 
      
         };
