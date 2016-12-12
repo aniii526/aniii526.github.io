@@ -39,7 +39,7 @@
 		if (demo == 1) {
             this.model.path_server = this.model.path_server_demo;
         }
-
+        /*
         //мобильный браузер или нет
         this.isMobile = this.isMobileBrowser();
         //debug
@@ -56,10 +56,6 @@
 
         this.ratio = size[0] / size[1];
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
-        /*this.renderer.view.style.position = 'absolute';
-        this.renderer.view.style.left = '50%';
-        this.renderer.view.style.top = '50%';
-        this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';*/
         this.renderer.backgroundColor = 0xffffff;
         //this.renderer
         document.body.children["viewporter"].appendChild(this.renderer.view);
@@ -73,10 +69,6 @@
 
         this.mainStage = new PIXI.Container();
 
-        /*this.stats = new Stats();
-        this.stats.setMode(0);
-        this.stats.domElement.style.position = "fixed";
-        this.stats.domElement.style.top = "0px";*/
 
         // тут ! правильно стоит
         if (!this.isMobile) {
@@ -110,7 +102,7 @@
         sp.drawRect(0, 0, 100, 100);
         sp.endFill();
         this.mainStage.addChild(sp);
-
+        */
         /*var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
         qc.execute();*/
