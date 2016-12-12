@@ -161,22 +161,19 @@
             }
 
             if(m){
-                document.body.style.height = 90;
                 if(90 == b1){
                     document.body.style.height = B("%dpx", e + 1E3); 
                 }else{
                     document.body.style.height = B("%dpx", a + 100);
                     document.getElementById('tick').style.display = "block";
                 }
-
             }else{
-                document.body.style.height = 90;
                 if(90 == b1){
                     document.body.style.height = B("%dpx", e); 
                 }else{
                     document.body.style.height = B("%dpx", a);
                     document.getElementById('tick').style.display = "none";
-                    this.fH();
+                    //this.fH();
                 }
             } 
 
