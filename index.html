@@ -161,6 +161,9 @@
                 m = true;
                 document.getElementById('tick').style.width = B("%dpx", a1); 
                 document.getElementById('tick').style.height = B("%dpx", e + 100);
+                document.body.style.height = B("%dpx", e + 1E3);
+            } else {
+                document.body.style.height = B("%dpx", e);
             }
 
             /*if(m){
