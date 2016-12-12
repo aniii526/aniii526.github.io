@@ -66,79 +66,13 @@
     <!--<div id="viewporter" class="viewporter">
     </div>-->
     <!--<img name="preloader" src="cube.gif" class="Absolute-Center">-->
-    <div id="swiper" style="background-color:black;opacity:0.5;top:0px;left:0px;position:absolute;width:100px;height:100px;display:none;">
-    hbjknsfdfm
+    <div id="swiper" style="background-color:black;opacity:0.5;top:0px;left:0px;position:absolute;width:100px;height:100px;">
     </div>
     <div id="tick" style="position:absolute;">
     </div>
     <script>
 
-        var mainInnerHeight = 0;
-        var mainIterator = 0;
-        var maxHeight = 0;
-        ///ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ УРА, НАКОНЕЦ Я СМОГ ПОЛУЧИТЬ ЕЩЁ 1 ШАГ В СТОРОНУ ИДЕАЛЬНОГО БИЛДА
-
-        if (getparam('GameId') !== "")
-            mainSlot.startSlot(getparam('GameId'), getparam('PartnerId'), getparam('Currency'), getparam('UserId'), getparam('Demo'), getparam('Token'), getparam('BackUrl'));
-        else
-            // вернуть демо на 1
-            mainSlot.startSlot(101, 1, "USD", "56", 1);
-        
-        function getparam(name) {
-            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-            var regexS = "[\\?&]" + name + "=([^&#]*)";
-            var regex = new RegExp(regexS);
-            var results = regex.exec(window.location.href);
-            if (results == null) return "";
-            else return results[1];
-        }
-
-        function show() {
-            document.getElementById('textc').style.display = 'block';
-            document.getElementById('textc').style.visibility = 'visible';
-            document.getElementById('tick').style.display = 'block';
-            document.getElementById('tick').style.visibility = 'visible';
-            document.getElementById('viewporter').style.display = 'none';
-            document.getElementById('viewporter').style.visibility = 'hidden';
-
-            document.documentElement.style.minHeight = '5000px';
-        }
-        function hide() {
-            document.getElementById('viewporter').style.display = 'block';
-            document.getElementById('viewporter').style.visibility = 'visible';
-            document.getElementById('textc').style.display = 'none';
-            document.getElementById('textc').style.visibility = 'hidden';
-            document.getElementById('tick').style.display = 'none';
-            document.getElementById('tick').style.visibility = 'hidden';
-
-            //document.documentElement.style.minHeight = window.innerHeight + 'px';
-        }; 
-        function orientationchange() {
-            //var srt = "innerHeight : " + window.innerHeight + "<br>";
-            //srt += "window.pageYOffset : " + window.pageYOffset + "<br>";
-            //document.getElementById('tick').innerHTML = srt;
-        };
-
-        var objFullScreen = {
-            portrait: {
-                height:0
-            },
-            landscape: {
-                height: 0
-            }
-        };
-        //document.getElementById('tick').style.minHeight = window.screen.availHeight + 'px';
-        info();
-
         function info() {
-            var a;
-            a = "" + B("window.screen.availHeight: %d\n", window.screen.availHeight);
-            a += B("window.innerHeight:        %d\n", window.innerHeight);
-            a += B("window.screen.availWidth:  %d\n", window.screen.availWidth);
-            a += B("window.innerWidth:         %d\n", window.innerWidth);
-            a += B("orientation:               %d\n", 1111);
-            //document.getElementById('tick').innerText = a;
-
             var a0 = window.screen.width;
             var b0 = window.screen.height;
             var e = Math.min(a0, b0);
@@ -147,38 +81,12 @@
             var b1 = 90;
             var m = false;
 
-            a += B("90 == b               %d\n", 90 == b1);
-            a += B("0 < Math               %d\n", (0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight))));
-            //m = !0;
-            a += B("!0               %d\n", m);
-            a += B("this.md.style.width               %d\n", a1);
-            a += B("this.md.style.height               %d\n", e + 100);
-            a += B("!1:               %d\n", m);
-            document.getElementById('tick').innerText = a;
-
             if(90 == b1 && 0 < (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)))){
                 m = true;
-                document.getElementById('tick').style.width = B("%dpx", a1); 
+                document.getElementById('swiper').style.width = B("%dpx", a1);
             } else {
-                document.getElementById('tick').style.height = B("%dpx", e + 100);
+                document.getElementById('swiper').style.height = B("%dpx", e + 100);
             }
-
-            /*if(m){
-                if(90 == b1){
-                    document.body.style.height = B("%dpx", e + 1E3); 
-                }else{
-                    document.body.style.height = B("%dpx", a + 100);
-                    document.getElementById('tick').style.display = "block";
-                }
-            }else{
-                if(90 == b1){
-                    document.body.style.height = B("%dpx", e); 
-                }else{
-                    document.body.style.height = B("%dpx", a);
-                    document.getElementById('tick').style.display = "none";
-                    //this.fH();
-                }
-            }*/
 
             if(m){
                 document.getElementById('tick').style.display = "block";
