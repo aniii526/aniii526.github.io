@@ -106,7 +106,16 @@ y("%dpx", a), document.getElementById('swiper').style.height = y("%dpx", e + 100
             //document.getElementById('text').innerText = (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)));
         }
 
-        document.getElementById('swiper').addEventListener("touchend", function () {
+        document.addEventListener("touchmove", function (e) {
+            sd || e.preventDefault()
+        }, !1);
+
+        document.addEventListener("touchmove", function (a)
+        {
+            sd || (a.preventDefault(), a.stopPropagation(), a.stopImmediatePropagation())
+        });
+
+        document.addEventListener("touchend", function () {
             window.scrollTo(0, 0);
         });
         function y(b, e) {
