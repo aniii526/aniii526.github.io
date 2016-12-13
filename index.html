@@ -75,6 +75,7 @@
     <div id="game" style="background-color: #000000;"></div>
     <div id="swiper" style="background-color:black;opacity:0.5;top:0px;left:0px;position:absolute;width:100px;height:100px;">
     </div>
+    <div id="text"></div>
     <script>
 
         function info() {
@@ -85,6 +86,8 @@
             //var b1 = Math.abs(window.orientation);
             var b1 = 90;
             var m = false;
+
+            document.getElementById('text').innerText = (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)));
 
             if(90 == b1 && 0 < (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)))){
                 m = true;
