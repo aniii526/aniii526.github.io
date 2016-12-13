@@ -25,10 +25,12 @@
     <script src="engine/model_slot.js"></script>
     <script src="main_slot.js"></script>
     <style>
-        /*canvas {
-            display: block;
-        }*/
-        body {
+        #game { position:absolute;top:0px;left:0px; }
+        html{
+				height: 100%;
+				overflow: hidden;
+			}
+         body {
             margin: 0;
             padding: 0;
             background-color: #fff;
@@ -52,46 +54,30 @@
             -ms-user-select: none;
             user-select: none;
         }
-
-        
-        /*.viewporter {
-            visibility: hidden;
-        }*/
-
-        #game { position:absolute;top:0px;left:0px; }
-        html{
-				height: 100%;
-				overflow: hidden;
-			}
     </style>
 
 </head>
 
 <body>
-    <!--<body onLoad="setTimeout(function() {window.scrollTo(0, 1)}, 100);">-->
-    <!--<div id="viewporter" class="viewporter">
-    </div>-->
-    <!--<img name="preloader" src="cube.gif" class="Absolute-Center">-->
     <div id="game" style="background-color: #000000;"></div>
     <div id="swiper" style="background-color:black;opacity:0.5;top:0px;left:0px;position:absolute;width:100px;height:100px;">
     </div>
     <div id="text"></div>
     <script>
 
-        function info() {
-            var a0 = window.screen.width;
-            var b0 = window.screen.height;
+       /* function info() {
+            var a = window.screen.width;
+            var b = window.screen.height;
             var e = Math.min(a0, b0);
-            var a1 = Math.max(a0, b0);
-            //var b1 = Math.abs(window.orientation);
-            var b1 = 90;
+            a = Math.max(a0, b0);
+            b = Math.abs(window.orientation);
             var m = false;
 
             document.getElementById('text').innerText = (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)));
 
-            if(90 == b1 && 0 < (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)))){
+            if(90 == b && 0 < (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)))){
                 m = true;
-                document.getElementById('swiper').style.width = B("%dpx", a1);
+                document.getElementById('swiper').style.width = B("%dpx", a);
             } else {
                 document.getElementById('swiper').style.height = B("%dpx", e + 100);
             }
@@ -103,6 +89,12 @@
             }
 
      
+        };*/
+
+        var sd;
+        function check() {
+            var a = window.screen.width, d = window.screen.height, e = Math.min(a, d), a = Math.max(a, d), d = !1; 90 == Math.abs(window.orientation) && 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)) && (d = !0, document.getElementById('swiper').style.width =
+y("%dpx", a), document.getElementById('swiper').style.height = y("%dpx", e + 100)); d ? (document.getElementById('swiper').style.display = "block", sd = !0) : (document.getElementById('swiper').style.display = "none", resize(e), sd = !1)
         };
         //window.scrollTo(0, 0);
         /*d && (d.appendChild(this.eb), document.addEventListener("touchmove", function (a) {
@@ -111,6 +103,10 @@
         !1), this.wj(), this.timeStamp = Date.now(), a.addEventListener("touchend", function () {
             window.scrollTo(0, 0)
         }))*/
+        function resize(e) {
+            document.getElementById('text').innerText = (Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight)));
+        }
+
         document.getElementById('swiper').addEventListener("touchend", function () {
             //window.scrollTo(0, 0);
         });
@@ -122,8 +118,8 @@
         }
 
         setInterval(function () {
-            //a.check()
-            info();
+            check()
+            //info();
         }, 300)
 
         /*var currentHeight = 0;
