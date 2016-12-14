@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>4</int>
         <key>texturePackerVersion</key>
-        <string>4.2.3</string>
+        <string>4.3.1</string>
         <key>fileName</key>
         <string>D:/work/git/WebProject-1xslot/html5/MadLuck/panel/mob_panel.tps</string>
         <key>autoSDSettings</key>
@@ -47,6 +47,8 @@
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
         <enum type="SettingsBase::Etc1CompressionQuality">ETC1_QUALITY_LOW_PERCEPTUAL</enum>
+        <key>etc2CompressionQuality</key>
+        <enum type="SettingsBase::Etc2CompressionQuality">ETC2_QUALITY_LOW_PERCEPTUAL</enum>
         <key>dxtCompressionMode</key>
         <enum type="SettingsBase::DxtCompressionMode">DXT_PERCEPTUAL</enum>
         <key>jxrColorFormat</key>
@@ -78,6 +80,8 @@
         <key>webpQualityLevel</key>
         <uint>101</uint>
         <key>textureSubPath</key>
+        <string></string>
+        <key>atfFormats</key>
         <string></string>
         <key>textureFormat</key>
         <enum type="SettingsBase::TextureFormat">png</enum>
@@ -118,6 +122,11 @@
                 <enum type="AlgorithmBasicSettings::SortBy">Best</enum>
                 <key>order</key>
                 <enum type="AlgorithmBasicSettings::Order">Ascending</enum>
+            </struct>
+            <key>polygon</key>
+            <struct type="AlgorithmPolygonSettings">
+                <key>alignToGrid</key>
+                <uint>1</uint>
             </struct>
         </struct>
         <key>andEngine</key>
@@ -188,6 +197,33 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">help_plt1.png</key>
+            <key type="filename">help_plt2.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>66,43,132,86</rect>
+                <key>scale9Paddings</key>
+                <rect>66,43,132,86</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">help_plt3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>131,38,261,76</rect>
+                <key>scale9Paddings</key>
+                <rect>131,38,261,76</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">мобильная версия/btn_1lines_down_mobile.png</key>
             <key type="filename">мобильная версия/btn_1lines_mobile.png</key>
             <key type="filename">мобильная версия/btn_3lines_down_mobile.png</key>
@@ -198,18 +234,92 @@
             <key type="filename">мобильная версия/btn_7lines_mobile.png</key>
             <key type="filename">мобильная версия/btn_9lines_down_mobile.png</key>
             <key type="filename">мобильная версия/btn_9lines_mobile.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>47,40,93,80</rect>
+                <key>scale9Paddings</key>
+                <rect>47,40,93,80</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">мобильная версия/btn_autostart_down_mobile.png</key>
             <key type="filename">мобильная версия/btn_autostart_mobile.png</key>
             <key type="filename">мобильная версия/btn_betone_mobile.png</key>
-            <key type="filename">мобильная версия/btn_home.png</key>
             <key type="filename">мобильная версия/btn_info_mobile.png</key>
             <key type="filename">мобильная версия/btn_maxbet_mobile.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>48,48,96,96</rect>
+                <key>scale9Paddings</key>
+                <rect>48,48,96,96</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">мобильная версия/btn_home.png</key>
             <key type="filename">мобильная версия/btn_menu.png</key>
+            <key type="filename">../../../new_art/mad luck/mobile/btn_back.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>41,43,83,86</rect>
+                <key>scale9Paddings</key>
+                <rect>41,43,83,86</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">мобильная версия/btn_start_mobile.png</key>
             <key type="filename">мобильная версия/btn_stop.png</key>
             <key type="filename">мобильная версия/btn_x2.png</key>
+            <key type="filename">../../../new_art/mad luck/mobile/btn_left.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>49,49,99,99</rect>
+                <key>scale9Paddings</key>
+                <rect>49,49,99,99</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">мобильная версия/main_back_mobile.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>268,151,536,301</rect>
+                <key>scale9Paddings</key>
+                <rect>268,151,536,301</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">мобильная версия/mainback_screen_mobile.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>284,27,568,54</rect>
+                <key>scale9Paddings</key>
+                <rect>284,27,568,54</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">мобильная версия/preloader_mc1.png</key>
             <key type="filename">мобильная версия/preloader_mc10.png</key>
             <key type="filename">мобильная версия/preloader_mc11.png</key>
@@ -234,11 +344,17 @@
             <key type="filename">мобильная версия/preloader_mc7.png</key>
             <key type="filename">мобильная версия/preloader_mc8.png</key>
             <key type="filename">мобильная версия/preloader_mc9.png</key>
-            <key type="filename">../../../new_art/mad luck/mobile/btn_back.png</key>
-            <key type="filename">../../../new_art/mad luck/mobile/btn_left.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>22,22,44,45</rect>
+                <key>scale9Paddings</key>
+                <rect>22,22,44,45</rect>
+                <key>scale9FromFile</key>
+                <false/>
             </struct>
         </map>
         <key>fileList</key>
@@ -291,6 +407,9 @@
             <filename>мобильная версия/mainback_screen_mobile.png</filename>
             <filename>../../../new_art/mad luck/mobile/btn_left.png</filename>
             <filename>../../../new_art/mad luck/mobile/btn_back.png</filename>
+            <filename>help_plt2.png</filename>
+            <filename>help_plt3.png</filename>
+            <filename>help_plt1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -312,5 +431,7 @@
         <string></string>
         <key>normalMapSheetFileName</key>
         <filename></filename>
+        <key>exporterProperties</key>
+        <map type="ExporterProperties"/>
     </struct>
 </data>

@@ -142,9 +142,14 @@ class GetTokenCommand extends Command {
         super("GetTokenCommand");
     }
     protected execInternal(): void {
-        if (mainSlot.model.Token == null && !mainSlot.testServer)
+        if (mainSlot.model.Token == null && !mainSlot.testServer) {
             //this.sendToPath("http://192.168.10.125:9055/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
-            this.sendToPath("https://partners.1xbet.org/1xSlotsTest/GetToken?UserId=" + mainSlot.model.userid);
+            //this.sendToPath("https://partners.1xbet.org/1xSlotsTest/GetToken?UserId=" + mainSlot.model.userid);
+            
+            this.sendToPath("http://192.168.12.9:9275/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
+            //mainSlot.model.Token = "66398a0a-e72c-46c8-ad79-37c8331b5ec3";
+            this.notifyComplete();
+        }
         else
             this.notifyComplete();
     }
@@ -288,11 +293,15 @@ class AuthorizationGame extends ConnectCommand {
             mainSlot.model.lastAction = action;
             if (action.CombinationSpin)
                 mainSlot.model.combination = action.parseCombinationRoll();
+            if (action.Highlight)
+                mainSlot.model.highlight = action.parseCombinationHighlight();
             if (action.Summ)
                 mainSlot.model.currentWin = action.Summ;
             if (action.SummInput)
                 mainSlot.model.summInput = action.SummInput;
 
+            /*this.panel.blockAll();
+            this.panel.hideAll();*/
         }
         super.completeConnect(obj);
     }
@@ -456,7 +465,7 @@ class GetGameInfo extends ConnectCommand {
 
     protected execInternal(): void {
         if (mainSlot.testServer) {          
-            var str: string = '{ "Error": 0, "Bets": [0.02, 0.03, 0.05, 0.07, 0.1, 0.25, 0.3, 0.5, 0.75, 1, 1.25, 1.5], "Koeffs": [2, 3, 5, 10, 20, 30, 50, 100, 200, 500, 1000, 5000], "LineMax": 9 }' ;
+            var str: string = '{"Error":0,"Bets":[0.02,0.03,0.05,0.07,0.1,0.25,0.3,0.5,0.75,1,1.25,1.5],"Koeffs":[],"LineMax":9,"PayTable":["1:100,25,5","2:100,25,5","3:100,25,5","4:150,40,5","5:150,40,5","6:750,100,30,5","7:2000,400,40,5","8:5000,1000,100,10","9:2000,200,20"]}' ;
             var obj: Object = JSON.parse(str);
             this.processData(obj);
             return;
@@ -477,7 +486,28 @@ class GetGameInfo extends ConnectCommand {
         mainSlot.model.bets = obj["Bets"];
         mainSlot.model.koeffs = obj["Koeffs"];
         mainSlot.model.lineMax = obj["LineMax"];
+        mainSlot.model.payTable = obj["PayTable"];
+        //тут парсю payTable в mainSlot.model.payTableVO c разбором, для показа.
+        mainSlot.model.payTableVO = this.parsePayTable();
         super.completeConnect(obj);
+    }
+
+    private parsePayTable(): PayTableVO {
+        var payTableVO: PayTableVO = new PayTableVO();
+        var arT: Array<string> = mainSlot.model.payTable.slice(0);
+        for (var i: number = 0; i < arT.length; i++) {
+            payTableVO["id_" + arT[i].slice(0, 1)] = arT[i].substr(2).split(",");
+        }
+        var arr: Array<string>;
+        for (i = 1; i <= arT.length; i++) {
+            arr = payTableVO["id_" + i];
+            for (var j = 0; j < arr.length; j++) {
+                payTableVO["id_" + i][j] = +arr[j];
+                payTableVO["id_" + i][j] = +payTableVO["id_" + i][j];
+            }
+        }
+        //console.log(payTableVO);
+        return payTableVO;
     }
 }
 
@@ -515,30 +545,48 @@ class LoadSlot extends Command {
         //loadJS("gnome/slot_gnome.js", () => { this.completeLoadSlotJS(); });
         let id_game: string = mainSlot.model.gameId + '';
 
-        //id_game = GameList.LORD_OF_LUCK;
+        //id_game = GameList.MAGIC;
+
+        var url: string = '';
 
         switch (id_game) {
             case GameList.MAD_LUCK:
-                loadJS("gnome/slot_gnome.js", () => { this.completeLoadSlotJS(); });
+                url = "games/gnome/slot_gnome.js";
                 break;
             case GameList.REVENGERS:
-                loadJS("revengers/slot_revengers.js", () => { this.completeLoadSlotJS(); });
+                url = "games/revengers/slot_revengers.js";
                 break;
             case GameList.SMITHERS:
-                loadJS("smithers/slot_smithers.js", () => { this.completeLoadSlotJS(); });
+                url = "games/smithers/slot_smithers.js";
                 break;
-            case GameList.LUCK_CRAFT:
-                loadJS("luckcraft/slot_luckcraft.js", () => { this.completeLoadSlotJS(); });
+            case GameList.HORDE:
+                url = "games/horde/slot_horde.js";
                 break;
             case GameList.GRIM_GANG:
-                loadJS("grimgang/slot_grimgang.js", () => { this.completeLoadSlotJS(); });
+                url = "games/grimgang/slot_grimgang.js";
                 break;
             case GameList.LORD_OF_LUCK:
-                loadJS("lordofluck/slot_lordofluck.js", () => { this.completeLoadSlotJS(); });
+                url = "games/lordofluck/slot_lordofluck.js";
+                break;
+            case GameList.ATLAS:
+                url = "games/atlas/slot_atlas.js";
+                break;
+            case GameList.GUARDS:
+                url = "games/guards/slot_guards.js";
+                break;
+            case GameList.PANDORA:
+                url = "games/pandora/slot_pandora.js";
+                break;
+            case GameList.MARS:
+                url = "games/mars/slot_mars.js";
+                break;
+            case GameList.MAGIC:
+                url = "games/magic/slot_magic.js";
                 break;
         }
-        return;
-
+        if (url !== '') {
+            loadJS(url + "?8", () => { this.completeLoadSlotJS(); });
+        }
     }
     private completeLoadSlotJS(): void {
         //TO DO тут я буду грузить ресурсы данного автомата вместо этого кода.
@@ -551,12 +599,17 @@ class LoadSlot extends Command {
 }
 
 class GameList {
-    public static MAD_LUCK: string = "22";
-    public static REVENGERS: string = "13";
-    public static SMITHERS: string = "28";
-    public static LUCK_CRAFT: string = "25";
-    public static GRIM_GANG: string = "37";
-    public static LORD_OF_LUCK: string = "47";
+    public static MAD_LUCK: string = "101";
+    public static REVENGERS: string = "104";
+    public static SMITHERS: string = "107";
+    public static HORDE: string = "110";
+    public static GRIM_GANG: string = "113";
+    public static LORD_OF_LUCK: string = "116";
+    public static ATLAS: string = "119";
+    public static GUARDS: string = "122";
+    public static PANDORA: string = "125";
+    public static MARS: string = "128";
+    public static MAGIC: string = "131";
 }
 
 class InitCommand extends QueueCommand {

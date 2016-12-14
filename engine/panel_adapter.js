@@ -10,6 +10,7 @@ var PanelAdapter = (function (_super) {
         this.indexlines = [1, 3, 5, 7, 9];
         this.dictBlockBtns = new Object();
         this.ishelp = false;
+        this.blockBtnCards = false;
         this.modelSlot = mainSlot.model;
     }
     PanelAdapter.prototype.setPanel = function (panel) {
@@ -30,7 +31,7 @@ var PanelAdapter = (function (_super) {
     };
     PanelAdapter.prototype.setBlocks = function () {
         var linesBtn = [0, 1, 2, 3, 4];
-        this.setBlockTypeBtn(ModelSlot.MODE_HELP, new ModePanelShow([PanelEvent.SELECT_GAME, PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], [1, 2, 3], 'PLEASE PRESS START', [PanelEvent.GAMBLE_BET]));
+        this.setBlockTypeBtn(ModelSlot.MODE_HELP, new ModePanelShow([PanelEvent.SELECT_GAME, PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], linesBtn, 'PLEASE PRESS START', [PanelEvent.GAMBLE_BET]));
         this.setBlockTypeBtn(ModelSlot.MODE_ERROR, new ModePanelShow([PanelEvent.SELECT_GAME, PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], linesBtn, 'error', [PanelEvent.GAMBLE_BET]));
         this.setBlockTypeBtn(ModelSlot.MODE_READY, new ModePanelShow([], [], 'PLEASE PRESS START', [PanelEvent.GAMBLE_BET]));
         this.setBlockTypeBtn(ModelSlot.MODE_ROUTE, new ModePanelShow([PanelEvent.HELP, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], linesBtn, 'GOOD LUCK', [PanelEvent.START_SPIN, PanelEvent.GAMBLE_BET]));
@@ -116,8 +117,6 @@ var PanelAdapter = (function (_super) {
         if (this.ishelp)
             return;
         this.blockAll();
-        this.blockLineBtn(0, false);
-        this.blockLineBtn(4, false);
         this.blockBtnByType(PanelEvent.START, false);
         mainSlot.slot.showHelp();
         this.ishelp = true;
@@ -145,10 +144,12 @@ var PanelAdapter = (function (_super) {
         this.panel.hideAll();
     };
     PanelAdapter.prototype.blockComboBtns = function () {
+        this.blockBtnCards = true;
         this.panel.blockComboBtns();
     };
     PanelAdapter.prototype.reBlock = function (arBlockCombo) {
         if (arBlockCombo === void 0) { arBlockCombo = null; }
+        this.blockBtnCards = false;
         this.lastArBlockCombo = arBlockCombo;
         if (this.ishelp)
             return;

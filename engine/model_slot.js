@@ -5,8 +5,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var ModelSlot = (function () {
     function ModelSlot() {
-        this.path_server = "https://slotsrv.1xbet.org/test/";
-        this.path_server_demo = "https://slotsrv.1xbet.org/testDemo/";
+        this.path_server = "http://192.168.12.9:9277/SlotsInternalService.svc/";
+        this.path_server_demo = "http://192.168.12.9:9277/SlotsInternalServiceDemo.svc/";
         this.KeyHash = "sdf34g21v";
         this.BackUrl = 'https://1xslot.com/';
         this.bets = [1, 2, 3, 4];
@@ -28,6 +28,10 @@ var ModelSlot = (function () {
             this.stateSlotManager.setModeOnActionID(this.lastAction);
         mainSlot.panel.initPanel();
         mainSlot.panel.hidePanelLoader();
+        if (this.lastAction && this.lastAction.Action && this.lastAction.Action == ModelSlot.ID_WIN_ROUTE) {
+            mainSlot.panel.blockAll();
+            mainSlot.panel.hideAll();
+        }
     };
     Object.defineProperty(ModelSlot.prototype, "amountBet", {
         get: function () {
@@ -72,6 +76,9 @@ var ModelSlot = (function () {
         this.error = code;
         if (code != 0 && code != 16 && code != 13) {
             console.log("Ошибка: " + code + " " + msg);
+            var text = msg;
+            $("#text").html("" + text);
+            $("#msgview").css("display", "block");
             return true;
         }
         return false;
@@ -133,6 +140,16 @@ var RollVO = (function () {
     };
     return RollVO;
 }());
+var HighlightVO = (function () {
+    function HighlightVO() {
+    }
+    return HighlightVO;
+}());
+var PayTableVO = (function () {
+    function PayTableVO() {
+    }
+    return PayTableVO;
+}());
 var ActionVO = (function (_super) {
     __extends(ActionVO, _super);
     function ActionVO(data) {
@@ -165,6 +182,27 @@ var ActionVO = (function (_super) {
         }
         return count;
     };
+    ActionVO.prototype.parseCombinationHighlight = function () {
+        var highlightVO = new HighlightVO();
+        var arT = this.Highlight.split("[");
+        arT.shift();
+        for (var i = 0; i < arT.length; i++) {
+            highlightVO["id_" + arT[i].slice(0, 1)] = arT[i].substr(2).split("&");
+        }
+        return highlightVO;
+    };
+    ActionVO.prototype.getCountIndexHighlight = function (ind) {
+        var count = 0;
+        var arT = this.Highlight.split("&");
+        for (var i = 0; i < arT.length; i++) {
+            var arV = arT[i].split(";");
+            for (var j = 0; j < arV.length; j++) {
+                if (parseInt(arV[j]) == ind)
+                    count++;
+            }
+        }
+        return count;
+    };
     ActionVO.prototype.setSpecialValue = function (pole, value) {
         switch (pole) {
         }
@@ -175,6 +213,7 @@ var ActionVO = (function (_super) {
 var AnimIconVO = (function () {
     function AnimIconVO() {
         this.anim_speed = 1;
+        this.loop = false;
     }
     return AnimIconVO;
 }());
@@ -367,6 +406,7 @@ var StateSlotRoute = (function (_super) {
         this.action = e.data;
         this.model.lastAction = this.action;
         this.model.combination = this.action.parseCombinationRoll();
+        this.model.highlight = this.action.parseCombinationHighlight();
         this.slotGame.getMainScene().showRollCombination(this.model.combination, function () { _this.completeSpinAnimation(); });
     };
     StateSlotRoute.prototype.completeSpinAnimation = function () {

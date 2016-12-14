@@ -131,8 +131,10 @@ var GetTokenCommand = (function (_super) {
         _super.call(this, "GetTokenCommand");
     }
     GetTokenCommand.prototype.execInternal = function () {
-        if (mainSlot.model.Token == null && !mainSlot.testServer)
-            this.sendToPath("https://partners.1xbet.org/1xSlotsTest/GetToken?UserId=" + mainSlot.model.userid);
+        if (mainSlot.model.Token == null && !mainSlot.testServer) {
+            this.sendToPath("http://192.168.12.9:9275/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
+            this.notifyComplete();
+        }
         else
             this.notifyComplete();
     };
@@ -244,6 +246,8 @@ var AuthorizationGame = (function (_super) {
             mainSlot.model.lastAction = action;
             if (action.CombinationSpin)
                 mainSlot.model.combination = action.parseCombinationRoll();
+            if (action.Highlight)
+                mainSlot.model.highlight = action.parseCombinationHighlight();
             if (action.Summ)
                 mainSlot.model.currentWin = action.Summ;
             if (action.SummInput)
@@ -380,7 +384,7 @@ var GetGameInfo = (function (_super) {
     }
     GetGameInfo.prototype.execInternal = function () {
         if (mainSlot.testServer) {
-            var str = '{ "Error": 0, "Bets": [0.02, 0.03, 0.05, 0.07, 0.1, 0.25, 0.3, 0.5, 0.75, 1, 1.25, 1.5], "Koeffs": [2, 3, 5, 10, 20, 30, 50, 100, 200, 500, 1000, 5000], "LineMax": 9 }';
+            var str = '{"Error":0,"Bets":[0.02,0.03,0.05,0.07,0.1,0.25,0.3,0.5,0.75,1,1.25,1.5],"Koeffs":[],"LineMax":9,"PayTable":["1:100,25,5","2:100,25,5","3:100,25,5","4:150,40,5","5:150,40,5","6:750,100,30,5","7:2000,400,40,5","8:5000,1000,100,10","9:2000,200,20"]}';
             var obj = JSON.parse(str);
             this.processData(obj);
             return;
@@ -398,7 +402,25 @@ var GetGameInfo = (function (_super) {
         mainSlot.model.bets = obj["Bets"];
         mainSlot.model.koeffs = obj["Koeffs"];
         mainSlot.model.lineMax = obj["LineMax"];
+        mainSlot.model.payTable = obj["PayTable"];
+        mainSlot.model.payTableVO = this.parsePayTable();
         _super.prototype.completeConnect.call(this, obj);
+    };
+    GetGameInfo.prototype.parsePayTable = function () {
+        var payTableVO = new PayTableVO();
+        var arT = mainSlot.model.payTable.slice(0);
+        for (var i = 0; i < arT.length; i++) {
+            payTableVO["id_" + arT[i].slice(0, 1)] = arT[i].substr(2).split(",");
+        }
+        var arr;
+        for (i = 1; i <= arT.length; i++) {
+            arr = payTableVO["id_" + i];
+            for (var j = 0; j < arr.length; j++) {
+                payTableVO["id_" + i][j] = +arr[j];
+                payTableVO["id_" + i][j] = +payTableVO["id_" + i][j];
+            }
+        }
+        return payTableVO;
     };
     return GetGameInfo;
 }(ConnectCommand));
@@ -432,27 +454,45 @@ var LoadSlot = (function (_super) {
     LoadSlot.prototype.execInternal = function () {
         var _this = this;
         var id_game = mainSlot.model.gameId + '';
+        var url = '';
         switch (id_game) {
             case GameList.MAD_LUCK:
-                loadJS("gnome/slot_gnome.js", function () { _this.completeLoadSlotJS(); });
+                url = "games/gnome/slot_gnome.js";
                 break;
             case GameList.REVENGERS:
-                loadJS("revengers/slot_revengers.js", function () { _this.completeLoadSlotJS(); });
+                url = "games/revengers/slot_revengers.js";
                 break;
             case GameList.SMITHERS:
-                loadJS("smithers/slot_smithers.js", function () { _this.completeLoadSlotJS(); });
+                url = "games/smithers/slot_smithers.js";
                 break;
-            case GameList.LUCK_CRAFT:
-                loadJS("luckcraft/slot_luckcraft.js", function () { _this.completeLoadSlotJS(); });
+            case GameList.HORDE:
+                url = "games/horde/slot_horde.js";
                 break;
             case GameList.GRIM_GANG:
-                loadJS("grimgang/slot_grimgang.js", function () { _this.completeLoadSlotJS(); });
+                url = "games/grimgang/slot_grimgang.js";
                 break;
             case GameList.LORD_OF_LUCK:
-                loadJS("lordofluck/slot_lordofluck.js", function () { _this.completeLoadSlotJS(); });
+                url = "games/lordofluck/slot_lordofluck.js";
+                break;
+            case GameList.ATLAS:
+                url = "games/atlas/slot_atlas.js";
+                break;
+            case GameList.GUARDS:
+                url = "games/guards/slot_guards.js";
+                break;
+            case GameList.PANDORA:
+                url = "games/pandora/slot_pandora.js";
+                break;
+            case GameList.MARS:
+                url = "games/mars/slot_mars.js";
+                break;
+            case GameList.MAGIC:
+                url = "games/magic/slot_magic.js";
                 break;
         }
-        return;
+        if (url !== '') {
+            loadJS(url + "?8", function () { _this.completeLoadSlotJS(); });
+        }
     };
     LoadSlot.prototype.completeLoadSlotJS = function () {
         var _this = this;
@@ -466,12 +506,17 @@ var LoadSlot = (function (_super) {
 var GameList = (function () {
     function GameList() {
     }
-    GameList.MAD_LUCK = "22";
-    GameList.REVENGERS = "13";
-    GameList.SMITHERS = "28";
-    GameList.LUCK_CRAFT = "25";
-    GameList.GRIM_GANG = "37";
-    GameList.LORD_OF_LUCK = "47";
+    GameList.MAD_LUCK = "101";
+    GameList.REVENGERS = "104";
+    GameList.SMITHERS = "107";
+    GameList.HORDE = "110";
+    GameList.GRIM_GANG = "113";
+    GameList.LORD_OF_LUCK = "116";
+    GameList.ATLAS = "119";
+    GameList.GUARDS = "122";
+    GameList.PANDORA = "125";
+    GameList.MARS = "128";
+    GameList.MAGIC = "131";
     return GameList;
 }());
 var InitCommand = (function (_super) {

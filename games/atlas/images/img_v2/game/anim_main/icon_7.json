@@ -1,0 +1,84 @@
+{"frames": {
+
+"icon_7_1.png":
+{
+	"frame": {"x":161,"y":2,"w":177,"h":179},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":7,"w":177,"h":179},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_2.png":
+{
+	"frame": {"x":2,"y":193,"w":162,"h":181},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":17,"y":6,"w":162,"h":181},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_3.png":
+{
+	"frame": {"x":167,"y":184,"w":163,"h":170},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":22,"y":8,"w":163,"h":170},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_4.png":
+{
+	"frame": {"x":341,"y":179,"w":165,"h":141},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":22,"w":165,"h":141},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_5.png":
+{
+	"frame": {"x":2,"y":377,"w":150,"h":125},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":31,"y":31,"w":150,"h":125},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_6.png":
+{
+	"frame": {"x":303,"y":357,"w":101,"h":99},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":49,"y":44,"w":101,"h":99},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_7.png":
+{
+	"frame": {"x":167,"y":357,"w":133,"h":146},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":22,"w":133,"h":146},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_8.png":
+{
+	"frame": {"x":2,"y":2,"w":156,"h":188},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":24,"y":2,"w":156,"h":188},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_7_9.png":
+{
+	"frame": {"x":341,"y":2,"w":165,"h":174},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":17,"y":3,"w":165,"h":174},
+	"sourceSize": {"w":195,"h":195}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "icon_7.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":512},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:230efcaf6e85362ab32831af567370cb:57b027dfe08b07624c0689d0fcf0f246:56c11b25644359a68ff0f07f41f58d7f$"
+}
+}

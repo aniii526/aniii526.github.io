@@ -17,9 +17,9 @@
     public static NAME_ATLAS_SUPER_BONUS_SCENE: string;
     public static NAME_ATLAS_RECT: string;
 
-    public static NAME_ATLAS_ICON_1: string;
-    public static NAME_ATLAS_ICON_4: string;
     public static NAME_ATLAS_ICON_6: string;
+    public static NAME_ATLAS_ICON_7: string;
+    public static NAME_ATLAS_ICON_8: string;
     public static NAME_ATLAS_ICON_9: string;
     public static NAME_ATLAS_ICONS: string;
 
@@ -45,6 +45,7 @@
     }
 
     public showHelp(): void {
+        this.getHelpScene().tryInitDisplay();
         this.addChild(this.getHelpScene());
     }
     public hideHelp(): void {
@@ -72,6 +73,10 @@ class SceneSlot extends PIXI.Sprite {
     }
 
     protected initDisplay(): void {
+
+    }
+
+    public tryInitDisplay(): void {
 
     }
 }
@@ -184,11 +189,12 @@ class MainScene extends SceneSlot {
         this.lines = new LinesWin(LineClass)
         this.addChild(this.lines);
         //this.lines.addEventListener(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
-        this.lines.on(LinesWin.END_BLINK, () => { this.onCompleteShowLine() });
+        this.lines.on(LinesWin.END_BLINK, (e) => { this.onCompleteShowLine() });
+        this.lines.on(LinesWin.SHOW_LINE, (indexLine: number) => { this.onShowLine(indexLine) });
         this.lines.x = px;
         this.lines.y = py;
 
-        this.animlayers = new AnimWin();
+        this.animlayers = new AnimWin(this.rolls);
         this.animlayers.x = 53;
         this.animlayers.y = 112;
         this.addChild(this.animlayers);
@@ -197,6 +203,11 @@ class MainScene extends SceneSlot {
     protected onCompleteShowLine(): void {
         if (this.callbackCompleteLines != null)
             this.callbackCompleteLines();
+    }
+
+    private onShowLine(indexLine: number): void {
+        if (this.callbackCompleteLines != null)
+            this.animlayers.showAnimIcon(indexLine);
     }
 
     public showRollCombination(comb: Array<Array<number>>, callbackCompleteRoll: Function): void {
@@ -217,7 +228,7 @@ class MainScene extends SceneSlot {
             this.lines.showLines(ar, isAnimate);
             if (this.callbackCompleteLines) {
                 this.fon.visible = true;
-                this.animlayers.show();
+                //this.animlayers.show();
             }
         }
         else {
@@ -252,9 +263,201 @@ class MainScene extends SceneSlot {
 
 //TO DO надо править сильно этот класс, в нем уже создавать объект мувиклип и переключать его, а не сам контейнер.
 class HelpScene extends SceneSlot {
+
+    protected visiblePart: Array<PartHelp>;
+    protected indexXY: Array<PointVO>;
+    protected textLeftPoint: Array<PointVO>;
+    protected textRightPoint: Array<PointVO>;
+    protected indexGroupTextures: Array<Array<number>> = [[1, 2, 3], [4, 5], [6], [7], [8], [9]];
+    protected groupTexturesPoints: Array<Array<PointVO>>;
+    protected groupTextLeft: Array<string>;
+
+    protected styleLabel: PIXI.TextStyle = {
+        fontSize: '30px',
+        fontFamily: 'heliosblackcregular',
+        fill: '#FFFFFF',
+        letterSpacing: 1
+    };
+
     constructor(mc: PIXI.Sprite) {
         super(mc);
-        //this.hideHelp();
+    }
+
+    public tryInitDisplay(): void {
+        if (!this.visiblePart)
+            this.initParts();
+        this.updateParts();
+
+    }
+
+    protected initParts(): void {
+        this.indexXY = [
+            new PointVO(668, 557),
+            new PointVO(228, 563),
+            new PointVO(72, 356),
+            new PointVO(420, 356),
+            new PointVO(785, 356),
+            new PointVO(666, 154)
+        ];
+        this.groupTexturesPoints = [
+            [new PointVO(-43, 21), new PointVO(28, 25), new PointVO(0, 0)],
+            [new PointVO(0, 0), new PointVO(31, 21)],
+            [new PointVO(0, 0, 150)],
+            [new PointVO(0, 0, 150)],
+            [new PointVO(0, 0, 150)],
+            [new PointVO(0, 0, 150)]
+        ];
+
+        this.groupTextLeft = [
+            "5x\n4x\n3x\n",
+            "5x\n4x\n3x\n",
+            "5x\n4x\n3x\n2x",
+            "5x\n4x\n3x\n2x",
+            "5x\n4x\n3x\n2x",
+            "\n5x\n4x\n3x\n"
+        ];
+
+        this.textLeftPoint = [
+            new PointVO(-10, 0),
+            new PointVO(-7, -2),
+            new PointVO(0, 0),
+            new PointVO(0, 0),
+            new PointVO(0, 0),
+            new PointVO(0, -2)
+        ];
+
+        this.textRightPoint = [
+            new PointVO(-10, 2),
+            new PointVO(-10, 2),
+            new PointVO(0, 5),
+            new PointVO(0, 5),
+            new PointVO(0, 5),
+            new PointVO(-5, 5)
+        ];
+
+        let sprite: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt3.png"]);
+        sprite.x = 210;
+        sprite.y = 154;
+        this.addChild(sprite);
+
+        let sprite_1: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt2.png"]);
+        sprite_1.x = 745;
+        sprite_1.y = 146;
+        this.addChild(sprite_1);
+
+        let sprite_2: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt1.png"]);
+        sprite_2.x = 138;
+        sprite_2.y = 348;
+        this.addChild(sprite_2);
+
+        let sprite_3: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt1.png"]);
+        sprite_3.x = 500;
+        sprite_3.y = 348;
+        this.addChild(sprite_3);
+
+        let sprite_4: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt1.png"]);
+        sprite_4.x = 860;
+        sprite_4.y = 348;
+        this.addChild(sprite_4);
+
+        let sprite_5: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt2.png"]);
+        sprite_5.x = 294;
+        sprite_5.y = 535;
+        this.addChild(sprite_5);
+
+        let sprite_6: PIXI.Sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt2.png"]);
+        sprite_6.x = 724;
+        sprite_6.y = 535;
+        this.addChild(sprite_6);
+
+        let tempIndex: number;
+        var part: PartHelp;
+        this.visiblePart = [];
+        for (var i: number = 0; i < this.indexGroupTextures.length; i++) {
+            //tempIndex = this.indexGroup[i];
+            part = new PartHelp(); part
+            part.x = this.indexXY[i].pointX;
+            part.y = this.indexXY[i].pointY;
+            for (var j: number = 0; j < this.indexGroupTextures[i].length; j++) {
+                part.createSpriteForID(this.indexGroupTextures[i][j], this.groupTexturesPoints[i][j], this.textLeftPoint[i], this.textRightPoint[i]);
+            }
+            this.addChild(part);
+            part.updateLeftText(this.groupTextLeft[i]);
+
+            this.visiblePart.push(part);
+        }
+        part = null;
+
+        let sp: PIXI.Sprite;
+        let value50: number = 50 / 195;
+        let value60: number = 60 / 195;
+        // < 9 стоит специально, последний элемент не нужен в этой последовательности
+        for (var i: number = 1; i < 9; i++) {
+            sp = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_" + i + ".png"]);
+            if (i < 6) {
+                sp.x = 618 - 50 * (i - 1);
+                sp.scale.x = sp.scale.y = value50;
+                sp.y = 218;
+            }
+            else {
+                sp.x = 618 - (60 * (i-2) + 25);
+                sp.scale.x = sp.scale.y = value60;
+                sp.y = 211;
+            }
+            this.addChild(sp);
+        }
+
+        let textTitle = new PIXI.Text();
+        textTitle.text = 'SUBSTITUTES FOR';
+        textTitle.style = this.styleLabel;
+        textTitle.position.x = 451;
+        textTitle.position.y = 192;
+        textTitle.anchor.set(0.5, 0.5);
+        this.addChild(textTitle);
+    }
+
+    protected updateParts(): void {
+        let payTableVO: PayTableVO = mainSlot.model.payTableVO;
+        let part: PartHelp;
+        let str: string;
+        let value: number;
+        let ar: Array<number>;
+        for (var i: number = 0; i < this.visiblePart.length; i++) {
+
+            part = this.visiblePart[i];
+            
+            for (var j: number = 0; j < this.indexGroupTextures[i].length; j++) {
+
+                if( j === 0 || j === 4)
+                    str = '\n';
+                else
+                    str = '';
+                ar = payTableVO["id_" + this.indexGroupTextures[i][0]];
+                for (var k: number = 0; k < ar.length; k++) {
+                    // новое округление от Сережки
+                    value = this.rounding(ar[k] * mainSlot.model.amountBet );
+                    //value = ar[k] * mainSlot.model.amountBet;
+                    str += value + '\n';
+                }
+                part.updateRightText(str);
+            }
+        }
+    }
+
+    private rounding(value: number): number {
+        if (value > 10)
+            return Math.round(value);
+
+        if (value > 1)
+            return Math.round(value * 10) / 10;
+
+        if (value > 0.1)
+            return Math.round(value * 100) / 100;
+
+        if (value > 0.01)
+            return Math.round(value * 1000) / 1000;
+
+        return 0;
     }
 
     protected bindProperties(): void {
@@ -262,21 +465,6 @@ class HelpScene extends SceneSlot {
     }
 
     public selectBtn(nom: number): void {
-        //TO DO читай выше
-        if (nom == 0) {
-            if (this.mc["anim"].currentFrame == 0) {
-                this.mc["anim"].gotoAndStop(this.mc["anim"].totalFrames - 1);
-            }
-            else {
-                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame - 1);
-            }
-        }
-        else {
-            if (this.mc["anim"].currentFrame == this.mc["anim"].totalFrames - 1)
-                this.mc["anim"].gotoAndStop(0);
-            else
-                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame + 1);
-        }
     }
 
     public showhelp(): void {
@@ -287,6 +475,83 @@ class HelpScene extends SceneSlot {
         this.removeChild(this.mc);
     }
 }
+
+class PointVO {
+    public pointX: number;
+    public pointY: number;
+    public scale: number = 100;
+    constructor(pointX: number, pointY: number, scale?: number) {
+        this.pointX = pointX;
+        this.pointY = pointY;
+        if (scale)
+            this.scale = scale;
+    }
+}
+
+class PartHelp extends PIXI.Sprite {
+    protected styleLabelLeft: PIXI.TextStyle = {
+        fontSize: '30px',
+        fontFamily: 'heliosblackcregular',
+        fill: '#FFFFFF',
+        letterSpacing: 1
+    };
+
+    protected styleLabelRight: PIXI.TextStyle = {
+        fontSize: '30px',
+        fontFamily: 'heliosblackcregular',
+        fill: '#FFCC33',
+        letterSpacing: 1
+    };
+
+    private textLeft: PIXI.Text;
+    private textRight: PIXI.Text;
+    private sprite: PIXI.Sprite;
+    constructor() {
+        super();
+        this.init();
+    }
+
+    private init(): void {
+        this.textLeft = new PIXI.Text();
+        this.textLeft.text = '1';
+        this.textLeft.style = this.styleLabelLeft;
+        this.textLeft.position.x = 165;
+        this.textLeft.position.y = 75;
+        this.textLeft.anchor.set(0.5, 0.5);
+        this.addChild(this.textLeft);
+
+        this.textRight = new PIXI.Text();
+        this.textRight.text = '1';
+        this.textRight.style = this.styleLabelRight;
+        this.textRight.position.x = 250;
+        this.textRight.position.y = 70;
+        this.textRight.anchor.set(0.5, 0.5);
+        this.addChild(this.textRight);
+    }
+
+    public createSpriteForID(id: number, point: PointVO, pointTextL: PointVO, pointTextR: PointVO): void {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_" + id + ".png"]);
+        this.sprite.scale.x = this.sprite.scale.y = point.scale / 195; // 195 ширина картинки изначальная
+        this.sprite.x = point.pointX;
+        this.sprite.y = point.pointY;
+        this.addChild(this.sprite);
+
+        this.textLeft.position.x += pointTextL.pointX;
+        this.textLeft.position.y += pointTextL.pointY;
+
+        this.textRight.position.x += pointTextR.pointX;
+        this.textRight.position.y += pointTextR.pointY;
+    }
+
+    public updateLeftText(text: string): void {
+        this.textLeft.text = text;
+    }
+
+    public updateRightText(text: string): void {
+        this.textRight.text = text;
+    }
+}
+
 class GambleScene extends SceneSlot {
     protected completeCallback: Function;
     protected dealer: Card;
@@ -337,6 +602,7 @@ class GambleScene extends SceneSlot {
     private onResponseStart(e: ServerResponseEvent): void {
         soundManager.playSound(SoundManager.SOUND_CARD_OPEN);
         this.dealer.setCardOnStr((e.data as ActionVO).CombinationAux);
+        mainSlot.panel.reBlock();
     }
 
     public setLastGamble(value: String): void {
@@ -354,6 +620,7 @@ class GambleScene extends SceneSlot {
 
     public resetGamble(): void {
         this.clear();
+        mainSlot.panel.blockComboBtns();
         if (this.modelSlot.lastAction.Action == ModelSlot.ID_GAMBLE_START)
             this.dealer.setCardOnStr(this.modelSlot.lastAction.CombinationAux);
         else
@@ -559,35 +826,12 @@ class Card extends PIXI.Sprite {
 
             let index = parseInt(this.value) - 2;
             this.mc["num"].gotoAndStop(index);
-
-            /*this.mc["img"].visible = true;
-            switch (index) {
-                // валет
-                case 9:
-                    this.mc["img"].gotoAndStop(0);
-                    this.mc["suit"].visible = false;
-                    break;
-                // дама
-                case 10:
-                    this.mc["img"].gotoAndStop(1);
-                    this.mc["suit"].visible = false;
-                    break;
-                // король
-                case 11:
-                    this.mc["img"].gotoAndStop(2);
-                    this.mc["suit"].visible = false;
-                    break;
-                // задник
-                default:
-                    this.mc["img"].visible = false;
-                    this.mc["suit"].visible = true;
-            }*/
-
         }
         this.addChild(this.mc);
     }
 
     private onUpBtn(e: PIXI.interaction.InteractionEvent): void {
+        if (mainSlot.panel.blockBtnCards == false)
         mainSlot.panel.outClickBtn(new PanelEvent(PanelEvent.SELECT_LINE, ((e.target as PIXI.Sprite).parent as Card).indexCard));
     }
 
@@ -763,6 +1007,29 @@ class Rolls extends PIXI.Sprite {
             this.emit(Rolls.COMPLETE_ROLLS);
         }
     }
+
+    public hideRollForIndex(idItem: number, idChildren: number): void {
+        //for (var i: number = 0; i < this.arRoll.length; i++) {
+        if (idItem >= this.arRoll.length || idItem < 0) {
+            console.log('idItem указывает на несуществующий элемент' );
+            return;
+        }
+        //let sp = (this.arRoll[idItem].getChildAt(1) as PIXI.Sprite).getChildAt((2 - idChildren)).visible = false;
+        (this.arRoll[idItem].getChildAt(1) as PIXI.Sprite).getChildAt(idChildren).visible = false;
+        //}
+    }
+
+    public showRollForIndex(idItem: number): void {
+        //for (var i: number = 0; i < this.arRoll.length; i++) {
+        if (idItem >= this.arRoll.length || idItem < 0) {
+            console.log('idItem указывает на несуществующий элемент');
+            return;
+        }
+        (this.arRoll[idItem].getChildAt(1) as PIXI.Sprite).getChildAt(0).visible = true;
+        (this.arRoll[idItem].getChildAt(1) as PIXI.Sprite).getChildAt(1).visible = true;
+        (this.arRoll[idItem].getChildAt(1) as PIXI.Sprite).getChildAt(2).visible = true;
+        //}
+    }
 }
 
 //-------------------------------------------------------------------------------------------
@@ -827,6 +1094,8 @@ class Roll extends PIXI.Sprite {
                 ic.showAnimationWin();
         }
     }
+
+
 
     private clear(): void {
         while (this.container.children.length > 0) {
@@ -930,12 +1199,12 @@ class IconRoll extends PIXI.Sprite {
     }
 
     protected getIcon(nom: number): PIXI.Sprite {
-        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_" + nom + ".png"]);
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_" + nom + ".png"]);
     }
 
     protected getIconBlur(nom: number): PIXI.Sprite {
         //throw new Error("Не задана иконка");
-        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_blur_" + nom + ".png"]);
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_blur_" + nom + ".png"]);
     }
 
     public showAnimationWin(): void {
@@ -965,7 +1234,7 @@ class IconRoll extends PIXI.Sprite {
     protected getAnimMc(): PIXI.extras.MovieClip {
         //return new PIXI.extras.MovieClip([PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICON_ANIM].textures["icon_blur_" + nom + ".png"]]);
         //TODO изменить имя анимации. в идеале везде переписать в переменную.
-        return new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_MAIN_SCENE, "icon_seif_open_", 4));
+        return null;
     }
 }
 
@@ -974,9 +1243,11 @@ class IconRoll extends PIXI.Sprite {
 class AnimWin extends PIXI.Sprite {
 
     private viewTablePart: Array<AnimWinEnity>;
+    protected rolls: Rolls;
 
-    constructor() {
+    constructor(rolls: Rolls) {
         super();
+        this.rolls = rolls;
         this.init();
     }
 
@@ -987,12 +1258,12 @@ class AnimWin extends PIXI.Sprite {
 
         //let sprite: PIXI.Sprite;
         let animWinEnity: AnimWinEnity;
-        let baseTexture: PIXI.BaseTexture = PIXI.loader.resources["mainback"].texture.baseTexture;
-        for (let j: number = 0; j < 3; j++){
-            for (let i: number = 0; i < 5; i++) {
+        //let baseTexture: PIXI.BaseTexture = PIXI.loader.resources["mainback"].texture.baseTexture;
+        for (let j: number = 0; j < 5; j++){
+            for (let i: number = 0; i < 3; i++) {
                 animWinEnity = new AnimWinEnity();
-                animWinEnity.position.x = 20 + (i * (195 + 20));
-                animWinEnity.position.y = 20 + (j * 195);
+                animWinEnity.position.x = 20 + (j * (195 + 20));
+                animWinEnity.position.y = 20 + (i * 195);
                 this.viewTablePart.push(animWinEnity);
                 this.addChild(animWinEnity);
 
@@ -1000,22 +1271,45 @@ class AnimWin extends PIXI.Sprite {
                 animWinEnity.init();
             }
         }
-
     }
 
     public show(): void {
-        //this.viewTablePart[0].show();
+
+        //for (let j: number = 0; j < 5; j++) {
+        //    for (let i: number = 0; i < 3; i++) {
+        //        if (mainSlot.model.highlight[j][i] === 1) {
+        //            this.viewTablePart[(j * 3) + i].show(mainSlot.model.combination[j][i]);
+        //            this.rolls.hideRollForIndex(j,i);
+        //        }
+        //    }
+        //}
+        //console.log('show');
+    }
+
+    // index - индекс линии, на которой нужно показать анимацию
+    public showAnimIcon(index: number): void {
+        //console.log('showAnimIcon ' + index);
+        //public id_1: Array<string>;
+        var tempAr: Array<string> = mainSlot.model.highlight['id_' + index].slice(0);
+        var str: string;
+        var a: number;
+        var b: number;
+        for (let i: number = 0; i < tempAr.length; i++) {
+            str = tempAr[i];
+            a = +str.charAt(0);
+            b = +str.charAt(2);
+            this.viewTablePart[(b * 3) + a].show(mainSlot.model.combination[b][a]);
+            this.rolls.hideRollForIndex(b, a);
+        }
+        //console.log(tempAr);
     }
 
     public clear(): void {
-        //this.viewTablePart[0].clear();
-
-        //if (this.viewLines != null) {
-        //    for (var i: number = 0; i < this.viewLines.length; i++) {
-        //        this.viewLines[i].parent.removeChild(this.viewLines[i]);
-        //    }
-        //}
-        //this.viewLines = new Array<LinesEnity>();
+        for (let i: number = 0; i < 15; i++) {
+            this.viewTablePart[i].clear();
+            if(i<5)
+            this.rolls.showRollForIndex(i);
+        }
     }
 }
 
@@ -1052,18 +1346,18 @@ class AnimWinEnity extends PIXI.Sprite {
         //this.addChild(this.border);
     }
 
-    public show(): void {
+    public show(id: number): void {
+        //console.log('show');
         if (this.aktiv) return;
 
-        let id: number = 5;
         if (!this['anim_' + id]) {
             let animIconVO: AnimIconVO = mainSlot.slot.getMainScene().getAnimIconVOForId(id);
 
             this['anim_' + id] = new PIXI.extras.MovieClip(animIconVO.textures);
             this['anim_' + id].animationSpeed = animIconVO.anim_speed;
-            this['anim_' + id].loop = true;
+            this['anim_' + id].loop = animIconVO.loop;
         }
-        this['anim_' + id].play();
+        this['anim_' + id].gotoAndPlay(0);
         this.addChild(this['anim_' + id]);
 
         this.temp_id = id;
@@ -1083,22 +1377,11 @@ class AnimWinEnity extends PIXI.Sprite {
     }
 }
 
-class ConstantsRollIcon {
-    public static ID_10: number = 5;
-    public static ID_J: number = 3;
-    public static ID_Q: number = 7;
-    public static ID_K: number = 8;
-    public static ID_A: number = 2;
-    public static ID_ICON_1: number = 4;
-    public static ID_ICON_2: number = 9;
-    public static ID_ICON_3: number = 6;
-    public static ID_ICON_4: number = 1;
-}
-
 //-------------------------------------------------------------------------------------------
 
 class LinesWin extends PIXI.Sprite {
     public static END_BLINK: string = "end_blinc";
+    public static SHOW_LINE: string = "show_line";
 
     private classLine: any;
     private viewLines: Array<LinesEnity>;
@@ -1129,10 +1412,13 @@ class LinesWin extends PIXI.Sprite {
         if (this.viewLines.length > this.step) {
             this.addChild(this.viewLines[this.step]);
             this.viewLines[this.step].showLine(this.isAnimate);
+            // надеюсь тут не будет проблем когда пользователь выиграет все 9 линий.
+            if (this.viewLines[this.step])
+                this.emit(LinesWin.SHOW_LINE, this.viewLines[this.step].index);
         }
         else {
             //this.dispatchEvent(LinesWin.END_BLINK)
-            this.emit(LinesWin.END_BLINK)
+            this.emit(LinesWin.END_BLINK);
         }
     }
 
@@ -1168,7 +1454,7 @@ class LinesEnity extends PIXI.Sprite {
     private static BLINK_COUNT: number = 10;
 
     private countBlinc: number = 0;
-    private index: number;
+    public index: number;
     private line: PIXI.extras.MovieClip;
 
     //TODO
@@ -1179,7 +1465,7 @@ class LinesEnity extends PIXI.Sprite {
 
         //TODOatlas вернуть потом обратно 
         //this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_MAIN_SCENE, "line", 9));
-        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("gnome/images/line_mc.json", "line_", 9));
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("games/gnome/images/line_mc.json", "line_", 9));
         this.addChild(this.line);
         this.line.gotoAndStop(this.getFrame(index) - 1);
         //TODO убрал этот кэш, посмотрим нужен ли он вообще
@@ -1660,6 +1946,7 @@ interface IHelpScene extends IScene {
     selectBtn(nom: number): void;
     showhelp(): void;
     hideHelp(): void;
+    tryInitDisplay(): void;
 }
 interface IGambleScene extends IScene {
     setSelectValue(type: number): void;

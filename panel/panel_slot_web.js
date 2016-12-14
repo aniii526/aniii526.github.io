@@ -335,12 +335,6 @@ var PanelSlotMob = (function (_super) {
             new BtnInfo("line5_btn", "btn_9lines_mobile.png", 900, 250, "btn_9lines_down_mobile.png")
         ];
         mainSlot.atlasPanel = PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures;
-        this.preloader = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, "preloader_mc", 24));
-        this.preloader.animationSpeed = 0.5;
-        this.preloader.anchor.set(0.5, 0.5);
-        this.preloader.position.x = Math.round(1170 / 2);
-        this.preloader.position.y = Math.round(623 / 2);
-        this.preloader.play();
         this.containerGame = new PIXI.Sprite();
         this.addChild(this.containerGame);
         this.txt_fon = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["mainback_screen_mobile.png"]);
@@ -526,16 +520,6 @@ var PanelSlotMob = (function (_super) {
         }
         this.btn_back_info.interactive = true;
         this.addChild(this.btn_back_info);
-        if (!this.btn_select_info) {
-            this.btn_select_info = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["btn_left.png"]);
-            this.btn_select_info.position.x = 1073;
-            this.btn_select_info.position.y = 322;
-            this.btn_select_info.cacheAsBitmap = true;
-            this.btn_select_info.on("mousedown", function (e) { _this.helpnextpage(e); });
-            this.btn_select_info.on("touchstart", function (e) { _this.helpnextpage(e); });
-        }
-        this.btn_select_info.interactive = true;
-        this.addChild(this.btn_select_info);
     };
     PanelSlotMob.prototype.helpnextpage = function (e) {
         this.comboBtns.selectBtnOnData(4);
@@ -546,10 +530,6 @@ var PanelSlotMob = (function (_super) {
         if (this.btn_back_info) {
             this.btn_back_info.interactive = false;
             this.removeChild(this.btn_back_info);
-        }
-        if (this.btn_select_info) {
-            this.btn_select_info.interactive = false;
-            this.removeChild(this.btn_select_info);
         }
         this.btn_menu.alpha = 1;
         this.btn_menu.interactive = true;

@@ -73,11 +73,8 @@
        //if (this.preloader)
        //     this.preloader.visible = false;
         if (document["preloader"])
-            document["preloader"].style.display = 'none';
-            //document["preloader"].style.visibility = 'hidden';
-        //setTimeout(() => {
-        //    document["preloader"].style.visibility = 'hidden';
-        //},5000);
+        document["preloader"].style.display = 'none';
+
         this.uniqueShow();
 
         if (this.txt_fon)
@@ -455,14 +452,14 @@ class PanelSlotMob extends PanelSlotWeb {
 
         mainSlot.atlasPanel = PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures;
         
-        this.preloader = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, "preloader_mc", 24));
+        /*this.preloader = new PIXI.extras.MovieClip(mainSlot.getTexturesForName(PanelSlotWeb.nameResoursPanel, "preloader_mc", 24));
         this.preloader.animationSpeed = 0.5;
         this.preloader.anchor.set(0.5, 0.5);
         //я пытался высчитывать, но к сожалению не сраслось(((
         this.preloader.position.x = Math.round(1170 / 2);
         this.preloader.position.y = Math.round(623 / 2);
         this.preloader.play();
-        //this.addChild(this.preloader);
+        this.addChild(this.preloader);*/
 
         this.containerGame = new PIXI.Sprite();
         this.addChild(this.containerGame);
@@ -703,7 +700,7 @@ class PanelSlotMob extends PanelSlotWeb {
         this.addChild(this.btn_back_info);
 
         //добавить тут кнопки.
-        if (!this.btn_select_info) {
+        /*if (!this.btn_select_info) {
             this.btn_select_info = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["btn_left.png"]);
             this.btn_select_info.position.x = 1073;
             this.btn_select_info.position.y = 322;
@@ -712,7 +709,7 @@ class PanelSlotMob extends PanelSlotWeb {
             this.btn_select_info.on("touchstart", (e: PIXI.interaction.InteractionEvent) => { this.helpnextpage(e) });
         }
         this.btn_select_info.interactive = true;
-        this.addChild(this.btn_select_info);
+        this.addChild(this.btn_select_info);*/
     }
 
     public helpnextpage(e: PIXI.interaction.InteractionEvent): void {
@@ -728,10 +725,10 @@ class PanelSlotMob extends PanelSlotWeb {
             this.removeChild(this.btn_back_info);
         }
 
-        if (this.btn_select_info) {
+        /*if (this.btn_select_info) {
             this.btn_select_info.interactive = false;
             this.removeChild(this.btn_select_info);
-        }
+        }*/
 
         this.btn_menu.alpha = 1;
         this.btn_menu.interactive = true;

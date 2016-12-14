@@ -9,6 +9,9 @@
     //индекс активной кнопки из числа линий, до того как пользователь перешел в окно хелп. 
     public indexActivLine: number;
 
+    //заблокированы ли карты до появления карты дилера или нет
+    public blockBtnCards: boolean = false;
+
 
     constructor() {
         super();
@@ -35,7 +38,7 @@
 
         var linesBtn: Array<number> = [0, 1, 2, 3, 4];
 
-        this.setBlockTypeBtn(ModelSlot.MODE_HELP, new ModePanelShow([PanelEvent.SELECT_GAME, PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], [1, 2, 3], 'PLEASE PRESS START', [PanelEvent.GAMBLE_BET]));
+        this.setBlockTypeBtn(ModelSlot.MODE_HELP, new ModePanelShow([PanelEvent.SELECT_GAME, PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], linesBtn, 'PLEASE PRESS START', [PanelEvent.GAMBLE_BET]));
         this.setBlockTypeBtn(ModelSlot.MODE_ERROR, new ModePanelShow([PanelEvent.SELECT_GAME, PanelEvent.AUTO, PanelEvent.BETONE, PanelEvent.MAXBET, PanelEvent.START], linesBtn, 'error', [PanelEvent.GAMBLE_BET]));
 
         this.setBlockTypeBtn(ModelSlot.MODE_READY, new ModePanelShow([], [], 'PLEASE PRESS START', [PanelEvent.GAMBLE_BET]));
@@ -145,8 +148,8 @@
         if (this.ishelp)
             return;
         this.blockAll();
-        this.blockLineBtn(0, false);
-        this.blockLineBtn(4, false);
+        //this.blockLineBtn(0, false);
+        //this.blockLineBtn(4, false);
         this.blockBtnByType(PanelEvent.START, false);
         mainSlot.slot.showHelp();
         this.ishelp = true;
@@ -178,10 +181,14 @@
         this.panel.hideAll();
     }
     public blockComboBtns(): void {
+
+        this.blockBtnCards = true;
+
         this.panel.blockComboBtns();
     }
 
     public reBlock(arBlockCombo: Array<number> = null): void {
+        this.blockBtnCards = false;
         this.lastArBlockCombo = arBlockCombo;
         if (this.ishelp)
             return;
@@ -209,6 +216,7 @@
     }
 
     private blockOnMode(mode: string): void {
+        //console.log('blockOnMode');
         var m: ModePanelShow = this.dictBlockBtns[mode];
         if (m != null) {
             this.panel.unBlockAll();

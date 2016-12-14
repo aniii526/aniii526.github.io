@@ -23,6 +23,7 @@ var SlotEnity = (function (_super) {
         return false;
     };
     SlotEnity.prototype.showHelp = function () {
+        this.getHelpScene().tryInitDisplay();
         this.addChild(this.getHelpScene());
     };
     SlotEnity.prototype.hideHelp = function () {
@@ -44,6 +45,8 @@ var SceneSlot = (function (_super) {
         createjs.Tween.get(this).wait(1).call(function () { _this.initDisplay(); });
     }
     SceneSlot.prototype.initDisplay = function () {
+    };
+    SceneSlot.prototype.tryInitDisplay = function () {
     };
     return SceneSlot;
 }(PIXI.Sprite));
@@ -127,10 +130,11 @@ var MainScene = (function (_super) {
         this.addChild(this.fon);
         this.lines = new LinesWin(LineClass);
         this.addChild(this.lines);
-        this.lines.on(LinesWin.END_BLINK, function () { _this.onCompleteShowLine(); });
+        this.lines.on(LinesWin.END_BLINK, function (e) { _this.onCompleteShowLine(); });
+        this.lines.on(LinesWin.SHOW_LINE, function (indexLine) { _this.onShowLine(indexLine); });
         this.lines.x = px;
         this.lines.y = py;
-        this.animlayers = new AnimWin();
+        this.animlayers = new AnimWin(this.rolls);
         this.animlayers.x = 53;
         this.animlayers.y = 112;
         this.addChild(this.animlayers);
@@ -138,6 +142,10 @@ var MainScene = (function (_super) {
     MainScene.prototype.onCompleteShowLine = function () {
         if (this.callbackCompleteLines != null)
             this.callbackCompleteLines();
+    };
+    MainScene.prototype.onShowLine = function (indexLine) {
+        if (this.callbackCompleteLines != null)
+            this.animlayers.showAnimIcon(indexLine);
     };
     MainScene.prototype.showRollCombination = function (comb, callbackCompleteRoll) {
         this.callbackCompleteRoll = callbackCompleteRoll;
@@ -151,7 +159,6 @@ var MainScene = (function (_super) {
             this.lines.showLines(ar, isAnimate);
             if (this.callbackCompleteLines) {
                 this.fon.visible = true;
-                this.animlayers.show();
             }
         }
         else {
@@ -183,24 +190,165 @@ var HelpScene = (function (_super) {
     __extends(HelpScene, _super);
     function HelpScene(mc) {
         _super.call(this, mc);
+        this.indexGroupTextures = [[1, 2, 3], [4, 5], [6], [7], [8], [9]];
+        this.styleLabel = {
+            fontSize: '30px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#FFFFFF',
+            letterSpacing: 1
+        };
     }
+    HelpScene.prototype.tryInitDisplay = function () {
+        if (!this.visiblePart)
+            this.initParts();
+        this.updateParts();
+    };
+    HelpScene.prototype.initParts = function () {
+        this.indexXY = [
+            new PointVO(668, 557),
+            new PointVO(228, 563),
+            new PointVO(72, 356),
+            new PointVO(420, 356),
+            new PointVO(785, 356),
+            new PointVO(666, 154)
+        ];
+        this.groupTexturesPoints = [
+            [new PointVO(-43, 21), new PointVO(28, 25), new PointVO(0, 0)],
+            [new PointVO(0, 0), new PointVO(31, 21)],
+            [new PointVO(0, 0, 150)],
+            [new PointVO(0, 0, 150)],
+            [new PointVO(0, 0, 150)],
+            [new PointVO(0, 0, 150)]
+        ];
+        this.groupTextLeft = [
+            "5x\n4x\n3x\n",
+            "5x\n4x\n3x\n",
+            "5x\n4x\n3x\n2x",
+            "5x\n4x\n3x\n2x",
+            "5x\n4x\n3x\n2x",
+            "\n5x\n4x\n3x\n"
+        ];
+        this.textLeftPoint = [
+            new PointVO(-10, 0),
+            new PointVO(-7, -2),
+            new PointVO(0, 0),
+            new PointVO(0, 0),
+            new PointVO(0, 0),
+            new PointVO(0, -2)
+        ];
+        this.textRightPoint = [
+            new PointVO(-10, 2),
+            new PointVO(-10, 2),
+            new PointVO(0, 5),
+            new PointVO(0, 5),
+            new PointVO(0, 5),
+            new PointVO(-5, 5)
+        ];
+        var sprite = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt3.png"]);
+        sprite.x = 210;
+        sprite.y = 154;
+        this.addChild(sprite);
+        var sprite_1 = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt2.png"]);
+        sprite_1.x = 745;
+        sprite_1.y = 146;
+        this.addChild(sprite_1);
+        var sprite_2 = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt1.png"]);
+        sprite_2.x = 138;
+        sprite_2.y = 348;
+        this.addChild(sprite_2);
+        var sprite_3 = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt1.png"]);
+        sprite_3.x = 500;
+        sprite_3.y = 348;
+        this.addChild(sprite_3);
+        var sprite_4 = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt1.png"]);
+        sprite_4.x = 860;
+        sprite_4.y = 348;
+        this.addChild(sprite_4);
+        var sprite_5 = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt2.png"]);
+        sprite_5.x = 294;
+        sprite_5.y = 535;
+        this.addChild(sprite_5);
+        var sprite_6 = new PIXI.Sprite(PIXI.loader.resources[PanelSlotWeb.nameResoursPanel].textures["help_plt2.png"]);
+        sprite_6.x = 724;
+        sprite_6.y = 535;
+        this.addChild(sprite_6);
+        var tempIndex;
+        var part;
+        this.visiblePart = [];
+        for (var i = 0; i < this.indexGroupTextures.length; i++) {
+            part = new PartHelp();
+            part;
+            part.x = this.indexXY[i].pointX;
+            part.y = this.indexXY[i].pointY;
+            for (var j = 0; j < this.indexGroupTextures[i].length; j++) {
+                part.createSpriteForID(this.indexGroupTextures[i][j], this.groupTexturesPoints[i][j], this.textLeftPoint[i], this.textRightPoint[i]);
+            }
+            this.addChild(part);
+            part.updateLeftText(this.groupTextLeft[i]);
+            this.visiblePart.push(part);
+        }
+        part = null;
+        var sp;
+        var value50 = 50 / 195;
+        var value60 = 60 / 195;
+        for (var i = 1; i < 9; i++) {
+            sp = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_" + i + ".png"]);
+            if (i < 6) {
+                sp.x = 618 - 50 * (i - 1);
+                sp.scale.x = sp.scale.y = value50;
+                sp.y = 218;
+            }
+            else {
+                sp.x = 618 - (60 * (i - 2) + 25);
+                sp.scale.x = sp.scale.y = value60;
+                sp.y = 211;
+            }
+            this.addChild(sp);
+        }
+        var textTitle = new PIXI.Text();
+        textTitle.text = 'SUBSTITUTES FOR';
+        textTitle.style = this.styleLabel;
+        textTitle.position.x = 451;
+        textTitle.position.y = 192;
+        textTitle.anchor.set(0.5, 0.5);
+        this.addChild(textTitle);
+    };
+    HelpScene.prototype.updateParts = function () {
+        var payTableVO = mainSlot.model.payTableVO;
+        var part;
+        var str;
+        var value;
+        var ar;
+        for (var i = 0; i < this.visiblePart.length; i++) {
+            part = this.visiblePart[i];
+            for (var j = 0; j < this.indexGroupTextures[i].length; j++) {
+                if (j === 0 || j === 4)
+                    str = '\n';
+                else
+                    str = '';
+                ar = payTableVO["id_" + this.indexGroupTextures[i][0]];
+                for (var k = 0; k < ar.length; k++) {
+                    value = this.rounding(ar[k] * mainSlot.model.amountBet);
+                    str += value + '\n';
+                }
+                part.updateRightText(str);
+            }
+        }
+    };
+    HelpScene.prototype.rounding = function (value) {
+        if (value > 10)
+            return Math.round(value);
+        if (value > 1)
+            return Math.round(value * 10) / 10;
+        if (value > 0.1)
+            return Math.round(value * 100) / 100;
+        if (value > 0.01)
+            return Math.round(value * 1000) / 1000;
+        return 0;
+    };
     HelpScene.prototype.bindProperties = function () {
     };
     HelpScene.prototype.selectBtn = function (nom) {
-        if (nom == 0) {
-            if (this.mc["anim"].currentFrame == 0) {
-                this.mc["anim"].gotoAndStop(this.mc["anim"].totalFrames - 1);
-            }
-            else {
-                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame - 1);
-            }
-        }
-        else {
-            if (this.mc["anim"].currentFrame == this.mc["anim"].totalFrames - 1)
-                this.mc["anim"].gotoAndStop(0);
-            else
-                this.mc["anim"].gotoAndStop(this.mc["anim"].currentFrame + 1);
-        }
     };
     HelpScene.prototype.showhelp = function () {
         this.addChild(this.mc);
@@ -210,6 +358,69 @@ var HelpScene = (function (_super) {
     };
     return HelpScene;
 }(SceneSlot));
+var PointVO = (function () {
+    function PointVO(pointX, pointY, scale) {
+        this.scale = 100;
+        this.pointX = pointX;
+        this.pointY = pointY;
+        if (scale)
+            this.scale = scale;
+    }
+    return PointVO;
+}());
+var PartHelp = (function (_super) {
+    __extends(PartHelp, _super);
+    function PartHelp() {
+        _super.call(this);
+        this.styleLabelLeft = {
+            fontSize: '30px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#FFFFFF',
+            letterSpacing: 1
+        };
+        this.styleLabelRight = {
+            fontSize: '30px',
+            fontFamily: 'heliosblackcregular',
+            fill: '#FFCC33',
+            letterSpacing: 1
+        };
+        this.init();
+    }
+    PartHelp.prototype.init = function () {
+        this.textLeft = new PIXI.Text();
+        this.textLeft.text = '1';
+        this.textLeft.style = this.styleLabelLeft;
+        this.textLeft.position.x = 165;
+        this.textLeft.position.y = 75;
+        this.textLeft.anchor.set(0.5, 0.5);
+        this.addChild(this.textLeft);
+        this.textRight = new PIXI.Text();
+        this.textRight.text = '1';
+        this.textRight.style = this.styleLabelRight;
+        this.textRight.position.x = 250;
+        this.textRight.position.y = 70;
+        this.textRight.anchor.set(0.5, 0.5);
+        this.addChild(this.textRight);
+    };
+    PartHelp.prototype.createSpriteForID = function (id, point, pointTextL, pointTextR) {
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_" + id + ".png"]);
+        this.sprite.scale.x = this.sprite.scale.y = point.scale / 195;
+        this.sprite.x = point.pointX;
+        this.sprite.y = point.pointY;
+        this.addChild(this.sprite);
+        this.textLeft.position.x += pointTextL.pointX;
+        this.textLeft.position.y += pointTextL.pointY;
+        this.textRight.position.x += pointTextR.pointX;
+        this.textRight.position.y += pointTextR.pointY;
+    };
+    PartHelp.prototype.updateLeftText = function (text) {
+        this.textLeft.text = text;
+    };
+    PartHelp.prototype.updateRightText = function (text) {
+        this.textRight.text = text;
+    };
+    return PartHelp;
+}(PIXI.Sprite));
 var GambleScene = (function (_super) {
     __extends(GambleScene, _super);
     function GambleScene() {
@@ -253,6 +464,7 @@ var GambleScene = (function (_super) {
     GambleScene.prototype.onResponseStart = function (e) {
         soundManager.playSound(SoundManager.SOUND_CARD_OPEN);
         this.dealer.setCardOnStr(e.data.CombinationAux);
+        mainSlot.panel.reBlock();
     };
     GambleScene.prototype.setLastGamble = function (value) {
         var ar = value.split("&");
@@ -265,6 +477,7 @@ var GambleScene = (function (_super) {
     };
     GambleScene.prototype.resetGamble = function () {
         this.clear();
+        mainSlot.panel.blockComboBtns();
         if (this.modelSlot.lastAction.Action == ModelSlot.ID_GAMBLE_START)
             this.dealer.setCardOnStr(this.modelSlot.lastAction.CombinationAux);
         else
@@ -442,7 +655,8 @@ var Card = (function (_super) {
         this.addChild(this.mc);
     };
     Card.prototype.onUpBtn = function (e) {
-        mainSlot.panel.outClickBtn(new PanelEvent(PanelEvent.SELECT_LINE, e.target.parent.indexCard));
+        if (mainSlot.panel.blockBtnCards == false)
+            mainSlot.panel.outClickBtn(new PanelEvent(PanelEvent.SELECT_LINE, e.target.parent.indexCard));
     };
     Card.prototype.setCardOnStr = function (suitValue) {
         var ar = suitValue.split("_");
@@ -569,6 +783,22 @@ var Rolls = (function (_super) {
             this.emit(Rolls.COMPLETE_ROLLS);
         }
     };
+    Rolls.prototype.hideRollForIndex = function (idItem, idChildren) {
+        if (idItem >= this.arRoll.length || idItem < 0) {
+            console.log('idItem указывает на несуществующий элемент');
+            return;
+        }
+        this.arRoll[idItem].getChildAt(1).getChildAt(idChildren).visible = false;
+    };
+    Rolls.prototype.showRollForIndex = function (idItem) {
+        if (idItem >= this.arRoll.length || idItem < 0) {
+            console.log('idItem указывает на несуществующий элемент');
+            return;
+        }
+        this.arRoll[idItem].getChildAt(1).getChildAt(0).visible = true;
+        this.arRoll[idItem].getChildAt(1).getChildAt(1).visible = true;
+        this.arRoll[idItem].getChildAt(1).getChildAt(2).visible = true;
+    };
     Rolls.COMPLETE_ROLLS = "complete_rolls";
     return Rolls;
 }(PIXI.Sprite));
@@ -691,10 +921,10 @@ var IconRoll = (function (_super) {
         this.removeChild(this.ic);
     };
     IconRoll.prototype.getIcon = function (nom) {
-        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_" + nom + ".png"]);
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_" + nom + ".png"]);
     };
     IconRoll.prototype.getIconBlur = function (nom) {
-        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_MAIN_SCENE].textures["icon_blur_" + nom + ".png"]);
+        return new PIXI.Sprite(PIXI.loader.resources[SlotEnity.NAME_ATLAS_ICONS].textures["icon_blur_" + nom + ".png"]);
     };
     IconRoll.prototype.showAnimationWin = function () {
         while (this.children.length) {
@@ -715,25 +945,25 @@ var IconRoll = (function (_super) {
         this.addChild(this.ic);
     };
     IconRoll.prototype.getAnimMc = function () {
-        return new PIXI.extras.MovieClip(mainSlot.getTexturesForName(SlotEnity.NAME_ATLAS_MAIN_SCENE, "icon_seif_open_", 4));
+        return null;
     };
     return IconRoll;
 }(PIXI.Sprite));
 var AnimWin = (function (_super) {
     __extends(AnimWin, _super);
-    function AnimWin() {
+    function AnimWin(rolls) {
         _super.call(this);
+        this.rolls = rolls;
         this.init();
     }
     AnimWin.prototype.init = function () {
         this.viewTablePart = new Array();
         var animWinEnity;
-        var baseTexture = PIXI.loader.resources["mainback"].texture.baseTexture;
-        for (var j = 0; j < 3; j++) {
-            for (var i = 0; i < 5; i++) {
+        for (var j = 0; j < 5; j++) {
+            for (var i = 0; i < 3; i++) {
                 animWinEnity = new AnimWinEnity();
-                animWinEnity.position.x = 20 + (i * (195 + 20));
-                animWinEnity.position.y = 20 + (j * 195);
+                animWinEnity.position.x = 20 + (j * (195 + 20));
+                animWinEnity.position.y = 20 + (i * 195);
                 this.viewTablePart.push(animWinEnity);
                 this.addChild(animWinEnity);
                 animWinEnity.init();
@@ -742,7 +972,25 @@ var AnimWin = (function (_super) {
     };
     AnimWin.prototype.show = function () {
     };
+    AnimWin.prototype.showAnimIcon = function (index) {
+        var tempAr = mainSlot.model.highlight['id_' + index].slice(0);
+        var str;
+        var a;
+        var b;
+        for (var i = 0; i < tempAr.length; i++) {
+            str = tempAr[i];
+            a = +str.charAt(0);
+            b = +str.charAt(2);
+            this.viewTablePart[(b * 3) + a].show(mainSlot.model.combination[b][a]);
+            this.rolls.hideRollForIndex(b, a);
+        }
+    };
     AnimWin.prototype.clear = function () {
+        for (var i = 0; i < 15; i++) {
+            this.viewTablePart[i].clear();
+            if (i < 5)
+                this.rolls.showRollForIndex(i);
+        }
     };
     return AnimWin;
 }(PIXI.Sprite));
@@ -756,17 +1004,16 @@ var AnimWinEnity = (function (_super) {
     }
     AnimWinEnity.prototype.init = function () {
     };
-    AnimWinEnity.prototype.show = function () {
+    AnimWinEnity.prototype.show = function (id) {
         if (this.aktiv)
             return;
-        var id = 5;
         if (!this['anim_' + id]) {
             var animIconVO = mainSlot.slot.getMainScene().getAnimIconVOForId(id);
             this['anim_' + id] = new PIXI.extras.MovieClip(animIconVO.textures);
             this['anim_' + id].animationSpeed = animIconVO.anim_speed;
-            this['anim_' + id].loop = true;
+            this['anim_' + id].loop = animIconVO.loop;
         }
-        this['anim_' + id].play();
+        this['anim_' + id].gotoAndPlay(0);
         this.addChild(this['anim_' + id]);
         this.temp_id = id;
         this.visible = true;
@@ -783,20 +1030,6 @@ var AnimWinEnity = (function (_super) {
     };
     return AnimWinEnity;
 }(PIXI.Sprite));
-var ConstantsRollIcon = (function () {
-    function ConstantsRollIcon() {
-    }
-    ConstantsRollIcon.ID_10 = 5;
-    ConstantsRollIcon.ID_J = 3;
-    ConstantsRollIcon.ID_Q = 7;
-    ConstantsRollIcon.ID_K = 8;
-    ConstantsRollIcon.ID_A = 2;
-    ConstantsRollIcon.ID_ICON_1 = 4;
-    ConstantsRollIcon.ID_ICON_2 = 9;
-    ConstantsRollIcon.ID_ICON_3 = 6;
-    ConstantsRollIcon.ID_ICON_4 = 1;
-    return ConstantsRollIcon;
-}());
 var LinesWin = (function (_super) {
     __extends(LinesWin, _super);
     function LinesWin(LineClass) {
@@ -818,6 +1051,8 @@ var LinesWin = (function (_super) {
         if (this.viewLines.length > this.step) {
             this.addChild(this.viewLines[this.step]);
             this.viewLines[this.step].showLine(this.isAnimate);
+            if (this.viewLines[this.step])
+                this.emit(LinesWin.SHOW_LINE, this.viewLines[this.step].index);
         }
         else {
             this.emit(LinesWin.END_BLINK);
@@ -844,6 +1079,7 @@ var LinesWin = (function (_super) {
         this.viewLines = new Array();
     };
     LinesWin.END_BLINK = "end_blinc";
+    LinesWin.SHOW_LINE = "show_line";
     return LinesWin;
 }(PIXI.Sprite));
 var LinesEnity = (function (_super) {
@@ -852,7 +1088,7 @@ var LinesEnity = (function (_super) {
         _super.call(this);
         this.countBlinc = 0;
         this.index = index;
-        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("gnome/images/line_mc.json", "line_", 9));
+        this.line = new PIXI.extras.MovieClip(mainSlot.getTexturesForName("games/gnome/images/line_mc.json", "line_", 9));
         this.addChild(this.line);
         this.line.gotoAndStop(this.getFrame(index) - 1);
         this.line.cacheAsBitmap = true;

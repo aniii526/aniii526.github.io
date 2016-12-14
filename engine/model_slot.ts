@@ -27,10 +27,20 @@
     public static ID_GAMBLE_START: number = 39;
     public static ID_BONUSSPEC_WIN: number = 42;
 
-    //public path_server: string = "http://192.168.10.124:8078/IntermalService.svc/";
-    
-    public path_server: string = "https://slotsrv.1xbet.org/test/";
-    public path_server_demo: string = "https://slotsrv.1xbet.org/testDemo/";
+    //выкладка на тест я использую
+    //public path_server: string = "https://1xslot.com/slotsrv/test/";
+    //public path_server_demo: string = "https://1xslot.com/slotsrv/testDemo/";
+
+    //выкладка на прод я использую
+    //public path_server: string = "https://1xslot.com/slotsrv/prod/";
+    //public path_server_demo: string = "https://1xslot.com/slotsrv/prodDemo/";
+
+    // локально я использую
+    public path_server: string = "http://192.168.12.9:9277/SlotsInternalService.svc/";
+    public path_server_demo: string = "http://192.168.12.9:9277/SlotsInternalServiceDemo.svc/";
+
+    //старая версия url-a
+    //public path_server_demo: string = "https://slotsrv.1xbet.org/testDemo/";
     public Token: string;
     public TokenAsync: string;
     public KeyHash: string = "sdf34g21v";
@@ -47,6 +57,9 @@
     public bets: Array<number>=[1,2,3,4];
     public koeffs: Array<number>;
     public combination: Array<Array<number>>;
+    public highlight: HighlightVO;
+    public payTable: Array<string>;
+    public payTableVO: PayTableVO;
     public lineMax: number = 9;
     public balance: number=5555;
     public error: number;
@@ -71,7 +84,13 @@
             this.stateSlotManager.setModeOnActionID(this.lastAction);
 
         mainSlot.panel.initPanel();
-		mainSlot.panel.hidePanelLoader();
+        mainSlot.panel.hidePanelLoader();
+
+        if (this.lastAction && this.lastAction.Action && this.lastAction.Action == ModelSlot.ID_WIN_ROUTE){
+            mainSlot.panel.blockAll();
+            mainSlot.panel.hideAll();
+        }
+
     }
 
     // значение ставки
@@ -102,14 +121,20 @@
         return ind + 1;
     }
 
-    public setError(code: number, msg: String): Boolean {
+    public setError(code: number, msg: string): boolean {
         this.error = code;
         if (code != 0 && code != 16 && code != 13) {
             console.log("Ошибка: " + code + " " + msg);
+            var text: string = msg;
+            //text += "<br> Обновите страницу";
+            $("#text").html("" + text);
+            $("#msgview").css("display", "block"); 
+            //display: none;
             /*if (stateManager)
                 stateManager.add(new ErrorScene(msg));
             if (stateSlotManager)
                 stateSlotManager.setCurrentModeSlot(MODE_ERROR);*/
+
             return true;
         }
 
@@ -188,6 +213,32 @@ class RollVO {
     }
 }
 
+// какие подсвечивать элементы во время выигрыша
+class HighlightVO {
+    public id_1: Array<string>;
+    public id_2: Array<string>;
+    public id_3: Array<string>;
+    public id_4: Array<string>;
+    public id_5: Array<string>;
+    public id_6: Array<string>;
+    public id_7: Array<string>;
+    public id_8: Array<string>;
+    public id_9: Array<string>;
+}
+
+// какие данные отображать в help окне. 
+class PayTableVO {
+    public id_1: Array<number>;
+    public id_2: Array<number>;
+    public id_3: Array<number>;
+    public id_4: Array<number>;
+    public id_5: Array<number>;
+    public id_6: Array<number>;
+    public id_7: Array<number>;
+    public id_8: Array<number>;
+    public id_9: Array<number>;
+}
+
 //-------------------------------------------------------------------------------------------
 
 class ActionVO extends BaseVO {
@@ -199,6 +250,9 @@ class ActionVO extends BaseVO {
     public CombinationAux: string;
     public WinLines: Array<number>;
     public Info: string;
+
+    public Highlight: string;
+    public HighlightVO: HighlightVO;
 
 
     constructor(data: Object) {
@@ -236,6 +290,45 @@ class ActionVO extends BaseVO {
         return count;
     }
 
+    public parseCombinationHighlight(): HighlightVO {
+        /*var arT: Array<string> = this.Highlight.split("&");
+        var result: Array<Array<number>> = new Array<Array<number>>();
+
+        for (var i: number = 0; i < arT.length; i++) {
+            var ar: Array<string> = arT[i].split(";");
+            for (var j: number = 0; j < ar.length; j++) {
+                if (result[j] == null)
+                    result[j] = new Array<number>();
+                result[j].push(parseInt(ar[j]));
+            }
+        }
+        return result;*/
+        //обрабатываю ответ вида "[2]0;0&0;1&0;2"
+        var highlightVO: HighlightVO = new HighlightVO();
+        var arT: Array<string> = this.Highlight.split("[");
+        //удаляю первый элемент 
+        arT.shift();
+        for (var i: number = 0; i < arT.length; i++) {
+            highlightVO["id_" + arT[i].slice(0, 1)] = arT[i].substr(2).split("&");
+        }
+        //console.log(highlightVO);
+        return highlightVO;
+    }
+
+    public getCountIndexHighlight(ind: number): number {
+        var count: number = 0;
+        var arT: Array<string> = this.Highlight.split("&");
+        for (var i: number = 0; i < arT.length; i++) {
+            var arV: Array<string> = arT[i].split(";");
+            for (var j: number = 0; j < arV.length; j++) {
+                if (parseInt(arV[j]) == ind)
+                    count++;
+            }
+        }
+
+        return count;
+    }
+
     protected setSpecialValue(pole: string, value: any): boolean {
         switch (pole) {
 
@@ -248,6 +341,7 @@ class ActionVO extends BaseVO {
 
 class AnimIconVO {
     public anim_speed: number = 1;
+    public loop: boolean = false;
     public textures: Array<PIXI.Texture>;
 }
 
@@ -486,6 +580,7 @@ class StateSlotRoute extends StateSlot {
         this.action = e.data;
         this.model.lastAction = this.action;
         this.model.combination = this.action.parseCombinationRoll();
+        this.model.highlight = this.action.parseCombinationHighlight();
 
         this.slotGame.getMainScene().showRollCombination(this.model.combination, () => { this.completeSpinAnimation() });
     }
@@ -521,6 +616,7 @@ class StateSlotRouteWin extends StateSlot {
         else {
             this.panel.blockAll();
             this.panel.hideAll();
+            //console.log('hideAll');
             this.model.currentWin = this.model.lastAction.Summ;
             this.mainScene.showWinLines(this.model.lastAction.WinLines, true, () => { this.completeShowLines() });
             this.mainScene.showWin(this.model.lastAction.Summ);

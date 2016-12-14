@@ -29,6 +29,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="scripts\jquery-3.1.0.intellisense.js" />
+    <Content Include="panel\help_plt1.png" />
+    <Content Include="panel\help_plt2.png" />
+    <Content Include="panel\help_plt3.png" />
     <Content Include="scripts\jquery-3.1.0.js" />
     <Content Include="scripts\jquery-3.1.0.min.js" />
     <Content Include="scripts\jquery-3.1.0.slim.js" />
@@ -47,13 +50,8 @@
     <TypeScriptCompile Include="engine\model_slot.ts" />
     <TypeScriptCompile Include="engine\panel_adapter.ts" />
     <TypeScriptCompile Include="engine\slot_enity.ts" />
-    <TypeScriptCompile Include="gnome\slot_gnome.ts" />
-    <TypeScriptCompile Include="grimgang\slot_grimgang.ts" />
-    <TypeScriptCompile Include="lordofluck\slot_lordofluck.ts" />
-    <TypeScriptCompile Include="luckcraft\slot_luckcraft.ts" />
     <TypeScriptCompile Include="main_slot.ts" />
     <TypeScriptCompile Include="panel\panel_slot_web.ts" />
-    <TypeScriptCompile Include="revengers\slot_revengers.ts" />
     <TypeScriptCompile Include="scripts\typings\createjs-lib\createjs-lib.d.ts" />
     <TypeScriptCompile Include="scripts\typings\easeljs\easeljs.d.ts" />
     <TypeScriptCompile Include="scripts\typings\jquery\jquery.d.ts" />
@@ -63,7 +61,6 @@
     <TypeScriptCompile Include="scripts\typings\stats.d.ts" />
     <TypeScriptCompile Include="scripts\typings\tweenjs\tweenjs.d.ts" />
     <TypeScriptCompile Include="scripts\typings\viewporter.d.ts" />
-    <TypeScriptCompile Include="smithers\slot_smithers.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -76,7 +73,9 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="games\" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
