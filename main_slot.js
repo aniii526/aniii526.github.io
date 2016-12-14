@@ -21,6 +21,7 @@ var MainSlot = (function () {
         };
     }
     MainSlot.prototype.startSlot = function (gameId, partnerid, currency, userid, demo, token, BackUrl) {
+        var _this = this;
         this.model = new ModelSlot();
         this.model.gameId = gameId;
         this.model.partnerid = partnerid;
@@ -34,8 +35,27 @@ var MainSlot = (function () {
         }
         this.isMobile = this.isMobileBrowser();
         if (this.isMobile) {
-            new pd();
+            Constants.ASSETS_WIDTH = 1300;
+            Constants.ASSETS_HEIGHT = 820;
         }
+        soundManager = new SoundManager();
+        var size = (this.isMobile) ? [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT] : [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT];
+        this.ratio = size[0] / size[1];
+        this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
+        this.renderer.backgroundColor = 0xffffff;
+        document.body.children["game"].appendChild(this.renderer.view);
+        if (this.renderer.maskManager)
+            this.renderer.maskManager.enableScissor = false;
+        this.mainStage = new PIXI.Container();
+        this.resize();
+        this.animate();
+        if (document["preloader"])
+            document["preloader"].style.display = 'none';
+        if (this.isMobile) {
+        }
+        var qc = new InitCommand();
+        qc.addEventListener(EVENT_COMPLETE, function () { _this.completeInitCommad(); });
+        qc.execute();
     };
     MainSlot.prototype.callback = function () {
         var sp = new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture);

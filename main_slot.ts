@@ -43,11 +43,11 @@
         //мобильный браузер или нет
         this.isMobile = this.isMobileBrowser();
 
-        if (this.isMobile) {
+        /*if (this.isMobile) {
             new pd();
-        }
+        }*/
         
-        /*
+        
         if (this.isMobile) {
             Constants.ASSETS_WIDTH = 1300;
             Constants.ASSETS_HEIGHT = 820;
@@ -61,7 +61,7 @@
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
         this.renderer.backgroundColor = 0xffffff;
         //this.renderer
-        document.body.children["viewporter"].appendChild(this.renderer.view);
+        document.body.children["game"].appendChild(this.renderer.view);
 
         //this.renderer.resolution = window.devicePixelRatio || 2;
         //уродский хак, чтобы маска работала на мобильном устройстве
@@ -74,7 +74,7 @@
 
 
         // тут ! правильно стоит
-        if (!this.isMobile) {
+        /*if (!this.isMobile) {
             window.addEventListener('resize', () => { this.resize(); }, false);
             this.resize();
         } else {
@@ -87,9 +87,11 @@
             }
 
             this.onOrientationChanged();
-        }
+        }*/
 
         //document.body.appendChild(this.stats.domElement);
+
+        this.resize();
 
         this.animate();
 
@@ -99,16 +101,10 @@
         if (this.isMobile) {
             //show();
         }
-
-        var sp = new PIXI.Graphics();
-        sp.beginFill(0x000000);
-        sp.drawRect(0, 0, 100, 100);
-        sp.endFill();
-        this.mainStage.addChild(sp);
-        */
-        /*var qc: InitCommand = new InitCommand();
+        
+        var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
-        qc.execute();*/
+        qc.execute();
     }
 
     public callback(): void {
