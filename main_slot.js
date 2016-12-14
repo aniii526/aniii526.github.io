@@ -47,9 +47,7 @@ var MainSlot = (function () {
         if (this.renderer.maskManager)
             this.renderer.maskManager.enableScissor = false;
         this.mainStage = new PIXI.Container();
-        window.addEventListener("resize", function () {
-            this.resize();
-        });
+        window.addEventListener('resize', function () { _this.resize(); }, false);
         this.resize();
         this.animate();
         if (document["preloader"])

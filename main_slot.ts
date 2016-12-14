@@ -91,9 +91,7 @@
 
         //document.body.appendChild(this.stats.domElement);
 
-        window.addEventListener("resize", function () {
-            this.resize();
-        });
+        window.addEventListener('resize', () => { this.resize(); }, false);
 
         this.resize();
 
