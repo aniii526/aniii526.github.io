@@ -91,7 +91,7 @@
 
         //document.body.appendChild(this.stats.domElement);
 
-        window.addEventListener('resize', () => { this.resize(); }, false);
+        window.addEventListener('resize', () => { this.onOrientationChanged(); }, false);
 
         this.resize();
 
