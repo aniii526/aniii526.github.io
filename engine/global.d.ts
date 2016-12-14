@@ -18,4 +18,5 @@ declare var ss: Object;
 declare var toggleFullScreen: () => void;
 declare var hide: () => void;
 declare var show: () => void;
+declare var pd: () => void;
 

@@ -106,7 +106,7 @@ var sd=!1;
 document.addEventListener("touchmove", function(e) {
     sd || e.preventDefault()
 }, !1);
-var pd = function(e) {
+var pd = function() {
     function d() {
         //this.ar = a;
         a = new qa;
@@ -116,7 +116,6 @@ var pd = function(e) {
         }, a.Jn({
             style: "top:0px;margin: 0 auto;width:200px;"
         }, a.il({
-            src: e,
             style: "width:260px;height:340px;"
         })));
         var d = document.getElementById("swiper-root");

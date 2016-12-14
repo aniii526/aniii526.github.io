@@ -90,29 +90,78 @@
             }
     </style>
     <script>
- "use strict";
-// start point
-document.onreadystatechange = function () {
-    var state = document.readyState;
+        "use strict";
+        //TODO переместить позже
+        function toggleFullScreen() {
+            if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+            (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+                if (document.documentElement.requestFullScreen) {
+                    document.documentElement.requestFullScreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullScreen) {
+                    document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            }
+        }
 
-	if (state == 'complete') {
-	    //window.applet = new Applet();
-	    window.Gb = new pd();
-	}
-};
+        /*window.addEventListener('click', function (e) {
+            toggleFullScreen();
+        });*/
 
-function myResize() {
-    window.scrollTo(0, 0);
-}
+        function getparam(name) {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.href);
+            if (results == null) return "";
+            else return results[1];
+        }
 
-window.addEventListener("resize", function () {
-    myResize();
-});
+        // start point
+        document.onreadystatechange = function () {
+            var state = document.readyState;
+
+            if (state == 'complete') {
+                if (getparam('GameId') !== "")
+                    mainSlot.startSlot(getparam('GameId'), getparam('PartnerId'), getparam('Currency'), getparam('UserId'), getparam('Demo'), getparam('Token'), getparam('BackUrl'));
+                else
+                    // вернуть демо на 1 это 5 параметр, а не 2
+                    mainSlot.startSlot(131, 1, "USD", "56", 1);
+                /*public static MAD_LUCK: string = "101";
+        public static REVENGERS: string = "104";
+        public static SMITHERS: string = "107";
+        public static HORDE: string = "110";
+        public static GRIM_GANG: string = "113";
+        public static LORD_OF_LUCK: string = "116";
+        public static ATLAS: string = "119";
+        public static GUARDS: string = "122";
+        public static PANDORA: string = "125";
+        public static MARS: string = "128";
+        */
+            }
+        };
+
+        function myResize() {
+            window.scrollTo(0, 0);
+        }
+
+        window.addEventListener("resize", function () {
+            myResize();
+        });
 
     </script>
 </head>
 <body>
-    <div id="loader">
+    <!--<div id="loader">
         <canvas id="loadercanvas" width="1440" height="900"></canvas>
         <div id="loadMessage" class="message-block">
             <div id="loadWarning" class="load-warning">
@@ -121,10 +170,10 @@ window.addEventListener("resize", function () {
                 <div id="retry" style="text-align: center;"><input id="retryButton" type="button" style="visibility: inherit; font: inherit; width: 16em; margin-top: 20px" value="Retry" onClick="this.disabled = true;document.location.reload(false)"></div>
             </div>
         </div>
-    </div>
+    </div>-->
     <div id="game" style="background-color: #000000;"></div>
     <div id="swiper-root"></div>
-    <div id="assets" style="visibility: hidden; width:100%; height:100%;top: 0px; left:0 px;position: absolute;">
+    <!--<div id="assets" style="visibility: hidden; width:100%; height:100%;top: 0px; left:0 px;position: absolute;">
         <div class="loaderasset" style="font-family:ProximaNovaBold;color:white;visibility:hidden;">B</div>
         <div class="loaderasset" style="font-family:ProximaNovaRegular;color:white;visibility:hidden;">L</div>
         <div id="translation">
@@ -137,7 +186,6 @@ window.addEventListener("resize", function () {
             <div id="translation_loadtime_en_gb">We are sorry but it seems that loading takes longer than usual. Please try reload.</div>
             <div id="translation_loadtime_sv_se">Vi är ledsna men det tar längre tid än vanligt att starta. Prova att ladda om.</div>
         </div>
-    </div>
+    </div>-->
 </body>
 </html>
-

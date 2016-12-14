@@ -32,6 +32,10 @@ var MainSlot = (function () {
         if (demo == 1) {
             this.model.path_server = this.model.path_server_demo;
         }
+        this.isMobile = this.isMobileBrowser();
+        if (this.isMobile) {
+            new pd();
+        }
     };
     MainSlot.prototype.callback = function () {
         var sp = new PIXI.Sprite(PIXI.loader.resources["fon_main_scene"].texture);

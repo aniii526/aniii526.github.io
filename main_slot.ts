@@ -39,12 +39,15 @@
 		if (demo == 1) {
             this.model.path_server = this.model.path_server_demo;
         }
-        /*
+        
         //мобильный браузер или нет
         this.isMobile = this.isMobileBrowser();
-        //debug
-        //this.isMobile = true;
 
+        if (this.isMobile) {
+            new pd();
+        }
+        
+        /*
         if (this.isMobile) {
             Constants.ASSETS_WIDTH = 1300;
             Constants.ASSETS_HEIGHT = 820;
