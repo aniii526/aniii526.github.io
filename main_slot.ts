@@ -143,16 +143,6 @@
         this.resize();
     }
 
-    public hideAddressBar() {
-        setTimeout(function () {
-            document.body.style.height = window.outerHeight + 'px';
-            setTimeout(function () {
-                window.scrollTo(0, 1);
-            }, 1100);
-        }, 1000);
-        return false;
-    }
-
     private animate() {
         // start the timer for the next animation loop
         requestAnimationFrame(() => this.animate());
