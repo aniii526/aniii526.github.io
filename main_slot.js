@@ -42,7 +42,7 @@ var MainSlot = (function () {
         var size = (this.isMobile) ? [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT] : [Constants.ASSETS_WIDTH, Constants.ASSETS_HEIGHT];
         this.ratio = size[0] / size[1];
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
-        this.renderer.backgroundColor = 0xffffff;
+        this.renderer.backgroundColor = 0x000000;
         document.body.children["game"].appendChild(this.renderer.view);
         if (this.renderer.maskManager)
             this.renderer.maskManager.enableScissor = false;

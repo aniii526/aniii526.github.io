@@ -59,7 +59,7 @@
 
         this.ratio = size[0] / size[1];
         this.renderer = PIXI.autoDetectRenderer(size[0], size[1], null);
-        this.renderer.backgroundColor = 0xffffff;
+        this.renderer.backgroundColor = 0x000000;
         //this.renderer
         document.body.children["game"].appendChild(this.renderer.view);
 
