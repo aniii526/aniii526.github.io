@@ -200,7 +200,7 @@ var viewporter;
 
 					// set the right height for the body wrapper to allow bottom positioned elements
 					//document.getElementById('viewporter').style.position = 'relative';
-				    document.getElementById('game').style.height = window.innerHeight + 'px';
+				    //document.getElementById('game').style.height = window.innerHeight + 'px';
 
 					clearInterval(check);
 
