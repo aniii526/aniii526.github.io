@@ -132,7 +132,7 @@ var GetTokenCommand = (function (_super) {
     }
     GetTokenCommand.prototype.execInternal = function () {
         if (mainSlot.model.Token == null && !mainSlot.testServer) {
-            this.sendToPath("http://192.168.12.9:9275/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
+            this.sendToPath("https://192.168.12.9:4275/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
             this.notifyComplete();
         }
         else

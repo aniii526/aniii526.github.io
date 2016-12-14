@@ -146,7 +146,7 @@ class GetTokenCommand extends Command {
             //this.sendToPath("http://192.168.10.125:9055/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
             //this.sendToPath("https://partners.1xbet.org/1xSlotsTest/GetToken?UserId=" + mainSlot.model.userid);
             
-            this.sendToPath("http://192.168.12.9:9275/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
+            this.sendToPath("https://192.168.12.9:4275/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
             //mainSlot.model.Token = "66398a0a-e72c-46c8-ad79-37c8331b5ec3";
             this.notifyComplete();
         }
