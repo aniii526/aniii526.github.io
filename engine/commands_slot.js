@@ -131,6 +131,8 @@ var GetTokenCommand = (function (_super) {
         _super.call(this, "GetTokenCommand");
     }
     GetTokenCommand.prototype.execInternal = function () {
+        console.log(mainSlot.model.Token == null);
+        console.log(!mainSlot.testServer);
         if (mainSlot.model.Token == null && !mainSlot.testServer) {
             this.sendToPath("https://192.168.12.9:4275/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
             this.notifyComplete();
