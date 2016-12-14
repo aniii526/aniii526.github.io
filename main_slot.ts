@@ -91,6 +91,10 @@
 
         //document.body.appendChild(this.stats.domElement);
 
+        window.addEventListener("resize", function () {
+            this.resize();
+        });
+
         this.resize();
 
         this.animate();
