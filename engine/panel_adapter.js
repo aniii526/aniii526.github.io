@@ -190,9 +190,11 @@ var PanelAdapter = (function (_super) {
     };
     PanelAdapter.prototype.resize = function (w, h) {
         var scale = Math.min(w / Constants.ASSETS_WIDTH, h / Constants.ASSETS_HEIGHT);
-        this.panel.scale.x = this.panel.scale.y = scale;
-        this.panel.x = (w - Constants.ASSETS_WIDTH * scale) / 2 + (((Constants.ASSETS_WIDTH - 1200) / 2) * scale);
-        this.panel.y = (h - Constants.ASSETS_HEIGHT * scale) / 2;
+        if (this.panel) {
+            this.panel.scale.x = this.panel.scale.y = scale;
+            this.panel.x = (w - Constants.ASSETS_WIDTH * scale) / 2 + (((Constants.ASSETS_WIDTH - 1200) / 2) * scale);
+            this.panel.y = (h - Constants.ASSETS_HEIGHT * scale) / 2;
+        }
     };
     return PanelAdapter;
 }(PIXI.utils.EventEmitter));
