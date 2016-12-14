@@ -28,16 +28,16 @@
     public static ID_BONUSSPEC_WIN: number = 42;
 
     //выкладка на тест я использую
-    //public path_server: string = "https://1xslot.com/slotsrv/test/";
-    //public path_server_demo: string = "https://1xslot.com/slotsrv/testDemo/";
+    public path_server: string = "https://1xslot.com/slotsrv/test/";
+    public path_server_demo: string = "https://1xslot.com/slotsrv/testDemo/";
 
     //выкладка на прод я использую
     //public path_server: string = "https://1xslot.com/slotsrv/prod/";
     //public path_server_demo: string = "https://1xslot.com/slotsrv/prodDemo/";
 
     // локально я использую
-    public path_server: string = "http://192.168.12.9:9277/SlotsInternalService.svc/";
-    public path_server_demo: string = "http://192.168.12.9:9277/SlotsInternalServiceDemo.svc/";
+    //public path_server: string = "http://192.168.12.9:9277/SlotsInternalService.svc/";
+    //public path_server_demo: string = "http://192.168.12.9:9277/SlotsInternalServiceDemo.svc/";
 
     //старая версия url-a
     //public path_server_demo: string = "https://slotsrv.1xbet.org/testDemo/";

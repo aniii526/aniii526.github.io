@@ -5,8 +5,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var ModelSlot = (function () {
     function ModelSlot() {
-        this.path_server = "http://192.168.12.9:9277/SlotsInternalService.svc/";
-        this.path_server_demo = "http://192.168.12.9:9277/SlotsInternalServiceDemo.svc/";
+        this.path_server = "https://1xslot.com/slotsrv/test/";
+        this.path_server_demo = "https://1xslot.com/slotsrv/testDemo/";
         this.KeyHash = "sdf34g21v";
         this.BackUrl = 'https://1xslot.com/';
         this.bets = [1, 2, 3, 4];
