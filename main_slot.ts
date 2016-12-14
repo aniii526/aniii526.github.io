@@ -74,7 +74,7 @@
 
 
         // тут ! правильно стоит
-        /*if (!this.isMobile) {
+        if (!this.isMobile) {
             window.addEventListener('resize', () => { this.resize(); }, false);
             this.resize();
         } else {
@@ -87,13 +87,13 @@
             }
 
             this.onOrientationChanged();
-        }*/
+        }
 
         //document.body.appendChild(this.stats.domElement);
 
-        window.addEventListener('resize', () => { this.onOrientationChanged(); }, false);
+        //window.addEventListener('resize', () => { this.onOrientationChanged(); }, false);
 
-        this.resize();
+        //this.resize();
 
         this.animate();
 

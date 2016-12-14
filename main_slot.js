@@ -47,8 +47,20 @@ var MainSlot = (function () {
         if (this.renderer.maskManager)
             this.renderer.maskManager.enableScissor = false;
         this.mainStage = new PIXI.Container();
-        window.addEventListener('resize', function () { _this.onOrientationChanged(); }, false);
-        this.resize();
+        if (!this.isMobile) {
+            window.addEventListener('resize', function () { _this.resize(); }, false);
+            this.resize();
+        }
+        else {
+            if (viewporter.ACTIVE) {
+                window.addEventListener('viewportready', function () { _this.onOrientationChanged(); }, false);
+                window.addEventListener('viewportchange', function () { _this.onOrientationChanged(); }, false);
+            }
+            else {
+                window.addEventListener('orientationchange', function () { _this.onOrientationChanged(); }, false);
+            }
+            this.onOrientationChanged();
+        }
         this.animate();
         if (document["preloader"])
             document["preloader"].style.display = 'none';
