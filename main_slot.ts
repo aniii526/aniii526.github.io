@@ -43,11 +43,6 @@
         //мобильный браузер или нет
         this.isMobile = this.isMobileBrowser();
 
-        /*if (this.isMobile) {
-            new pd();
-        }*/
-        
-        
         if (this.isMobile) {
             Constants.ASSETS_WIDTH = 1300;
             Constants.ASSETS_HEIGHT = 820;
@@ -89,21 +84,8 @@
             this.onOrientationChanged();
         }
 
-        //document.body.appendChild(this.stats.domElement);
-
-        //window.addEventListener('resize', () => { this.onOrientationChanged(); }, false);
-
-        //this.resize();
-
         this.animate();
 
-        if (document["preloader"])
-            document["preloader"].style.display = 'none';
-
-        if (this.isMobile) {
-            //show();
-        }
-        
         var qc: InitCommand = new InitCommand();
         qc.addEventListener(EVENT_COMPLETE, () => { this.completeInitCommad(); });
         qc.execute();
