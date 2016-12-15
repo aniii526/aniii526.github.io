@@ -112,7 +112,7 @@ var pd = function(e) {
         a = new qa;
         this.eb = a = a.Jn({
             id: "swiper",
-            style: "background-color:black;opacity:0.5;top:0px;left:0px;position:absolute;width:100px;height:100px;display:none;"
+            style: "background-color:black;opacity:0.5;top:0px;left:0px;position:absolute;width:100%;height:100%;display:none;"
         }, a.Jn({
             style: "top:0px;margin: 0 auto;width:200px;"
         }, a.il({
