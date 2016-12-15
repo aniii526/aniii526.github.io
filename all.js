@@ -141,7 +141,7 @@ var pd = function(e) {
     };
     a.check = function() {
         var a = window.screen.width, d = window.screen.height, e = Math.min(a, d), a = Math.max(a, d), d = !1;
-        var str = e + " " + window.screen.availHeight + " " + window.innerHeight * 0.5;
+        var str = Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight * 0.5) + '';
         console.log(str);
         90 == Math.abs(window.orientation) && 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight * 0.5)) && (d = !0, this.eb.style.width =
         y("%dpx", window.innerWidth), this.eb.style.height = y("%dpx", window.innerHeight + 100));
