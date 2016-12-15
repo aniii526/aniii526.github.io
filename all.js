@@ -141,7 +141,9 @@ var pd = function(e) {
     };
     a.check = function() {
         var a = window.screen.width, d = window.screen.height, e = Math.min(a, d), a = Math.max(a, d), d = !1;
-        //console.log(a, d, window.screen.availHeight, window.innerHeight);
+        console.log(e);
+        console.log(window.screen.availHeight);
+        console.log(window.innerHeight);
         90 == Math.abs(window.orientation) && 0 < Math.abs(e - Math.min(window.screen.availHeight, window.innerHeight*0.5)) && (d=!0, this.eb.style.width =
         y("%dpx", a), this.eb.style.height = y("%dpx", e + 100));
         d ? (this.eb.style.display = "block", sd=!0) : (myResize(), this.eb.style.display = "none" , sd=!1)
