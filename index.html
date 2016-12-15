@@ -125,9 +125,6 @@
                     window.Gb = new pd();
                 } else if (navigator.userAgent.match(/Android/)) {
                     console.log('Android');
-                    document.addEventListener("tap", function () {
-                        toggleFullScreen();
-                    });
                 }
             }
         };
@@ -172,9 +169,9 @@
             }*/
         }
 
-        /*window.addEventListener('click', function (e) {
+        window.addEventListener('click', function (e) {
             toggleFullScreen();
-        });*/
+        });
 
         function getparam(name) {
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
