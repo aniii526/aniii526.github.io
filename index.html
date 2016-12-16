@@ -23,7 +23,8 @@
     <script src="engine/commands_slot.js?8"></script>
     <script src="engine/model_slot.js?8"></script>
     <script src="main_slot.js?3"></script>
-    <script src="https://jsconsole.com/js/remote.js?9500a07b-cdce-4596-b3c7-f359d538a2a9"></script>
+    <script src="scripts/mobile-detect.js"></script>
+    <!--<script src="https://jsconsole.com/js/remote.js?9500a07b-cdce-4596-b3c7-f359d538a2a9"></script>-->
 
     <style>
         #game {
@@ -122,12 +123,12 @@
             var state = document.readyState;
 
             if (state == 'complete') {
-                if (navigator.userAgent.match(/iPhone/) || navigator.userAgent.match(/Android/)) {
-                    console.log('Show');
+                var md = new MobileDetect(window.navigator.userAgent);
+                if (navigator.userAgent.match(/iPhone/) || ( navigator.userAgent.match(/Android/) && md.tablet() === null)) {
+                    console.log('показать закрывалку');
                     window.Gb = new pd();
-                    /*} else if (navigator.userAgent.match(/Android/)) {
-                        console.log('Android');
-                    }*/
+                } else {
+                    console.log('не показать закрывалку');
                 }
             }
         };

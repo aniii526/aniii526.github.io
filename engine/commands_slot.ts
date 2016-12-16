@@ -143,9 +143,6 @@ class GetTokenCommand extends Command {
     }
     protected execInternal(): void {
 
-        console.log(mainSlot.model.Token == null);
-        console.log(!mainSlot.testServer);
-
         if (mainSlot.model.Token == null && !mainSlot.testServer) {
             //this.sendToPath("http://192.168.10.125:9055/ExternalService.svc/GetToken?UserId=" + mainSlot.model.userid);
             //this.sendToPath("https://partners.1xbet.org/1xSlotsTest/GetToken?UserId=" + mainSlot.model.userid);
