@@ -122,8 +122,8 @@
             var state = document.readyState;
 
             if (state == 'complete') {
-                //if (navigator.userAgent.match(/iPhone/)) {
-                    console.log('iPhone');
+                if (navigator.userAgent.match(/iPhone/) || navigator.userAgent.match(/Android/)) {
+                    console.log('Show');
                     window.Gb = new pd();
                 /*} else if (navigator.userAgent.match(/Android/)) {
                     console.log('Android');
