@@ -1001,9 +1001,29 @@ class Rolls extends PIXI.Sprite {
     }
 
     public startSpin(): void {
-        for (var i: number = 0; i < this.arRoll.length; i++) {
+        /*for (var i: number = 0; i < this.arRoll.length; i++) {
             this.arRoll[i].startSpin();
-        }
+        }*/
+
+        setTimeout(function tick(arg: any[]) {
+            arg[1].arRoll[arg[0]].startSpin();
+        }, 50, [0, this]);
+
+        setTimeout(function tick(arg: any[]) {
+            arg[1].arRoll[arg[0]].startSpin();
+        }, 100, [1, this]);
+
+        setTimeout(function tick(arg: any[]) {
+            arg[1].arRoll[arg[0]].startSpin();
+        }, 150, [2, this]);
+
+        setTimeout(function tick(arg: any[]) {
+            arg[1].arRoll[arg[0]].startSpin();
+        }, 200, [3, this]);
+
+        setTimeout(function tick(arg: any[]) {
+            arg[1].arRoll[arg[0]].startSpin();
+        }, 250, [4, this]);
     }
 
     public showWinBonus(idItem: number): void {
@@ -1026,7 +1046,7 @@ class Rolls extends PIXI.Sprite {
             console.log('idItem указывает на несуществующий элемент' );
             return;
         }
-        console.log(idItem, idChildren);
+
         this.arRoll[idItem].hide(idChildren);
     }
 
@@ -1061,7 +1081,7 @@ class Roll extends PIXI.Sprite {
 
     private pause: boolean = true;
     private speed: number = 0;
-    private speed_max: number = 40;
+    private speed_max: number = 30;
     private speed_start: number = -20;
 
     private rollElement: Array<IconRoll>;
@@ -1211,8 +1231,10 @@ class Roll extends PIXI.Sprite {
     public setComb(comb: Array<number>): void {
         //после прокрута
         if (this.currentComb != null) {
-            console.log(comb);
+            //console.log(comb);
             this.currentState = Roll.END_STATE;
+            this.speed = this.speed_max;
+
             this.targetComb = comb;
             this.createLine(Roll.ICON_ROUTE + this.nomRoll * (this.rollVO.diffIconRoute/2));
             this.targetCombNew = this.targetComb;
