@@ -1,0 +1,6 @@
+C:\Users\User\Desktop\new slots\MadLuck\bin\NewSlots.dll.config
+C:\Users\User\Desktop\new slots\MadLuck\bin\NewSlots.dll
+C:\Users\User\Desktop\new slots\MadLuck\bin\NewSlots.pdb
+C:\Users\User\Desktop\new slots\MadLuck\obj\Debug\NewSlots.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\new slots\MadLuck\obj\Debug\NewSlots.dll
+C:\Users\User\Desktop\new slots\MadLuck\obj\Debug\NewSlots.pdb

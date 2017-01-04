@@ -1,0 +1,172 @@
+{"frames": {
+
+"preloader1.png":
+{
+	"frame": {"x":635,"y":327,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader2.png":
+{
+	"frame": {"x":319,"y":1628,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader3.png":
+{
+	"frame": {"x":635,"y":1303,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader4.png":
+{
+	"frame": {"x":636,"y":977,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader5.png":
+{
+	"frame": {"x":635,"y":1628,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader6.png":
+{
+	"frame": {"x":951,"y":327,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader7.png":
+{
+	"frame": {"x":2,"y":1305,"w":314,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":314,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader8.png":
+{
+	"frame": {"x":2,"y":1630,"w":314,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":314,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader9.png":
+{
+	"frame": {"x":319,"y":978,"w":314,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":314,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader10.png":
+{
+	"frame": {"x":2,"y":980,"w":314,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":314,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader11.png":
+{
+	"frame": {"x":318,"y":328,"w":314,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":314,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader12.png":
+{
+	"frame": {"x":636,"y":2,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader13.png":
+{
+	"frame": {"x":635,"y":652,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader14.png":
+{
+	"frame": {"x":319,"y":1303,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader15.png":
+{
+	"frame": {"x":319,"y":2,"w":314,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":314,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader16.png":
+{
+	"frame": {"x":2,"y":2,"w":314,"h":323},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":52,"w":314,"h":323},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader17.png":
+{
+	"frame": {"x":318,"y":653,"w":314,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":53,"w":314,"h":322},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader18.png":
+{
+	"frame": {"x":2,"y":328,"w":313,"h":323},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":52,"w":313,"h":323},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader19.png":
+{
+	"frame": {"x":2,"y":654,"w":313,"h":323},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":52,"w":313,"h":323},
+	"sourceSize": {"w":432,"h":432}
+},
+"preloader20.png":
+{
+	"frame": {"x":635,"y":327,"w":313,"h":322},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":53,"w":313,"h":322},
+	"sourceSize": {"w":432,"h":432}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "preloader.jpg",
+	"format": "RGB888",
+	"size": {"w":2048,"h":2048},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:5d562c3e82704bcccc270b2aeb15985f:d42d3a2326aaba9807d7097e94fb5ec5:581ff20320c84bf3a5c69c4efcb98777$"
+}
+}

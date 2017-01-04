@@ -1,0 +1,92 @@
+{"frames": {
+
+"icon_1_1.png":
+{
+	"frame": {"x":186,"y":326,"w":179,"h":143},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":29,"w":179,"h":143},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_1_2.png":
+{
+	"frame": {"x":2,"y":160,"w":187,"h":152},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":24,"w":187,"h":152},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_2_1.png":
+{
+	"frame": {"x":376,"y":200,"w":61,"h":195},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":63,"y":0,"w":61,"h":195},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_2_2.png":
+{
+	"frame": {"x":396,"y":2,"w":75,"h":195},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":56,"y":0,"w":75,"h":195},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_3_1.png":
+{
+	"frame": {"x":2,"y":2,"w":194,"h":155},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":15,"w":194,"h":155},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_3_2.png":
+{
+	"frame": {"x":199,"y":2,"w":194,"h":155},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":15,"w":194,"h":155},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_4_1.png":
+{
+	"frame": {"x":186,"y":472,"w":173,"h":177},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":13,"y":13,"w":173,"h":177},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_4_2.png":
+{
+	"frame": {"x":2,"y":481,"w":173,"h":177},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":13,"y":13,"w":173,"h":177},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_5_1.png":
+{
+	"frame": {"x":192,"y":160,"w":181,"h":163},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":13,"w":181,"h":163},
+	"sourceSize": {"w":195,"h":195}
+},
+"icon_5_2.png":
+{
+	"frame": {"x":2,"y":315,"w":181,"h":163},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":13,"w":181,"h":163},
+	"sourceSize": {"w":195,"h":195}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "icons.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:91b60b494424bc20f714fa42be78fbf7:1d0305eba5209854bca6da7f78a65af6:b5c5bd7252d2048fecbb1bda1760f9ef$"
+}
+}

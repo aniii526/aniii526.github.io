@@ -1,0 +1,18 @@
+C:\Users\User\Desktop\book of ra deluxe\SlotGamesPixi\bin\BookOfRa.dll.config
+C:\Users\User\Desktop\book of ra deluxe\SlotGamesPixi\bin\BookOfRa.dll
+C:\Users\User\Desktop\book of ra deluxe\SlotGamesPixi\bin\BookOfRa.pdb
+C:\Users\User\Desktop\book of ra deluxe\SlotGamesPixi\obj\Debug\BookOfRa.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\book of ra deluxe\SlotGamesPixi\obj\Debug\BookOfRa.dll
+C:\Users\User\Desktop\book of ra deluxe\SlotGamesPixi\obj\Debug\BookOfRa.pdb
+C:\Users\User\Desktop\book of ra deluxe\book of ra deluxe\bin\BookOfRa.dll.config
+C:\Users\User\Desktop\book of ra deluxe\book of ra deluxe\bin\BookOfRa.dll
+C:\Users\User\Desktop\book of ra deluxe\book of ra deluxe\bin\BookOfRa.pdb
+C:\Users\User\Desktop\book of ra deluxe\book of ra deluxe\obj\Debug\BookOfRa.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\book of ra deluxe\book of ra deluxe\obj\Debug\BookOfRa.dll
+C:\Users\User\Desktop\book of ra deluxe\book of ra deluxe\obj\Debug\BookOfRa.pdb
+D:\work\git\WebProject-1xslot\html5\BookOfRaDeluxe\bin\BookOfRa.dll.config
+D:\work\git\WebProject-1xslot\html5\BookOfRaDeluxe\bin\BookOfRa.dll
+D:\work\git\WebProject-1xslot\html5\BookOfRaDeluxe\bin\BookOfRa.pdb
+D:\work\git\WebProject-1xslot\html5\BookOfRaDeluxe\obj\Debug\BookOfRa.csprojResolveAssemblyReference.cache
+D:\work\git\WebProject-1xslot\html5\BookOfRaDeluxe\obj\Debug\BookOfRa.dll
+D:\work\git\WebProject-1xslot\html5\BookOfRaDeluxe\obj\Debug\BookOfRa.pdb
